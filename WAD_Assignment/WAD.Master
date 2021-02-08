@@ -14,7 +14,7 @@
     <form id="form1" runat="server">
         <div>
             <header>
-                <a href="#" class='logo'>Food<span>.</span></a>
+                <a href="#" class='logo'>Quad-Core Artwork Sales Gallery<span>.</span></a>
 
                 <div class="menuToggle" onclick="toggleMenu()"></div>
 
