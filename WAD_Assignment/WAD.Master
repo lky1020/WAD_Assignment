@@ -5,34 +5,14 @@
 <html>
 <head runat="server">
     <title>Artwork Sales and Display Gallery</title>
+    <link rel="stylesheet" href="css/master.css" />
     <link rel="stylesheet" href="css/home.css" />
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
+ <%--   <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>--%>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
-            <!--<table style="width: 100%; height: 100%; padding: 15px;">
-                <tr>
-                    <td colspan="2" style="text-align: center; font-size: 36px;"><b>Artwork Sales and Display Gallery</b></td>
-                </tr>
-
-                <tr>
-                    <td style="width: 25%;">
-                        <asp:Menu ID="Menu1" runat="server" DataSourceID="SiteMapDataSource1">
-                        </asp:Menu>
-                        <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" />
-                    </td>
-
-                    <td style="width: 75%;">
-
-                        <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
-                        </asp:ContentPlaceHolder>
-
-                    </td>
-                </tr>
-            </table>-->
-
             <header>
                 <a href="#" class='logo'>Food<span>.</span></a>
 
@@ -48,22 +28,8 @@
                 </ul>
             </header>
 
-            <section class="banner" id="banner">
-                <div class="content">
-                    <h2>Always Choose Good</h2>
-                    <p>Lorem ipsum dolor sit, amet consectetur 
-                        adipisicing elit. Beatae, tempora modi 
-                        laudantium blanditiis tenetur labore 
-                        maiores at dolore eligendi doloremque! 
-                        Fugiat sed atque repudiandae quaerat 
-                        esse ipsum, accusantium deleniti quia.
-                    </p>
-                    <a href="#" class='btn'>Our Menu</a>
-                </div>
-            </section>
-
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-
+                
             </asp:ContentPlaceHolder>
 
             <div class="copyrightText">
