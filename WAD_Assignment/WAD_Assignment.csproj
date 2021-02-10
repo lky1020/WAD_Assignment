@@ -67,6 +67,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\ArtWorkDb.mdf" />
+    <Content Include="App_Data\ArtWorkDb_log.ldf">
+      <DependentUpon>ArtWorkDb.mdf</DependentUpon>
+    </Content>
     <Content Include="img\close.png" />
     <Content Include="css\home.css" />
     <Content Include="css\master.css" />
