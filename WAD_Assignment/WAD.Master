@@ -7,35 +7,93 @@
     <title>Artwork Sales and Display Gallery</title>
     <link rel="stylesheet" href="css/master.css" />
     <link rel="stylesheet" href="css/home.css" />
- <%--   <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>--%>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
+            <div class="siteMenuContent" id="siteMenuContent">
+                <asp:Menu ID="siteMenu" runat="server" StaticSubMenuIndent="16px" Orientation="Horizontal">
+                    <%--<Items>
+                        <asp:MenuItem Text="home" Value="home" NavigateUrl="~/Homepage.aspx"></asp:MenuItem>
+                        <asp:MenuItem Text="about" Value="about"></asp:MenuItem>
+                        <asp:MenuItem Text="menu" Value="menu"></asp:MenuItem>
+                        <asp:MenuItem Text="expert" Value="expert"></asp:MenuItem>
+                        <asp:MenuItem Text="testimonials" Value="testimonials"></asp:MenuItem>
+                        <asp:MenuItem Text="contact" Value="contact"></asp:MenuItem>
+                    </Items>--%>
+                    <StaticMenuItemStyle HorizontalPadding="30px" />
+                </asp:Menu>
+            </div>
+
+            <div class="siteMapPath" id="siteMapPath">
+                <asp:SiteMapPath ID="SiteMapPath1" runat="server" RenderCurrentNodeAsLink="false" 
+                    CurrentNodeStyle-ForeColor="#ff0157" NodeStyle-Font-Underline="false"></asp:SiteMapPath>
+            </div>
+
             <header>
-                <a href="#" class='logo'>Quad-Core Artwork Sales Gallery<span>.</span></a>
+                <a href="#" class='logo'>Quad-Core ASG<span>.</span></a>
 
-                <div class="menuToggle" onclick="toggleMenu()"></div>
+                <div class="headerMenu">
+                    <ul class='navigation'>
+                        <li><a href="#banner" onclick="toggleMenu()">Home</a></li>
+                        <li><a href="#about" onclick="toggleMenu()">About</a></li>
+                        <li><a href="#artworks" onclick="toggleMenu()">Artworks</a></li>
+                        <%--<li><a href="#testimonials" onclick="toggleMenu()">Testimonials</a></li>--%>
+                        <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+                    </ul>
 
-                <ul class='navigation'>
-                    <li><a href="#banner" onclick="toggleMenu()">Home</a></li>
-                    <li><a href="#about" onclick="toggleMenu()">About</a></li>
-                    <li><a href="#menu" onclick="toggleMenu()">Menu</a></li>
-                    <li><a href="#expert" onclick="toggleMenu()">Expert</a></li>
-                    <li><a href="#testimonials" onclick="toggleMenu()">Testimonials</a></li>
-                    <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
-                </ul>
+                    <div class="toggle"></div>
+                </div>
             </header>
-
+        </div>
+        
+        <div class="showcase">
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
                 
             </asp:ContentPlaceHolder>
 
-            <div class="copyrightText">
-                <p>Copyright 2020 <a href="#">Online Tutorials</a>. All Right eserved</p>
-            </div>
+            <div class="sideBar" id="sideBar">
+                <div class="content">
+                    <div class="profile">
+                        <div class="box">
+                            <div class="imgBox">
+                                <img src="img/homepage/testi1.jpg" alt="Testi 1">
+                            </div>
+                            <div class="text">
+                                <p id="name"> 
+                                    lky1020
+                                </p>
+                                <p id="email">  
+                                    xxx@gmail.com
+                                </p>
+                            </div>
+                        </div>
 
+                        <div id="btnProfile"> 
+                            <asp:LinkButton ID="lbProfile" runat="server">Manage Profile</asp:LinkButton>
+                        </div>
+                    </div>
+
+                    <div class="sideBarMenu">
+                        <asp:SiteMapDataSource ID="SiteMapDataSource_Home" runat="server" />
+
+                        <div class="treeView">
+                            <asp:TreeView ID="tvMenu" runat="server" DataSourceID="SiteMapDataSource_Home" ExpandDepth="0"  ExpandImageUrl ="~/img/treeView/right-arrow.png" CollapseImageUrl="~/img/treeView/down-arrow.png">
+                                <RootNodeStyle CssClass="tvMenuItem"/>
+                                <%--<HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />--%>
+                                <LeafNodeStyle CssClass="tvMenuItem"/>
+                                <%--<NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />--%>
+                                <ParentNodeStyle CssClass="tvMenuItem"/>
+                                <%--<SelectedNodeStyle VerticalPadding="0px" Width="100%" Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px"/>--%>
+                            </asp:TreeView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyrightText">
+            <p>Copyright 2021 <a href="#">Quad-Core Team</a>. All Right reserved</p>
         </div>
     </form>
 
@@ -44,17 +102,56 @@
         // Assign sticky class to the header when window scroll to make the css
         window.addEventListener('scroll', function(){
             const header = document.querySelector('header');
+            const sideBar = document.querySelector('.sideBar');
+            const siteMapPath = document.querySelector('.siteMapPath');
+            const siteMenu = document.querySelector('.siteMenuContent');
+
             header.classList.toggle("sticky", window.scrollY > 0)
+            sideBar.classList.toggle("sticky", window.scrollY > 0)
+            siteMapPath.classList.toggle("sticky", window.scrollY > 0)
+            siteMenu.classList.toggle("sticky", window.scrollY > 0)
         });
 
-        function toggleMenu(){
-            const header = document.querySelector('header');
-            const menuToggle = document.querySelector('.menuToggle');
-            const navigation = document.querySelector('.navigation');
+        // To prevent refresh and the sidebar appear
+        window.addEventListener("load", function () {
+            document.getElementById("sideBar").style.right = "0px";
+        });
+
+        // Toggle btn and show sidebar function
+        const menuToggle = document.querySelector('.toggle');
+        const showcase = document.querySelector('.showcase');
+        const header = document.querySelector('header');
+        const sideBar = document.querySelector('.sideBar');
+        const siteMapPath = document.querySelector('.siteMapPath');
+        const siteMenu = document.querySelector('.siteMenuContent');
+
+        menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
-            navigation.classList.toggle('active');
-            header.classList.toggle("toggleSticky", window.scrollY == 0);
-        }
+            showcase.classList.toggle('active');
+            header.classList.toggle('activeSticky');
+            sideBar.classList.toggle('active');
+            siteMapPath.classList.toggle('active');
+            siteMenu.classList.toggle('active');
+
+            // Allow to perfrom action in sideBar
+            if (sideBar.classList.contains('active')) {
+
+                var delayInMilliseconds = 1000; //1 second
+
+                setTimeout(function () {
+                    document.getElementById("sideBar").style.zIndex = "0";
+                }, delayInMilliseconds);
+
+                document.getElementById("siteMapPath").style.display = "block";
+                document.getElementById("siteMenuContent").style.display = "block";
+
+            } else {
+                document.getElementById("sideBar").style.zIndex = "-2";
+                document.getElementById("siteMapPath").style.display = "none";
+                document.getElementById("siteMenuContent").style.display = "none";
+            }
+            
+        })
 
     </script>
 

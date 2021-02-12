@@ -71,13 +71,44 @@
     <Content Include="App_Data\ArtWorkDb_log.ldf">
       <DependentUpon>ArtWorkDb.mdf</DependentUpon>
     </Content>
-    <Content Include="img\close.png" />
+    <Content Include="img\homepage\artWork\africa_elephant.jpg" />
+    <Content Include="img\homepage\artWork\beautiful_women.jpg" />
+    <Content Include="img\homepage\artWork\boat.jpg" />
+    <Content Include="img\homepage\artWork\forest.jpg" />
+    <Content Include="img\homepage\artWork\sky_boat.jpg" />
+    <Content Include="img\homepage\artWork\window.jpg" />
+    <Content Include="img\homepage\bg2.jpg" />
+    <Content Include="img\homepage\bg3.jpg" />
+    <Content Include="img\header\close.png" />
     <Content Include="css\home.css" />
     <Content Include="css\master.css" />
     <Content Include="Homepage.aspx" />
-    <Content Include="img\bg.jpg" />
+    <Content Include="img\homepage\aboutUs\aboutUs.jpg" />
+    <Content Include="img\homepage\contact\artWork_gallery.jpg" />
+    <Content Include="img\homepage\expert1.jpg" />
+    <Content Include="img\homepage\expert2.jpg" />
+    <Content Include="img\homepage\expert3.jpg" />
+    <Content Include="img\homepage\expert4.jpg" />
+    <Content Include="img\homepage\img1.jpg" />
+    <Content Include="img\homepage\menu.jpg" />
+    <Content Include="img\homepage\menu1.jpg" />
+    <Content Include="img\homepage\menu2.jpg" />
+    <Content Include="img\homepage\menu3.jpg" />
+    <Content Include="img\homepage\menu4.jpg" />
+    <Content Include="img\homepage\menu5.jpg" />
+    <Content Include="img\homepage\menu6.jpg" />
+    <Content Include="img\video\sky.mp4" />
+    <Content Include="img\homepage\testi1.jpg" />
+    <Content Include="img\homepage\testi2.jpg" />
+    <Content Include="img\homepage\testi3.jpg" />
+    <Content Include="img\treeView\down-arrow.png" />
+    <Content Include="img\treeView\right-arrow.png" />
     <Content Include="Login.aspx" />
-    <Content Include="img\menu.png" />
+    <Content Include="img\header\menu.png" />
+    <Content Include="test1.aspx" />
+    <Content Include="test2.aspx" />
+    <Content Include="test3.aspx" />
+    <Content Include="test4.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +127,34 @@
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="test1.aspx.cs">
+      <DependentUpon>test1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="test1.aspx.designer.cs">
+      <DependentUpon>test1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="test2.aspx.cs">
+      <DependentUpon>test2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="test2.aspx.designer.cs">
+      <DependentUpon>test2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="test3.aspx.cs">
+      <DependentUpon>test3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="test3.aspx.designer.cs">
+      <DependentUpon>test3.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="test4.aspx.cs">
+      <DependentUpon>test4.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="test4.aspx.designer.cs">
+      <DependentUpon>test4.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WAD.Master.cs">
       <DependentUpon>WAD.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

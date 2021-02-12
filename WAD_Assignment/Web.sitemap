@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
-  <siteMapNode url="~/Homepage.aspx" title="Homepage"  description="Homepage">
-    <siteMapNode url="~/Login.aspx" title="Login"  description="Login" />
+  <siteMapNode url="" title="Quad-Core ASG"  description="">
+    <siteMapNode url="~/Homepage.aspx" title="Homepage"  description="Homepage">
+      <siteMapNode url="~/Login.aspx" title="Login"  description="Login" />
+    </siteMapNode>
+
+    <siteMapNode url="~/test1.aspx" title="Testing 1"  description="Testing 1">
+      <siteMapNode url="~/test2.aspx" title="Testing 2"  description="Testing 2" />
+    </siteMapNode>
+    
+    <siteMapNode url="~/test3.aspx" title="Testing 3"  description="Testing 3">
+      <siteMapNode url="~/test4.aspx" title="Testing 4"  description="Testing 4" />
+    </siteMapNode>
+    
   </siteMapNode>
 </siteMap>
