@@ -159,53 +159,121 @@ header.activeSticky .headerMenu .toggle {
 }
 
 /*SiteMenu*/
-.siteMenuContent {
+.siteMenuBar {
     display: none;
 }
 
-.siteMenuContent.active.sticky {
-    top: 105px;
-    padding: 10px 100px;
+.siteMenuBar.active.sticky {
+    top: 65px;
+    padding: 10px 0px 10px 100px;
 }
 
-.siteMenuContent.active {
+.siteMenuBar.active {
     position: fixed;
-    top: 125px;
+    top: 0;
     left: 0;
     width: calc(100% - 300px);
-    padding: 10px 60px;
+    padding: 10px 0px 10px 60px;
     z-index: 1;
     transition: 0.5s;
     background-color: ghostwhite;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-.siteMenuContent #siteMenu{
-    background-color: aqua;
+.siteMenuBar.active div {
+    display: inline-block;
+}
+
+.siteMenuBar.active .siteMenuContent{
+    width: calc(100% - 5%);
+}
+
+.siteMenuBar.active .menuBtn {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: url('../img/header/up-down.png');
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+.siteMenuBar.active .siteMenuContent #siteMenu {
     width: 100%;
 }
 
+/*SiteMenu - Menu Control*/
+.siteMenu ul li li {
+    margin: 0px 20px;
+    background-color: ghostwhite;
+    text-align: left;
+    padding: 10px 30px;
+    width: 150px;
+}
+
+.siteMenu ul li li:hover {
+    background-color: #ff0157;
+    transition: 0.5s;
+    letter-spacing: 2px;
+}
+
+/*SiteMenu - static menu item*/
+.siteMenuBar .staticMenuItem {
+    width: 150px;
+    text-align: center;
+    background-color: blueviolet;
+    color: white;
+    margin: 0px 15px;
+}
+
+.siteMenuBar .staticMenuItem:hover {
+    background-color: #ff0157;
+    transition: 0.5s;
+    letter-spacing: 2px;
+}
+
 /*SitePath*/
-.siteMapPath {
+.siteMap {
     display: none;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
-.siteMapPath.active.sticky {
+.siteMap.active div {
+    display: inline-block;
+}
+
+.siteMap.active.sticky {
     top: 65px;
-    padding: 10px 100px;
+    padding: 10px 0px 10px 100px;
 }
 
-.siteMapPath.active {
+.siteMap.active {
     position: fixed;
     top: 85px;
     left: 0;
     width: calc(100% - 300px);
-    padding: 10px 60px;
+    padding: 10px 0px 10px 60px;
     z-index: 1;
     transition: 0.5s;
     background-color: ghostwhite;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.siteMap.active .siteMapPath {
+    padding: 10px 0px;
+    width: calc(100% - 5%);
+}
+
+.siteMap.active .siteBtn {
+    background-color: aquamarine;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: url('../img/header/up-down.png');
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
 }
 
 section {
@@ -227,30 +295,14 @@ section {
 }
 
 /*Sidebar - Treeview*/
-.treeView{
-    margin-top: 25px;
-    /*background-color: aquamarine;*/
-}
-
-.tvMenuItem {
-    font-weight: bold;
-    width: 100%;
-    /*background-color: aqua;*/
-    padding: 5px;
-}
-
-.tvMenuItem a:hover {
-    color: #ff0157;
-}
-
 /*Showcase*/
 .showcase .sideBar.sticky .content {
-    margin-top: 120px;
+    margin-top: 80px;
     transition: 0.75s;
 }
 
 .showcase .sideBar .content {
-    margin: 140px 0px 50px;
+    margin: 100px 0px 50px;
     width: 100%;
     color: #111;
 }
@@ -266,7 +318,7 @@ section {
 
 .sideBar .content .profile {
     width: 95%;
-    margin: 10px 5px;
+    margin: 0px 5px;
 }
 
 .sideBar .content .profile .box {
@@ -337,8 +389,18 @@ section {
 
 }
 
-/*Sidebar Menu*/
-.sideBarMenu {
+.treeView {
+    margin-top: 25px;
+}
+
+.tvMenuItem {
+    font-weight: bold;
+    width: 100%;
+    padding: 5px;
+}
+
+.tvMenuItem a:hover {
+    color: #ff0157;
 }
 
 /*CopyRight*/
@@ -390,9 +452,5 @@ section {
     header .headerMenu .navigation li a {
         color: #111;
         font-size: 1.6em;
-    }
-
-    .banner .content h2 {
-        font-size: 3em;
     }
 }

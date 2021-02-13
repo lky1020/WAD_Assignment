@@ -11,23 +11,23 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <div class="siteMenuContent" id="siteMenuContent">
-                <asp:Menu ID="siteMenu" runat="server" StaticSubMenuIndent="16px" Orientation="Horizontal">
-                    <%--<Items>
-                        <asp:MenuItem Text="home" Value="home" NavigateUrl="~/Homepage.aspx"></asp:MenuItem>
-                        <asp:MenuItem Text="about" Value="about"></asp:MenuItem>
-                        <asp:MenuItem Text="menu" Value="menu"></asp:MenuItem>
-                        <asp:MenuItem Text="expert" Value="expert"></asp:MenuItem>
-                        <asp:MenuItem Text="testimonials" Value="testimonials"></asp:MenuItem>
-                        <asp:MenuItem Text="contact" Value="contact"></asp:MenuItem>
-                    </Items>--%>
-                    <StaticMenuItemStyle HorizontalPadding="30px" />
-                </asp:Menu>
-            </div>
+            <div class="siteMenuBar" id="siteMenuBar">
+                <div class="siteMenuContent" id="siteMenuContent">
+                    <asp:Menu ID="siteMenu" runat="server" CssClass="siteMenu" StaticSubMenuIndent="16px" Orientation="Horizontal" StaticEnableDefaultPopOutImage="false">
+                        <StaticMenuItemStyle  VerticalPadding="10px" HorizontalPadding="30px" CssClass="staticMenuItem"/>
+                    </asp:Menu>
+                </div>
 
-            <div class="siteMapPath" id="siteMapPath">
-                <asp:SiteMapPath ID="SiteMapPath1" runat="server" RenderCurrentNodeAsLink="false" 
-                    CurrentNodeStyle-ForeColor="#ff0157" NodeStyle-Font-Underline="false"></asp:SiteMapPath>
+                <div class="menuBtn"></div>
+            </div>
+            
+            <div class="siteMap" id="siteMap">
+                <div class="siteMapPath">
+                    <asp:SiteMapPath ID="SiteMapPath1" runat="server" RenderCurrentNodeAsLink="false" 
+                        CurrentNodeStyle-ForeColor="#ff0157" NodeStyle-Font-Underline="false"></asp:SiteMapPath>
+                </div>
+
+                <div class="siteBtn"></div>
             </div>
 
             <header>
@@ -78,13 +78,10 @@
                         <asp:SiteMapDataSource ID="SiteMapDataSource_Home" runat="server" />
 
                         <div class="treeView">
-                            <asp:TreeView ID="tvMenu" runat="server" DataSourceID="SiteMapDataSource_Home" ExpandDepth="0"  ExpandImageUrl ="~/img/treeView/right-arrow.png" CollapseImageUrl="~/img/treeView/down-arrow.png">
+                            <asp:TreeView ID="tvMenu" runat="server" DataSourceID="SiteMapDataSource_Home" ExpandDepth="1"  ExpandImageUrl ="~/img/treeView/right-arrow.png" CollapseImageUrl="~/img/treeView/down-arrow.png">
                                 <RootNodeStyle CssClass="tvMenuItem"/>
-                                <%--<HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />--%>
                                 <LeafNodeStyle CssClass="tvMenuItem"/>
-                                <%--<NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />--%>
                                 <ParentNodeStyle CssClass="tvMenuItem"/>
-                                <%--<SelectedNodeStyle VerticalPadding="0px" Width="100%" Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px"/>--%>
                             </asp:TreeView>
                         </div>
                     </div>
@@ -103,18 +100,38 @@
         window.addEventListener('scroll', function(){
             const header = document.querySelector('header');
             const sideBar = document.querySelector('.sideBar');
-            const siteMapPath = document.querySelector('.siteMapPath');
-            const siteMenu = document.querySelector('.siteMenuContent');
+            const siteMap = document.querySelector('.siteMap');
+            const siteMenu = document.querySelector('.siteMenuBar');
 
             header.classList.toggle("sticky", window.scrollY > 0)
             sideBar.classList.toggle("sticky", window.scrollY > 0)
-            siteMapPath.classList.toggle("sticky", window.scrollY > 0)
+            siteMap.classList.toggle("sticky", window.scrollY > 0)
             siteMenu.classList.toggle("sticky", window.scrollY > 0)
+
+            //MenuBar
+            if (window.scrollY == 0 && siteMenu.classList.contains('displayed')) {
+                document.getElementById("siteMap").style.top = "0px";
+                document.getElementById("siteMenuBar").style.top = "85px";
+
+            } else if (window.scrollY != 0 && siteMenu.classList.contains('displayed')){
+                document.getElementById("siteMap").style.top = "0px";
+                document.getElementById("siteMenuBar").style.top = "65px";
+            }
+
+            //SiteMapPath
+            if (window.scrollY == 0 && siteMap.classList.contains('displayed')) {
+                document.getElementById("siteMap").style.top = "85px";
+                document.getElementById("siteMenuBar").style.top = "0px";
+
+            } else if (window.scrollY != 0 && siteMap.classList.contains('displayed')){
+                document.getElementById("siteMap").style.top = "65px";
+                document.getElementById("siteMenuBar").style.top = "0px";
+            }
         });
 
         // To prevent refresh and the sidebar appear
         window.addEventListener("load", function () {
-            document.getElementById("sideBar").style.right = "0px";
+            document.getElementById("sideBar").style.display = "none";
         });
 
         // Toggle btn and show sidebar function
@@ -122,36 +139,97 @@
         const showcase = document.querySelector('.showcase');
         const header = document.querySelector('header');
         const sideBar = document.querySelector('.sideBar');
-        const siteMapPath = document.querySelector('.siteMapPath');
-        const siteMenu = document.querySelector('.siteMenuContent');
+        const siteMap = document.querySelector('.siteMap');
+        const siteMenu = document.querySelector('.siteMenuBar');
 
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
             showcase.classList.toggle('active');
             header.classList.toggle('activeSticky');
             sideBar.classList.toggle('active');
-            siteMapPath.classList.toggle('active');
+            siteMap.classList.toggle('active');
             siteMenu.classList.toggle('active');
 
             // Allow to perfrom action in sideBar
             if (sideBar.classList.contains('active')) {
 
-                var delayInMilliseconds = 1000; //1 second
+                var delayInMilliseconds = 1000; //1.0 second
+
+                document.getElementById("sideBar").style.display = "block";
+                document.getElementById("sideBar").style.right = "0px";
 
                 setTimeout(function () {
                     document.getElementById("sideBar").style.zIndex = "0";
                 }, delayInMilliseconds);
 
-                document.getElementById("siteMapPath").style.display = "block";
-                document.getElementById("siteMenuContent").style.display = "block";
+                
+                document.getElementById("siteMap").style.display = "inline";
+                document.getElementById("siteMenuBar").style.visibility = "hidden";
+                document.getElementById("siteMenuBar").style.display = "block";
+
+                if (siteMenu.classList.contains('displayed')) {
+                    document.getElementById("siteMap").style.visibility = "hidden";
+                    document.getElementById("siteMenuBar").style.visibility = "visible";
+                } else {
+                    setTimeout(function () {
+                        document.getElementById("siteMenuBar").style.visibility = "visible";
+                    }, delayInMilliseconds);
+                }
+            } 
+
+            if (!sideBar.classList.contains('active')) {
+
+                document.getElementById("sideBar").style.zIndex = "-2";
+                document.getElementById("sideBar").style.right = "-300px";
+                document.getElementById("sideBar").style.display = "none";
+                document.getElementById("siteMap").style.display = "none";
+
+                document.getElementById("siteMenuBar").style.display = "none";
+
+                //Remove the active for the siteBtn & menuBtn
+                //document.getElementById("siteMap").remove('displayed');
+                //document.getElementById("siteMenuBar").remove('displayed');
+            }
+
+        });
+
+        // Switch between the siteMap and menu (siteMap)
+        const siteBtn = document.querySelector('.siteBtn');
+        const menuBtn = document.querySelector('.menuBtn');
+
+        siteBtn.addEventListener('click', () => {
+
+            siteMenu.classList.add('displayed');
+            siteMap.classList.remove('displayed');
+
+            if (window.scrollY == 0) {
+                document.getElementById("siteMap").style.top = "0px";
+                document.getElementById("siteMenuBar").style.top = "85px";
 
             } else {
-                document.getElementById("sideBar").style.zIndex = "-2";
-                document.getElementById("siteMapPath").style.display = "none";
-                document.getElementById("siteMenuContent").style.display = "none";
+                document.getElementById("siteMap").style.top = "0px";
+                document.getElementById("siteMenuBar").style.top = "65px";
             }
-            
-        })
+
+        });
+
+        menuBtn.addEventListener('click', () => {
+
+            siteMap.classList.add('displayed');
+            siteMenu.classList.remove('displayed');
+
+            document.getElementById("siteMap").style.visibility = "visible";
+
+            if (window.scrollY == 0) {
+                document.getElementById("siteMap").style.top = "85px";
+                document.getElementById("siteMenuBar").style.top = "0px";
+
+            } else {
+                document.getElementById("siteMap").style.top = "65px";
+                document.getElementById("siteMenuBar").style.top = "0px";
+            }
+
+        });
 
     </script>
 

@@ -71,6 +71,7 @@
     <Content Include="App_Data\ArtWorkDb_log.ldf">
       <DependentUpon>ArtWorkDb.mdf</DependentUpon>
     </Content>
+    <Content Include="img\header\up-down.png" />
     <Content Include="img\homepage\artWork\africa_elephant.jpg" />
     <Content Include="img\homepage\artWork\beautiful_women.jpg" />
     <Content Include="img\homepage\artWork\boat.jpg" />
