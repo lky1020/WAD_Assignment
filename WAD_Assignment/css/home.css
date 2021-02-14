@@ -266,7 +266,7 @@
 }
 
 .contactForm .inputBox input,
-.contactForm .inputBox textarea {
+.contactForm .inputBox .contactInput {
     width: 100%;
     border: 1px solid #555;
     padding: 10px;
@@ -277,7 +277,7 @@
     resize: none;
 }
 
-.contactForm .inputBox input[type="submit"] {
+.contactForm .inputBox .contactSubmit {
     font-size: 1em;
     color: #fff;
     background: #ff0157;
@@ -285,11 +285,15 @@
     text-transform: uppercase;
     text-decoration: none;
     letter-spacing: 2px;
-    transition: 0.5s;
     max-width: 100px;
     font-weight: 500;
     border: none;
     cursor: pointer;
+}
+
+.contactForm .inputBox .contactSubmit:hover {
+    letter-spacing: 3.5px;
+    transition: 0.5s;
 }
 
 /*Max-Width*/

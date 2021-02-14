@@ -18,6 +18,10 @@ p {
     color: #fff;
 }
 
+.validationStyle {
+    color: #ff0157;
+}
+
 .btn {
     font-size: 1em;
     color: #fff;

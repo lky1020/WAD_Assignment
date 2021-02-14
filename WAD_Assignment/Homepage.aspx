@@ -9,7 +9,7 @@
                 In the road to capture all the best moments in the life.
                 The best moments in life always surround us, helping us, supporting us, and giving us strength.
             </p>
-            <a href="#" class='btn'>Our Menu</a>
+            <a href="#" class='btn'>Our ArtWorks</a>
         </div>
 
         <video src="img/video/sky.mp4" muted loop autoplay></video>
@@ -204,22 +204,37 @@
             </p>
         </div>
 
+        <asp:ScriptManager ID="scriptmanager1" runat="server"></asp:ScriptManager>  
         <div class="contactForm">
-            <h3>Send Message</h3>
-            <div class="inputBox">
-                <input type="text" placeholder="Name">
-            </div>
-            <div class="inputBox">
-                <input type="text" placeholder="Email">
-            </div>
-            <div class="inputBox">
-                <textarea placeholder="Comment"></textarea>
-            </div>
-            <div class="inputBox">
-                <input type="submit" value="Send">
-            </div>
+            <asp:UpdatePanel ID="updatepnl" runat="server">  
+                <ContentTemplate> 
+                    <h3>Send Message</h3>
+                    <div class="inputBox">
+                        <asp:TextBox ID="txtContactName" CssClass="contactInput" runat="server" placeholder="Name" AutoPostBack="true"></asp:TextBox>
+                        <asp:Label ID="lblContactName" CssClass="validationStyle" runat="server"></asp:Label>
+                    </div>
+                    <div class="inputBox">
+                        <asp:TextBox ID="txtContactEmail" CssClass="contactInput" runat="server" placeholder="Email" AutoPostBack="true"></asp:TextBox>
+                        <asp:Label ID="lblContactEmail" CssClass="validationStyle" runat="server"></asp:Label>
+                    </div>
+                    <div class="inputBox">
+                        <asp:TextBox ID="txtContactComment" TextMode="MultiLine" CssClass="contactInput" runat="server" placeholder="Comment" AutoPostBack="true"></asp:TextBox>
+                        <asp:Label ID="lblContactComment" CssClass="validationStyle" runat="server"></asp:Label>
+                    </div>
+                    <div class="inputBox">
+                        <asp:Button ID="btnContactSubmit" CssClass="contactSubmit" runat="server" Text="Submit" OnClientClick="changeSubmitText()"  OnClick="btnContactSubmit_Click"/>
+                    </div>
+                </ContentTemplate>  
+            </asp:UpdatePanel> 
         </div>
 
     </section>
+
+    <script type="text/javascript">
+        function changeSubmitText() {
+            document.getElementById('<%=btnContactSubmit.ClientID%>').value = "Sending";
+            document.getElementById('<%=btnContactSubmit.ClientID%>').style.cursor = "default";
+        }
+    </script>
 
 </asp:Content>
