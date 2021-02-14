@@ -218,6 +218,16 @@ header.activeSticky .headerMenu .toggle {
     letter-spacing: 2px;
 }
 
+.siteMenu ul li li a {
+    outline: none;
+    border: 0px none;
+}
+
+.siteMenu ul li li a:active {
+    color: ghostwhite;
+    
+}
+
 /*SiteMenu - static menu item*/
 .siteMenuBar .staticMenuItem {
     width: 150px;

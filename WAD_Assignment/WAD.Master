@@ -18,7 +18,7 @@
                     </asp:Menu>
                 </div>
 
-                <div class="menuBtn"></div>
+                <div class="menuBtn" id="menuBtn"></div>
             </div>
             
             <div class="siteMap" id="siteMap">
@@ -27,20 +27,28 @@
                         CurrentNodeStyle-ForeColor="#ff0157" NodeStyle-Font-Underline="false"></asp:SiteMapPath>
                 </div>
 
-                <div class="siteBtn"></div>
+                <div class="siteBtn" id="siteBtn"></div>
             </div>
 
             <header>
                 <a href="#" class='logo'>Quad-Core ASG<span>.</span></a>
 
                 <div class="headerMenu">
-                    <ul class='navigation'>
+                    <ul class='navigation' id="navigation">
                         <li><a href="#banner" onclick="toggleMenu()">Home</a></li>
                         <li><a href="#about" onclick="toggleMenu()">About</a></li>
                         <li><a href="#artworks" onclick="toggleMenu()">Artworks</a></li>
                         <%--<li><a href="#testimonials" onclick="toggleMenu()">Testimonials</a></li>--%>
                         <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
                     </ul>
+
+                    <div class="siteMenuBar" id="headerSiteMenuBar">
+                        <div class="siteMenuContent" id="headerSiteMenuContent">
+                            <asp:Menu ID="headerSiteMenu" runat="server" CssClass="siteMenu" StaticSubMenuIndent="16px" Orientation="Horizontal" StaticEnableDefaultPopOutImage="false">
+                                <StaticMenuItemStyle  VerticalPadding="10px" HorizontalPadding="30px" CssClass="staticMenuItem"/>
+                            </asp:Menu>
+                        </div>
+                    </div>
 
                     <div class="toggle"></div>
                 </div>
@@ -132,6 +140,24 @@
         // To prevent refresh and the sidebar appear
         window.addEventListener("load", function () {
             document.getElementById("sideBar").style.display = "none";
+            document.getElementById("headerSiteMenuBar").style.display = "none";
+
+            //Get website name
+            var path = window.location.pathname;
+            var page = path.split("/").pop();
+
+            //Other page's header
+            if (page != "Homepage.aspx") {
+                document.getElementById("navigation").style.display = "none";
+                document.getElementById("menuBtn").style.display = "none";
+                document.getElementById("siteBtn").style.display = "none";
+                document.getElementById("headerSiteMenuBar").style.display = "inline-block";
+
+            } else if (page == "Homepage.aspx") {
+                document.getElementById("headerSiteMenuBar").style.display = "none";
+                document.getElementById("navigation").style.display = "flex";
+            }
+            
         });
 
         // Toggle btn and show sidebar function

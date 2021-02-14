@@ -14,10 +14,21 @@ namespace WAD_Assignment
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            GetMenuItems();
+            //Initialize webpage
+            if(IsPostBack == false)
+            {
+                DataSet menuItem = GetMenuItems();
+
+                //Homepage
+                bindMenuItem(menuItem, siteMenu);
+
+                //Not Homepage
+                bindMenuItem(menuItem, headerSiteMenu);
+            }
+            
         }
 
-        private void GetMenuItems()
+        private DataSet GetMenuItems()
         {
             string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
@@ -28,14 +39,19 @@ namespace WAD_Assignment
             // Establish relationship (foreign keys)
             ds.Relations.Add("ChildRows", ds.Tables[0].Columns["Id"], ds.Tables[1].Columns["ParentId"]);
 
-            foreach(DataRow level1DataRow in ds.Tables[0].Rows)
+            return ds;
+        }
+
+        private void bindMenuItem(DataSet ds, Menu menuID)
+        {
+            foreach (DataRow level1DataRow in ds.Tables[0].Rows)
             {
                 MenuItem item = new MenuItem();
                 item.Text = level1DataRow["MenuText"].ToString();
                 item.NavigateUrl = level1DataRow["NavigateUrl"].ToString();
 
                 DataRow[] level2DataRows = level1DataRow.GetChildRows("ChildRows");
-                foreach(DataRow level2DataRow in level2DataRows)
+                foreach (DataRow level2DataRow in level2DataRows)
                 {
                     MenuItem childItem = new MenuItem();
                     childItem.Text = level2DataRow["MenuText"].ToString();
@@ -43,7 +59,7 @@ namespace WAD_Assignment
                     item.ChildItems.Add(childItem);
                 }
 
-                siteMenu.Items.Add(item);
+                menuID.Items.Add(item);
 
             }
         }
