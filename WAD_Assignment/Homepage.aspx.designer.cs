@@ -15,13 +15,13 @@ namespace WAD_Assignment
     {
 
         /// <summary>
-        /// scriptmanager1 control.
+        /// scriptmanagerContact control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManager scriptmanager1;
+        protected global::System.Web.UI.ScriptManager scriptmanagerContact;
 
         /// <summary>
         /// updatepnl control.

@@ -335,7 +335,7 @@ section {
     margin: 0px 5px;
 }
 
-.sideBar .content .profile .box {
+.sideBar .content .profile .profileBox {
     background: #fff;
     display: flex;
     justify-content: flex-start;
@@ -344,7 +344,7 @@ section {
     padding: 10px 5px;
 }
 
-.sideBar .content .profile .box .imgBox {
+.sideBar .content .profile .profileBox .imgBox {
     position: relative;
     width: 80px;
     height: 80px;
@@ -353,7 +353,7 @@ section {
     display: block;
 }
 
-.sideBar .content .profile .box .imgBox img {
+.sideBar .content .profile .profileBox .imgBox img {
     position: absolute;
     top: 0;
     left: 0;
@@ -363,7 +363,7 @@ section {
     display: block;
 }
 
-#btnProfile {
+.profileBtn {
     width: 100%;
     font-size: 1em;
     color: #fff;
@@ -371,36 +371,30 @@ section {
     display: inline-block;
     padding: 10px 30px;
     text-transform: uppercase;
-    text-decoration: none;
     text-align: center;
+    text-decoration: none;
     letter-spacing: 2px;
     transition: 0.5s;
+    margin: 5px 0px 0px 0px;
+    border: none;
+    cursor: pointer;
 }
 
-#btnProfile #lbProfile{
-    text-decoration: none;
-    color: #fff;
-}
-
-#btnProfile:hover {
+.profileBtn:hover {
     letter-spacing: 4px;
 }
 
-.sideBar .content .profile .box .text {
+.sideBar .content .profile .profileBox .text {
     margin-left: 15px;
 }
 
-.sideBar .content .profile .box .text p {
+.sideBar .content .profile .profileBox .text p {
     color: #111;
     text-align: justify;
 }
 
-.sideBar .content .profile .box .text #name {
-    font-weight: 900;
-}
-
-.sideBar .content .profile .box .text #email {
-
+.sideBar .content .profile .profileBox .text #name {
+    font-weight: 700;
 }
 
 .treeView {
@@ -435,16 +429,11 @@ section {
 }
 
 /*Max-Width*/
-@media (max-width: 1060px) {
+@media (max-width: 1080px) {
 
-    header,
-    header.sticky {
-        padding: 10px 25px;
-    }
-
-    header .headerMenu .navigation {
+    /*header .headerMenu .navigation {
         display: none;
-    }
+    }*/
 
     header .headerMenu .navigation.active {
         width: 100%;
@@ -459,12 +448,15 @@ section {
         background: #fff;
     }
 
-    header .headerMenu .navigation li {
-        margin-left: 0px;
+    .siteMap.active .siteMapPath {
+        transition: 0.5s;
+        width: calc(100% - 8%);
     }
 
-    header .headerMenu .navigation li a {
-        color: #111;
-        font-size: 1.6em;
+    .siteMenuBar.active .siteMenuContent {
+        transition: 0.5s;
+        width: calc(100% - 8%);
     }
+    
 }
+

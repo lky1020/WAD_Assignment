@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -9,9 +14,250 @@ namespace WAD_Assignment
 {
     public partial class Login : System.Web.UI.Page
     {
+        private string loginName;
+        private string profilePicPath;
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
+            if (IsPostBack == false)
+            {
+                string username = Request.QueryString["username"];
+                string password = Request.QueryString["password"];
+
+                txtEmail_Username.Text = username;
+
+                txtPassword.TextMode = TextBoxMode.SingleLine;
+                txtPassword.Text = password;
+                txtPassword.Attributes["type"] = "password";
+
+            }else
+            {
+                //Validate the login form
+                validateLogin();
+            }
+        }
+
+        protected void btnLogin_Click(object sender, EventArgs e)
+        {
+            string loginMethod;
+
+            if (validateLogin())
+            {
+                //Check db
+                if(checkExistingUser() == true || checkExistingEmail() == true)
+                {
+                    if(checkExistingUser() == true)
+                    {
+                        //Username
+                        loginMethod = "Name";
+                    }
+                    else
+                    {
+                        //Email
+                        loginMethod = "Email";
+                    }
+
+                    //Check password
+                    if(checkPassword(loginMethod) == true)
+                    {
+                        //Get profile pic path
+                        if(getProfilePic(loginMethod) == true)
+                        {
+                            //Activate the profile navigation
+                            ActivateProfileNavigation();
+
+                            Response.Redirect("~/Homepage.aspx?username=" + loginName + "&profilePicPath=" + profilePicPath + "&successLogin=true");
+
+                        }
+                        else
+                        {
+                            /*
+                             Return when pic not able retrieve
+                             */
+
+                            //Deactive the profile navigation
+                            DeactivateProfileNavigation();
+
+                            Response.Redirect("~/Homepage.aspx?successLogin=false");
+
+                        }
+                    }
+                    else
+                    {
+                        /*
+                        Return when password not match
+                        */
+
+                        //Deactive the profile navigation
+                        DeactivateProfileNavigation();
+
+                        Response.Redirect("~/Homepage.aspx?successLogin=false");
+
+                    }
+                }
+                else
+                {
+                    /*
+                    Return when not existing user
+                    */
+
+                    //Deactive the profile navigation
+                    DeactivateProfileNavigation();
+
+                    Response.Redirect("~/Homepage.aspx?successLogin=false");
+
+                }
+
+            }
+            else
+            {
+                if (txtEmail_Username.Text.Equals(""))
+                {
+                    lblEmail_Username.Text = "Please Enter Your Username or Email!";
+                }
+
+                if (txtPassword.Text.Equals(""))
+                {
+                    lblPassword.Text = "Please Enter Your Password!";
+                }
+
+            }
+        }
+
+        private Boolean checkExistingUser()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtEmail_Username.Text + "' ", con);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                return true;
+            }
+
+            return false;
+
+        }
+
+        private Boolean checkExistingEmail()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail_Username.Text + "' ", con);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private Boolean checkPassword(string loginMethod)
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da;
+            if (loginMethod.Equals("Name")){
+                da = new SqlDataAdapter("SELECT Name, Email, Password FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text +"' " + "AND Password = '" + txtPassword.Text + "' ", con);
+            }
+            else
+            {
+                da = new SqlDataAdapter("SELECT Name, Email, Password FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+            }
+            
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                loginName = dt.Rows[0]["Name"].ToString();
+                return true;
+            }
+
+            return false;
+        }
+
+        private Boolean getProfilePic(string loginMethod)
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da;
+            if (loginMethod.Equals("Name"))
+            {
+                da = new SqlDataAdapter("SELECT ProfileImg FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+            }
+            else
+            {
+                da = new SqlDataAdapter("SELECT ProfileImg FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+            }
+
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                profilePicPath = dt.Rows[0]["ProfileImg"].ToString();
+                return true;
+            }
+
+            return false;
+        }
+
+        private Boolean validateLogin()
+        {
+            Boolean loginValidation = false;
+
+            //Username
+            if (!txtEmail_Username.Text.Equals(""))
+            {
+                loginValidation = true;
+            }
+            else
+            {
+                loginValidation = false;
+            }
+
+            //Password
+            if (!txtPassword.Text.Equals(""))
+            {
+                loginValidation = true;
+            }
+            else
+            {
+                loginValidation = false;
+            }
+
+            return loginValidation;
+        }
+
+        private void ActivateProfileNavigation()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ProfileActive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void DeactivateProfileNavigation()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
         }
     }
 }

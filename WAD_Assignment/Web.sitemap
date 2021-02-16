@@ -3,6 +3,8 @@
   <siteMapNode url="" title="Quad-Core ASG"  description="">
     <siteMapNode url="~/Homepage.aspx" title="Homepage"  description="Homepage">
       <siteMapNode url="~/Login.aspx" title="Login"  description="Login" />
+      <siteMapNode url="~/Registration.aspx" title="Registration"  description="Registration" />
+      <siteMapNode url="~/Profile.aspx" title="Profile"  description="Profile" />
     </siteMapNode>
 
     <siteMapNode url="~/test1.aspx" title="Testing 1"  description="Testing 1">

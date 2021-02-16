@@ -85,16 +85,11 @@ namespace WAD_Assignment
 
             if (!txtContactName.Text.Equals(""))
             {
-                if (!Regex.IsMatch(txtContactName.Text, @"^[\p{L}\p{M}' \.\-]+$"))
-                {
-                    lblContactName.Text = "Invalid Name Format!";
-                    contactValidation = false;
-                }
-                else
-                {
-                    lblContactName.Text = "";
-                    contactValidation = true;
-                }
+                contactValidation = true;
+            }
+            else
+            {
+                contactValidation = false;
             }
 
             if (!txtContactEmail.Text.Equals(""))

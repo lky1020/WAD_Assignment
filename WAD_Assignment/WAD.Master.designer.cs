@@ -60,13 +60,13 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder1;
 
         /// <summary>
-        /// lbProfile control.
+        /// lblLoginName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbProfile;
+        protected global::System.Web.UI.WebControls.Label lblLoginName;
 
         /// <summary>
         /// SiteMapDataSource_Home control.

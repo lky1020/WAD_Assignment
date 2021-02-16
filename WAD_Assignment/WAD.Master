@@ -5,8 +5,10 @@
 <html>
 <head runat="server">
     <title>Artwork Sales and Display Gallery</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"/>
     <link rel="stylesheet" href="css/master.css" />
     <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/login_register.css" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -31,14 +33,13 @@
             </div>
 
             <header>
-                <a href="#" class='logo'>Quad-Core ASG<span>.</span></a>
+                <a href="Homepage.aspx#" class='logo'>Quad-Core ASG<span>.</span></a>
 
                 <div class="headerMenu">
                     <ul class='navigation' id="navigation">
                         <li><a href="#banner" onclick="toggleMenu()">Home</a></li>
                         <li><a href="#about" onclick="toggleMenu()">About</a></li>
                         <li><a href="#artworks" onclick="toggleMenu()">Artworks</a></li>
-                        <%--<li><a href="#testimonials" onclick="toggleMenu()">Testimonials</a></li>--%>
                         <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
                     </ul>
 
@@ -63,23 +64,21 @@
             <div class="sideBar" id="sideBar">
                 <div class="content">
                     <div class="profile">
-                        <div class="box">
+                        <div class="profileBox" id="profileBox">
                             <div class="imgBox">
-                                <img src="img/homepage/testi1.jpg" alt="Testi 1">
+                                <img id="profileImg" src="img/homepage/testi1.jpg" alt="Profile Picture">
                             </div>
                             <div class="text">
                                 <p id="name"> 
-                                    lky1020
-                                </p>
-                                <p id="email">  
-                                    xxx@gmail.com
+                                    <asp:Label ID="lblLoginName" runat="server"></asp:Label>
                                 </p>
                             </div>
                         </div>
 
-                        <div id="btnProfile"> 
-                            <asp:LinkButton ID="lbProfile" runat="server">Manage Profile</asp:LinkButton>
-                        </div>
+                        <a href="Login.aspx" ID="btnLogin" class="profileBtn">Login</a>
+
+                        <a href="#" ID="btnProfile" class="profileBtn">Manage Profile</a>
+
                     </div>
 
                     <div class="sideBarMenu">
@@ -111,10 +110,10 @@
             const siteMap = document.querySelector('.siteMap');
             const siteMenu = document.querySelector('.siteMenuBar');
 
-            header.classList.toggle("sticky", window.scrollY > 0)
-            sideBar.classList.toggle("sticky", window.scrollY > 0)
-            siteMap.classList.toggle("sticky", window.scrollY > 0)
-            siteMenu.classList.toggle("sticky", window.scrollY > 0)
+            header.classList.toggle("sticky", window.scrollY > 0 && window.innerWidth > 1020)
+            sideBar.classList.toggle("sticky", window.scrollY > 0 && window.innerWidth > 1020)
+            siteMap.classList.toggle("sticky", window.scrollY > 0 && window.innerWidth > 1020)
+            siteMenu.classList.toggle("sticky", window.scrollY > 0 && window.innerWidth > 1020)
 
             //MenuBar
             if (window.scrollY == 0 && siteMenu.classList.contains('displayed')) {
@@ -137,10 +136,39 @@
             }
         });
 
+        //Resize of window
+        window.addEventListener("resize", function () {
+            //Get website name
+            var path = window.location.pathname;
+            var page = path.split("/").pop();
+
+            if (page != "Homepage.aspx") {
+                if (window.innerWidth < 1080) {
+                    document.getElementById("headerSiteMenuBar").style.display = "none";
+                    document.getElementById("navigation").style.display = "none"; 
+                }
+                else {
+                    document.getElementById("headerSiteMenuBar").style.display = "inline-block";
+                    document.getElementById("navigation").style.display = "none";
+                }
+
+            } else if (page == "Homepage.aspx") {
+                if (window.innerWidth < 1020) {
+                    document.getElementById("navigation").style.display = "none";
+                    document.getElementById("headerSiteMenuBar").style.display = "none";
+                }
+                else {
+                    document.getElementById("navigation").style.display = "flex";
+                    document.getElementById("headerSiteMenuBar").style.display = "none";
+                }
+            }
+        });
+
         // To prevent refresh and the sidebar appear
         window.addEventListener("load", function () {
             document.getElementById("sideBar").style.display = "none";
             document.getElementById("headerSiteMenuBar").style.display = "none";
+            document.getElementById("siteMenuBar").style.display = "none";
 
             //Get website name
             var path = window.location.pathname;
@@ -151,13 +179,65 @@
                 document.getElementById("navigation").style.display = "none";
                 document.getElementById("menuBtn").style.display = "none";
                 document.getElementById("siteBtn").style.display = "none";
-                document.getElementById("headerSiteMenuBar").style.display = "inline-block";
 
+                if (window.innerWidth > 1080) {
+                    document.getElementById("headerSiteMenuBar").style.display = "inline-block";
+                    //document.getElementById("siteMenuBar").style.display = "block";
+                }
+
+                if (window.innerWidth < 1020) {
+                    document.querySelector('.siteMenuBar').classList.remove("sticky");
+                }
+                
             } else if (page == "Homepage.aspx") {
                 document.getElementById("headerSiteMenuBar").style.display = "none";
                 document.getElementById("navigation").style.display = "flex";
             }
-            
+
+            //Undisplay the profile box
+            document.getElementById("profileBox").style.display = "none";
+            document.getElementById("btnProfile").style.display = "none";
+
+            //Login
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+
+            if (urlParams.has('successLogin')) {
+                const successLogin = urlParams.get('successLogin');
+                const username = urlParams.get('username');
+                const profilePicPath = urlParams.get('profilePicPath');
+
+                if (successLogin === "true") {
+                    alert("Login Success");
+
+                    //Display the profile box
+                    document.getElementById("profileBox").style.display = "flex";
+                    document.getElementById("btnProfile").style.display = "block";
+
+                    //Set loginame and email
+                    document.getElementById('<%=lblLoginName.ClientID%>').innerHTML  = username;
+
+                    //Change profile pic
+                    console.log(profilePicPath);
+                    document.getElementById("profileImg").src = profilePicPath;
+
+                    //Undisplay the login btn
+                    document.getElementById("btnLogin").style.display = "none";
+
+                } else {
+                    alert("Invalid Account. Proceed to Homepage...");
+
+                    //Display the login btn
+                    document.getElementById("btnLogin").style.display = "block";
+
+                    //Undisplay the profile box
+                    document.getElementById("profileBox").style.display = "none";
+                    document.getElementById("btnProfile").style.display = "none";
+                }
+
+                //Override the URL to default
+                history.pushState({}, "", "Homepage.aspx");
+            }
         });
 
         // Toggle btn and show sidebar function
@@ -167,6 +247,7 @@
         const sideBar = document.querySelector('.sideBar');
         const siteMap = document.querySelector('.siteMap');
         const siteMenu = document.querySelector('.siteMenuBar');
+        //const registerbox = document.querySelector('.registerbox');
 
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
@@ -175,6 +256,7 @@
             sideBar.classList.toggle('active');
             siteMap.classList.toggle('active');
             siteMenu.classList.toggle('active');
+            //registerbox.classList.toggle('active');
 
             // Allow to perfrom action in sideBar
             if (sideBar.classList.contains('active')) {
@@ -188,10 +270,19 @@
                     document.getElementById("sideBar").style.zIndex = "0";
                 }, delayInMilliseconds);
 
-                
                 document.getElementById("siteMap").style.display = "inline";
-                document.getElementById("siteMenuBar").style.visibility = "hidden";
-                document.getElementById("siteMenuBar").style.display = "block";
+
+                if (window.innerWidth < 1020) {
+                    header.classList.remove("sticky")
+                    sideBar.classList.remove("sticky")
+                    siteMap.classList.remove("sticky")
+                    siteMenu.classList.remove("sticky")
+                }
+
+                if (window.innerWidth > 1020) {
+                    document.getElementById("siteMenuBar").style.visibility = "hidden";
+                    document.getElementById("siteMenuBar").style.display = "block";
+                }
 
                 if (siteMenu.classList.contains('displayed')) {
                     document.getElementById("siteMap").style.visibility = "hidden";

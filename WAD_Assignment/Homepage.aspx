@@ -131,70 +131,6 @@
         </div>
     </section>
   
-    <%--<section class="testimonials" id="testimonials">
-        <div class="title white">
-            <h2 class="titleText">They <span>S</span>aid About Us</h2>
-
-            <p> 
-                Lorem ipsum dolor sit, amet consectetur 
-                adipisicing elit. 
-            </p>
-        </div>
-
-        <div class="content">
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/testi1.jpg" alt="Testi 1">
-                </div>
-                <div class="text">
-                    <p> 
-                        Lorem ipsum dolor sit, amet consectetur 
-                        adipisicing elit. Beatae, tempora modi 
-                        laudantium blanditiis tenetur labore 
-                        maiores at dolore eligendi doloremque! 
-                        Fugiat sed atque repudiandae quaerat 
-                        esse ipsum, accusantium deleniti quia.
-                    </p>
-                    <h3>Someone Famous</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/testi2.jpg" alt="Testi 2">
-                </div>
-                <div class="text">
-                    <p> 
-                        Lorem ipsum dolor sit, amet consectetur 
-                        adipisicing elit. Beatae, tempora modi 
-                        laudantium blanditiis tenetur labore 
-                        maiores at dolore eligendi doloremque! 
-                        Fugiat sed atque repudiandae quaerat 
-                        esse ipsum, accusantium deleniti quia.
-                    </p>
-                    <h3>Someone Famous</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/testi3.jpg" alt="Testi 3">
-                </div>
-                <div class="text">
-                    <p> 
-                        Lorem ipsum dolor sit, amet consectetur 
-                        adipisicing elit. Beatae, tempora modi 
-                        laudantium blanditiis tenetur labore 
-                        maiores at dolore eligendi doloremque! 
-                        Fugiat sed atque repudiandae quaerat 
-                        esse ipsum, accusantium deleniti quia.
-                    </p>
-                    <h3>Someone Famous</h3>
-                </div>
-            </div>
-        </div>
-    </section>--%>
-
     <section class="contact" id="contact">
         <div class="title">
             <h2 class="titleText"><span>C</span>ontact Us</h2>
@@ -204,21 +140,21 @@
             </p>
         </div>
 
-        <asp:ScriptManager ID="scriptmanager1" runat="server"></asp:ScriptManager>  
+        <asp:ScriptManager ID="scriptmanagerContact" runat="server"></asp:ScriptManager>  
         <div class="contactForm">
             <asp:UpdatePanel ID="updatepnl" runat="server">  
                 <ContentTemplate> 
                     <h3>Send Message</h3>
                     <div class="inputBox">
-                        <asp:TextBox ID="txtContactName" CssClass="contactInput" runat="server" placeholder="Name" AutoPostBack="true"></asp:TextBox>
+                        <asp:TextBox ID="txtContactName" CssClass="contactInput" runat="server" placeholder="Your Name" AutoPostBack="true"></asp:TextBox>
                         <asp:Label ID="lblContactName" CssClass="validationStyle" runat="server"></asp:Label>
                     </div>
                     <div class="inputBox">
-                        <asp:TextBox ID="txtContactEmail" CssClass="contactInput" runat="server" placeholder="Email" AutoPostBack="true"></asp:TextBox>
+                        <asp:TextBox ID="txtContactEmail" CssClass="contactInput" runat="server" placeholder="Your Email" AutoPostBack="true"></asp:TextBox>
                         <asp:Label ID="lblContactEmail" CssClass="validationStyle" runat="server"></asp:Label>
                     </div>
                     <div class="inputBox">
-                        <asp:TextBox ID="txtContactComment" TextMode="MultiLine" CssClass="contactInput" runat="server" placeholder="Comment" AutoPostBack="true"></asp:TextBox>
+                        <asp:TextBox ID="txtContactComment" TextMode="MultiLine" CssClass="contactInput" runat="server" placeholder="Your Comment" AutoPostBack="true"></asp:TextBox>
                         <asp:Label ID="lblContactComment" CssClass="validationStyle" runat="server"></asp:Label>
                     </div>
                     <div class="inputBox">
@@ -235,6 +171,7 @@
             document.getElementById('<%=btnContactSubmit.ClientID%>').value = "Sending";
             document.getElementById('<%=btnContactSubmit.ClientID%>').style.cursor = "default";
         }
+
     </script>
 
 </asp:Content>
