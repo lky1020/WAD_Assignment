@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/master.css" />
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/login_register.css" />
+    <link rel="stylesheet" href="css/forgotPassword.css" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -66,18 +67,18 @@
                     <div class="profile">
                         <div class="profileBox" id="profileBox">
                             <div class="imgBox">
-                                <img id="profileImg" src="img/homepage/testi1.jpg" alt="Profile Picture">
+                                <img id="profileImg" src="img/userPic/user_default.png" alt="Profile Picture">
                             </div>
                             <div class="text">
                                 <p id="name"> 
-                                    <asp:Label ID="lblLoginName" runat="server"></asp:Label>
+                                    <asp:Label ID="lblLoginName" runat="server" Text=""></asp:Label>
                                 </p>
                             </div>
                         </div>
 
                         <a href="Login.aspx" ID="btnLogin" class="profileBtn">Login</a>
-
-                        <a href="#" ID="btnProfile" class="profileBtn">Manage Profile</a>
+                        <asp:Button ID="btnLogout" CssClass="profileBtn" runat="server" Text="Logout" OnClick="btnLogout_Click"></asp:Button>
+                        <asp:Button ID="btnProfile" CssClass="profileBtn" runat="server" Text="Manage Profile"></asp:Button>
 
                     </div>
 
@@ -174,7 +175,7 @@
             var path = window.location.pathname;
             var page = path.split("/").pop();
 
-            //Other page's header
+            //Set other page's header UI
             if (page != "Homepage.aspx") {
                 document.getElementById("navigation").style.display = "none";
                 document.getElementById("menuBtn").style.display = "none";
@@ -196,49 +197,80 @@
 
             //Undisplay the profile box
             document.getElementById("profileBox").style.display = "none";
+            document.getElementById("btnLogout").style.display = "none";
             document.getElementById("btnProfile").style.display = "none";
 
             //Login
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
+            //const queryString = window.location.search;
+            //const urlParams = new URLSearchParams(queryString);
 
-            if (urlParams.has('successLogin')) {
+            if (!document.getElementById('<%=lblLoginName.ClientID%>').innerHTML == "") {
+                alert("Login Success");
+
+                activateProfileUI();
+
+            } else {
+                deactiveProfileUI();
+            }
+
+            //Override the URL to default
+            history.pushState({}, "", "Homepage.aspx");
+
+            <%--if (urlParams.has('successLogin') || !document.getElementById('<%=lblLoginName.ClientID%>').innerHTML == "") {
                 const successLogin = urlParams.get('successLogin');
                 const username = urlParams.get('username');
                 const profilePicPath = urlParams.get('profilePicPath');
 
-                if (successLogin === "true") {
+                alert(successLogin);
+
+                if (successLogin === "true" || !document.getElementById('<%=lblLoginName.ClientID%>').innerHTML == "") {
                     alert("Login Success");
 
-                    //Display the profile box
-                    document.getElementById("profileBox").style.display = "flex";
-                    document.getElementById("btnProfile").style.display = "block";
-
-                    //Set loginame and email
-                    document.getElementById('<%=lblLoginName.ClientID%>').innerHTML  = username;
-
-                    //Change profile pic
-                    console.log(profilePicPath);
-                    document.getElementById("profileImg").src = profilePicPath;
-
-                    //Undisplay the login btn
-                    document.getElementById("btnLogin").style.display = "none";
+                    activateProfileUI();
 
                 } else {
                     alert("Invalid Account. Proceed to Homepage...");
 
-                    //Display the login btn
-                    document.getElementById("btnLogin").style.display = "block";
-
-                    //Undisplay the profile box
-                    document.getElementById("profileBox").style.display = "none";
-                    document.getElementById("btnProfile").style.display = "none";
+                    deactiveProfileUI();
                 }
 
                 //Override the URL to default
                 history.pushState({}, "", "Homepage.aspx");
-            }
+            }--%>
         });
+
+        //Set up the profile UI for active status
+        function activateProfileUI() {
+
+            //Undisplay the login btn
+            document.getElementById("btnLogin").style.display = "none";
+
+            //Display the profile box
+            document.getElementById("profileBox").style.display = "flex";
+            document.getElementById("btnLogout").style.display = "block";
+            document.getElementById("btnProfile").style.display = "block";
+
+            //Set loginame, the user account LoginStatus will be update in code behind
+            document.getElementById('<%=lblLoginName.ClientID%>').innerHTML = username;
+
+            //Change profile pic
+            console.log(profilePicPath);
+            document.getElementById("profileImg").src = profilePicPath;
+
+            //Undisplay the login btn
+            document.getElementById("btnLogin").style.display = "none";
+        }
+
+        //Set up the profile UI for deactive status
+        function deactiveProfileUI() {
+            //Display the login btn
+            document.getElementById("btnLogin").style.display = "block";
+
+            //Undisplay the profile box
+            document.getElementById("profileBox").style.display = "none";
+            document.getElementById("btnLogout").style.display = "none";
+            document.getElementById("btnProfile").style.display = "none";
+        }
 
         // Toggle btn and show sidebar function
         const menuToggle = document.querySelector('.toggle');

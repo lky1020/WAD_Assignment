@@ -14,18 +14,26 @@ namespace WAD_Assignment
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            //Always check active user account
+            RetrieveActiveUserAccount();
+
             //Initialize webpage
-            if(IsPostBack == false)
+            if (IsPostBack == false)
             {
-                DataSet menuItem = GetMenuItems();
-
-                //Homepage
-                bindMenuItem(menuItem, siteMenu);
-
-                //Not Homepage
-                bindMenuItem(menuItem, headerSiteMenu);
+                BindMenu();
             }
-            
+
+        }
+
+        private void BindMenu()
+        {
+            DataSet menuItem = GetMenuItems();
+
+            //Homepage
+            bindMenuItem(menuItem, siteMenu);
+
+            //Not Homepage
+            bindMenuItem(menuItem, headerSiteMenu);
         }
 
         private DataSet GetMenuItems()
@@ -64,5 +72,61 @@ namespace WAD_Assignment
             }
         }
 
+        private Boolean RetrieveActiveUserAccount()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT Name, ProfileImg FROM [dbo].[User] WHERE LoginStatus = 'Active'", con);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                lblLoginName.Text = dt.Rows[0]["Name"].ToString();
+                string profilePicPath = dt.Rows[0]["ProfileImg"].ToString();
+
+                //Update Profile Pic
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfilePicPath", "document.getElementById('profileImg').src ='" + profilePicPath + "';", true);
+
+                //Update the UI
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfileUI", "activateProfileUI();", true);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            //Deactive the account
+            DeactivateProfileNavigation();
+
+            //Print logout message
+            //ScriptManager.RegisterStartupScript(Page, this.GetType(), "Logout", "alert('Logout Success');", true);
+
+            //Reset the lblLoginName
+            lblLoginName.Text = "";
+
+            //Update menu (Need to reset siteMenu && headerSiteMenu first)
+            siteMenu.Items.Clear();
+            headerSiteMenu.Items.Clear();
+            BindMenu();
+
+        }
+
+        private void DeactivateProfileNavigation()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("name", lblLoginName.Text);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
     }
 }

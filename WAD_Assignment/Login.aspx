@@ -34,7 +34,7 @@
 					</ContentTemplate>  
 				</asp:UpdatePanel> 
 					
-				<a href="#">Forget Password</a>
+				<a href="ForgotPassword.aspx">Forget Password</a>
 				<br/>
 				<a href="Registration.aspx">Create a new Account</a>
 			</div>

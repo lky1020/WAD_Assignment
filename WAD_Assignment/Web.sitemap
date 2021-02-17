@@ -4,6 +4,7 @@
     <siteMapNode url="~/Homepage.aspx" title="Homepage"  description="Homepage">
       <siteMapNode url="~/Login.aspx" title="Login"  description="Login" />
       <siteMapNode url="~/Registration.aspx" title="Registration"  description="Registration" />
+      <siteMapNode url="~/ForgotPassword.aspx" title="Forgot Password"  description="Forgot Password" />
       <siteMapNode url="~/Profile.aspx" title="Profile"  description="Profile" />
     </siteMapNode>
 

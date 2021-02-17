@@ -64,51 +64,32 @@ namespace WAD_Assignment
                         //Get profile pic path
                         if(getProfilePic(loginMethod) == true)
                         {
-                            //Activate the profile navigation
+                            //Activate the profile navigation + user account
                             ActivateProfileNavigation();
 
-                            Response.Redirect("~/Homepage.aspx?username=" + loginName + "&profilePicPath=" + profilePicPath + "&successLogin=true");
-
+                            //Return to homepage
+                            Response.Redirect("~/Homepage.aspx?");
+                            
                         }
-                        else
-                        {
-                            /*
-                             Return when pic not able retrieve
-                             */
 
-                            //Deactive the profile navigation
-                            DeactivateProfileNavigation();
-
-                            Response.Redirect("~/Homepage.aspx?successLogin=false");
-
-                        }
                     }
                     else
                     {
-                        /*
-                        Return when password not match
-                        */
-
-                        //Deactive the profile navigation
-                        DeactivateProfileNavigation();
-
-                        Response.Redirect("~/Homepage.aspx?successLogin=false");
-
+                        lblPassword.Text = "Invalid Password";
                     }
                 }
                 else
                 {
-                    /*
-                    Return when not existing user
-                    */
-
-                    //Deactive the profile navigation
-                    DeactivateProfileNavigation();
-
-                    Response.Redirect("~/Homepage.aspx?successLogin=false");
-
+                    //Invalid Username
+                    if (checkExistingUser() == false)
+                    {
+                        lblEmail_Username.Text = "Invalid Username";
+                    }
+                    else
+                    {
+                        lblEmail_Username.Text = "Invalid Email";
+                    }
                 }
-
             }
             else
             {
@@ -243,6 +224,8 @@ namespace WAD_Assignment
             SqlCommand cmd = new SqlCommand("sp_ProfileActive", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
+            cmd.Parameters.AddWithValue("name", loginName);
+
             con.Open();
             cmd.ExecuteNonQuery();
             con.Close();
@@ -254,6 +237,8 @@ namespace WAD_Assignment
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
             cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("name", loginName);
 
             con.Open();
             cmd.ExecuteNonQuery();
