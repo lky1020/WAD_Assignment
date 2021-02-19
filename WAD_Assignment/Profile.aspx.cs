@@ -30,10 +30,14 @@ namespace WAD_Assignment
             //Update the Profile Pic for change pic
             ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBrowsePic", "document.getElementById('previewPic').src ='" + WAD.userPicPath + "';", true);
 
+            //Update the Profile Pic for edit username and password
+             ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateUserEditPic", "document.getElementById('userPicPreview').src ='" + WAD.userPicPath + "';", true);
+
             //Set user bio
             if (RetrieveUserBio() == false)
             {
-                ScriptManager.RegisterStartupScript(Page, this.GetType(), "Bio Error", "alert('Fail to Retrieve Your Bio');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "Bio Error", "alert('Fail to Retrieve Your Bio, System will Refresh The Page');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "Refresh Profile", "window.location = 'Profile.aspx';", true);
             }
         }
 
@@ -140,7 +144,7 @@ namespace WAD_Assignment
                 SqlConnection con = new SqlConnection(cs);
                 SqlDataAdapter da;
 
-                da = new SqlDataAdapter("SELECT Bio FROM [dbo].[User] WHERE " + "Name = '" + lblProfileName.Text + "' ", con);
+                da = new SqlDataAdapter("SELECT Bio FROM [dbo].[User] WHERE Name = '" + lblProfileName.Text + "' ", con);
 
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -170,5 +174,105 @@ namespace WAD_Assignment
                     "undisplayCancelEditButton();", true);
         }
 
+        protected void btnUpdatePassword_Click(object sender, EventArgs e)
+        {
+            //Check whether current and new password entered
+            if(!txtBoxCurrentPassword.Text.Equals("") && !txtBoxNewPassword.Text.Equals(""))
+            {
+                //Check Whether the current and new password is the same
+                if (!txtBoxCurrentPassword.Text.Equals(txtBoxNewPassword.Text))
+                {
+                    //Check current password valid or not
+                    if (CheckUserCurrentPassword() == true)
+                    {
+                        //Update the user password
+                        UpdateUserPassword();
+
+                        //Deactive the user account (required login again)
+                        DeactivateProfileNavigation();
+
+                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "Update Password",
+                            "alert('Password Update Successfully. Please Login Again!');", true);
+
+                        //Go to homepage
+                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "Proceed to Homepage",
+                            "window.location = 'Homepage.aspx';", true);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "Incorrect Current Password",
+                            "alert('Incorrect Current Password!');", true);
+                    }
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "Same Password",
+                       "alert('Current Password and New Password are Same. Please Enter Again!');", true);
+                }        
+            }
+            else
+            {
+                if (txtBoxCurrentPassword.Text.Equals(""))
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "No Current Password",
+                        "alert('Please Enter Current Password!');", true);
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "No New Password",
+                        "alert('Please Enter New Password!');", true);
+                }
+            }
+ 
+        }
+
+        private Boolean CheckUserCurrentPassword()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da;
+
+            da = new SqlDataAdapter("SELECT Password FROM [dbo].[User] WHERE Name = '" + lblProfileName.Text + "' AND " +
+                " Password =  '" + txtBoxCurrentPassword.Text + "' ", con);
+
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void UpdateUserPassword()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_UpdatePassword", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("name", lblProfileName.Text);
+            cmd.Parameters.AddWithValue("password", txtBoxNewPassword.Text);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void DeactivateProfileNavigation()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("name", lblProfileName.Text);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
     }
 }

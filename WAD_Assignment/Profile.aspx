@@ -38,7 +38,7 @@
                                     <asp:Button ID="btnCancelEditBio" CssClass="editBioBtnStyle" runat="server" Text="Cancel" OnClick="btnCancelEditBio_Click"/>
                                 </div>
                                 
-                                <asp:Button ID="btnEdit" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Edit Name & Password" OnClientClick="showEditBox()" OnClick="btnEdit_Click"></asp:Button>
+                                <asp:Button ID="btnEdit" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Edit Password" OnClientClick="showEditBox()" OnClick="btnEdit_Click"></asp:Button>
                                 <asp:Button ID="btnManageArt" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Manage Art"></asp:Button>
                             </div>
                         </div>
@@ -82,12 +82,24 @@
                     <p style="text-align: center; font-weight: 700; font-size: 24px; color: #ff0157;">Edit Username & Password:</p>
 
                     <div class="editPasswordBoxContent">
-                        efefef
-                        
-                        <div class="fileUploadBtnStyle">
-                            <asp:Button ID="btnUpdateUsernamePassword" runat="server" CssClass="btnUploadPic" Text="Update"/><br />
+                        <div class="userImgBox" id="userImgBox">
+                            <img id="userPicPreview" src="img/userPic/user_default.png" alt="Profile Pic" />
                         </div>
 
+                        <div class="currentPassword">
+                            <asp:Label ID="lblCurrentPassword" runat="server" Text="Current Password:&nbsp" Width="150px"></asp:Label>
+                            <asp:TextBox ID="txtBoxCurrentPassword" runat="server" Width="200px"></asp:TextBox>
+                        </div>
+
+                        <div class="newPassword">
+                            <asp:Label ID="lblNewPassword" runat="server" Text="New Password&nbsp;:&nbsp" Width="150px"></asp:Label>
+                            <asp:TextBox ID="txtBoxNewPassword" runat="server" TextMode="Password" Width="200px"></asp:TextBox>
+                            <i class="fas fa-eye" onclick="passwordFunction()"></i>	
+                        </div>
+                        
+                        <div class="editUpdateBtnStyle">
+                            <asp:Button ID="btnUpdatePassword" runat="server" CssClass="btnUploadPic" Text="Update" OnClick="btnUpdatePassword_Click" OnClientClick="changeUpdateText()"/><br />
+                        </div>
                     </div>
                 </ContentTemplate>  
 		    </asp:UpdatePanel> 
@@ -140,6 +152,24 @@
 
         function browsePic() {
             document.getElementById('<%=fileUpProfilePic.ClientID %>').click();
+        }
+
+        //Show Password
+        function passwordFunction() {
+            var x = document.getElementById('<%= txtBoxNewPassword.ClientID %>');
+
+            if (x.type == "password") {
+                x.setAttribute("type", "text");
+
+            } else {
+                x.setAttribute("type", "password");
+            }
+        }
+
+        //change the text of update in edit password box
+        function changeUpdateText() {
+            document.getElementById('<%= btnUpdatePassword.ClientID %>').value = "Updating...";
+            document.getElementById('<%= btnUpdatePassword.ClientID %>').style.cursor = "default";
         }
 
         function showEditBox() {
