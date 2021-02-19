@@ -71,10 +71,74 @@
     <Content Include="App_Data\ArtWorkDb_log.ldf">
       <DependentUpon>ArtWorkDb.mdf</DependentUpon>
     </Content>
+    <Content Include="Art.aspx" />
+    <Content Include="ArtistGallery.aspx" />
+    <Content Include="css\Art.css" />
+    <Content Include="css\ArtGallery.css" />
     <Content Include="css\forgotPassword.css" />
     <Content Include="css\login_register.css" />
+    <Content Include="css\PostArt.css" />
     <Content Include="css\profile.css" />
     <Content Include="ForgotPassword.aspx" />
+    <Content Include="img\Artist\1180w-463h_010920-riviera-art-gallery-780x440.jpg" />
+    <Content Include="img\Artist\a1.jpg" />
+    <Content Include="img\Artist\a2.jpg" />
+    <Content Include="img\Artist\a3.jpg" />
+    <Content Include="img\Artist\a5.jpg" />
+    <Content Include="img\Artist\a6.jpg" />
+    <Content Include="img\Artist\add.png" />
+    <Content Include="img\Artist\ar1.jpg" />
+    <Content Include="img\Artist\ar2.jpg" />
+    <Content Include="img\Artist\ar3.jpg" />
+    <Content Include="img\Artist\ar4.jpg" />
+    <Content Include="img\Artist\art-auction-10e3hqz.jpg" />
+    <Content Include="img\Artist\asia-best-places-to-visit-mount-fuji-japan.jpg" />
+    <Content Include="img\Artist\autumn.jpg" />
+    <Content Include="img\Artist\bg1.jpg" />
+    <Content Include="img\Artist\btn-bg1.png" />
+    <Content Include="img\Artist\cancel-icon.png" />
+    <Content Include="img\Artist\CIMB logo - web_0.jpg" />
+    <Content Include="img\Artist\city-skyline-of-Sydney-Australia.jpg" />
+    <Content Include="img\Artist\cust.jpg" />
+    <Content Include="img\Artist\customer-service-bot-support.png" />
+    <Content Include="img\Artist\d1.jpg" />
+    <Content Include="img\Artist\d2.jpg" />
+    <Content Include="img\Artist\d3.png" />
+    <Content Include="img\Artist\d4.jpg" />
+    <Content Include="img\Artist\delete-symbol-png-7.png" />
+    <Content Include="img\Artist\download %281%29.jpg" />
+    <Content Include="img\Artist\download.jpg" />
+    <Content Include="img\Artist\e1.jpg" />
+    <Content Include="img\Artist\e2.jpg" />
+    <Content Include="img\Artist\e3.jpg" />
+    <Content Include="img\Artist\e4.jpg" />
+    <Content Include="img\Artist\edit.png" />
+    <Content Include="img\Artist\hl1.jpg" />
+    <Content Include="img\Artist\hl2.jpg" />
+    <Content Include="img\Artist\hl3.jpg" />
+    <Content Include="img\Artist\hl4.jpg" />
+    <Content Include="img\Artist\hl5.jpg" />
+    <Content Include="img\Artist\hl6.jpg" />
+    <Content Include="img\Artist\hl7.jpg" />
+    <Content Include="img\Artist\hl8.jpg" />
+    <Content Include="img\Artist\hl9.jpg" />
+    <Content Include="img\Artist\Hotel 1.jpg" />
+    <Content Include="img\Artist\jbCNvTM4gwr2qV8X8fW3ZB.png" />
+    <Content Include="img\Artist\limestone-rock-phang-nga-1-Beautiful-limestone-rock-in-the-ocean.jpg" />
+    <Content Include="img\Artist\mexico-top-places-cancun-mayan-riviera.jpg" />
+    <Content Include="img\Artist\mountain.jpg" />
+    <Content Include="img\Artist\o1.jpg" />
+    <Content Include="img\Artist\o2.jpg" />
+    <Content Include="img\Artist\o4.jpg" />
+    <Content Include="img\Artist\o5.jpg" />
+    <Content Include="img\Artist\pbe.png" />
+    <Content Include="img\Artist\report.png" />
+    <Content Include="img\Artist\Santorini-Greece %281%29.jpg" />
+    <Content Include="img\Artist\save.png" />
+    <Content Include="img\Artist\shutterstock_1398074603.jpg" />
+    <Content Include="img\Artist\spring1.jpg" />
+    <Content Include="img\Artist\summer.png" />
+    <Content Include="img\Artist\winter.jpg" />
     <Content Include="img\header\up-down.png" />
     <Content Include="img\homepage\artWork\africa_elephant.jpg" />
     <Content Include="img\homepage\artWork\beautiful_women.jpg" />
@@ -116,8 +180,11 @@
     <Content Include="img\homepage\testi3.jpg" />
     <Content Include="img\treeView\down-arrow.png" />
     <Content Include="img\treeView\right-arrow.png" />
+    <Content Include="js\jquery.elevateZoom-3.0.8.min.js" />
+    <Content Include="js\jquery.min.js" />
     <Content Include="Login.aspx" />
     <Content Include="img\header\menu.png" />
+    <Content Include="PostArts.aspx" />
     <Content Include="Profile.aspx" />
     <Content Include="Registration.aspx" />
     <Content Include="test1.aspx" />
@@ -127,6 +194,20 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Art.aspx.cs">
+      <DependentUpon>Art.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Art.aspx.designer.cs">
+      <DependentUpon>Art.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ArtistGallery.aspx.cs">
+      <DependentUpon>ArtistGallery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ArtistGallery.aspx.designer.cs">
+      <DependentUpon>ArtistGallery.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ForgotPassword.aspx.cs">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -147,6 +228,13 @@
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PostArts.aspx.cs">
+      <DependentUpon>PostArts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PostArts.aspx.designer.cs">
+      <DependentUpon>PostArts.aspx</DependentUpon>
     </Compile>
     <Compile Include="Profile.aspx.cs">
       <DependentUpon>Profile.aspx</DependentUpon>
@@ -200,6 +288,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="img\Artist\a4.webp" />
+    <Content Include="img\Artist\Conrad-Hong-Kong-–-Asia-contemporary-art-show.webp" />
     <None Include="packages.config" />
     <Content Include="WAD.Master" />
     <None Include="Web.Debug.config">
