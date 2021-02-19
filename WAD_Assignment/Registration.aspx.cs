@@ -15,6 +15,9 @@ namespace WAD_Assignment
 {
     public partial class Registration : System.Web.UI.Page
     {
+        //DB
+        string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             string username = Request.QueryString["username"];
@@ -36,7 +39,7 @@ namespace WAD_Assignment
                     txtEmail.Attributes["value"] = txtEmail.Text;
                     txtPassword.Attributes["value"] = txtPassword.Text;
 
-                    //Gender
+                    //Initialize the Gender
                     if (rdMale.Checked)
                     {
                         ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeGender", "selectMale();", true);
@@ -44,8 +47,8 @@ namespace WAD_Assignment
                     {
                         ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeGender", "selectFemale();", true);
                     }
-                    
-                    //Role
+
+                    //Initialize the Role
                     if (rdArtist.Checked)
                     {
                         ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeRole", "selectArtist();", true);
@@ -82,9 +85,6 @@ namespace WAD_Assignment
                 txtUsername.Text = "";
                 txtEmail.Text = "";
                 txtPassword.Text = "";
-
-                //Go back to login.aspx
-                //Response.Redirect("~/login.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text);
 
             }
             else
@@ -143,7 +143,6 @@ namespace WAD_Assignment
             Random generator = new Random();
             string resetPin = generator.Next(0, 1000000).ToString("D6");
 
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_registerUser", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -161,6 +160,7 @@ namespace WAD_Assignment
             con.Close();
             if (k != 0)
             {
+                //Pass param to login.aspx, so user not need to type it username and password again
                 string str = "~/login.aspx";
                 Response.Redirect("~/registration.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text + "&successRegister=true" + "&postBackUrl=" + str);
             }
@@ -175,7 +175,7 @@ namespace WAD_Assignment
         {
             if(!txtUsername.Text.Equals(""))
             {
-                string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+                //Check whether username already exist
                 SqlConnection con = new SqlConnection(cs);
                 SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtUsername.Text + "' ", con);
                 DataTable dt = new DataTable();
@@ -200,9 +200,9 @@ namespace WAD_Assignment
 
         private Boolean checkExistingEmail()
         {
+            //Check whether email already exist
             if (!txtEmail.Text.Equals(""))
             {
-                string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
                 SqlConnection con = new SqlConnection(cs);
                 SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail.Text + "' ", con);
                 DataTable dt = new DataTable();

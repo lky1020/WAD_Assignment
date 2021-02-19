@@ -13,6 +13,9 @@ namespace WAD_Assignment
     public partial class WAD : System.Web.UI.MasterPage
     {
 
+        //DB
+        private string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+
         //Share the user data to profile.aspx.cs
         public static string username;
         public static string userPicPath;
@@ -34,15 +37,16 @@ namespace WAD_Assignment
         {
             DataSet menuItem = GetMenuItems();
 
-            //Homepage
+            //Bind Menu for Homepage
             bindMenuItem(menuItem, siteMenu);
 
-            //Not Homepage
+            //Bind Menu for Not Homepage
             bindMenuItem(menuItem, headerSiteMenu);
         }
 
         private DataSet GetMenuItems()
         {
+            //Retrieve the menu data for menu control
             string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da = new SqlDataAdapter("spGetMenuData", con);
@@ -57,6 +61,7 @@ namespace WAD_Assignment
 
         private void bindMenuItem(DataSet ds, Menu menuID)
         {
+            //Bind the menu item to menu control
             foreach (DataRow level1DataRow in ds.Tables[0].Rows)
             {
                 MenuItem item = new MenuItem();
@@ -79,12 +84,13 @@ namespace WAD_Assignment
 
         private Boolean RetrieveActiveUserAccount()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            //Retrieve the account that is active
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da = new SqlDataAdapter("SELECT Name, ProfileImg FROM [dbo].[User] WHERE LoginStatus = 'Active'", con);
             DataTable dt = new DataTable();
             da.Fill(dt);
 
+            //Update the sidebar with user account
             if (dt.Rows.Count >= 1)
             {
                 username = dt.Rows[0]["Name"].ToString();
@@ -106,9 +112,6 @@ namespace WAD_Assignment
             //Deactive the account
             DeactivateProfileNavigation();
 
-            //Print logout message
-            //ScriptManager.RegisterStartupScript(Page, this.GetType(), "Logout", "alert('Logout Success');", true);
-
             //Reset the lblLoginName
             lblLoginName.Text = "";
 
@@ -125,7 +128,7 @@ namespace WAD_Assignment
 
         private void DeactivateProfileNavigation()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+            //Deactive the user account once the user logout
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
             cmd.CommandType = CommandType.StoredProcedure;

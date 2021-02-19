@@ -51,6 +51,7 @@
             <asp:UpdatePanel ID="UpdatePanel2" runat="server" UpdateMode="Conditional">  
 			    <ContentTemplate> 
                     <p style="text-align: center; font-weight: 700; font-size: 24px; color: #ff0157;">Upload Images:</p>
+                    <div class="cancelToggle" id="cancelFileBox" onclick="toggleCancel()"></div>
 
                     <div class="fileUploadBoxContent">
 
@@ -80,6 +81,7 @@
             <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">  
 			    <ContentTemplate> 
                     <p style="text-align: center; font-weight: 700; font-size: 24px; color: #ff0157;">Edit Username & Password:</p>
+                    <div class="cancelToggle" id="cancelEditBox" onclick="toggleCancel()"></div>
 
                     <div class="editPasswordBoxContent">
                         <div class="userImgBox" id="userImgBox">
@@ -170,6 +172,11 @@
         function changeUpdateText() {
             document.getElementById('<%= btnUpdatePassword.ClientID %>').value = "Updating...";
             document.getElementById('<%= btnUpdatePassword.ClientID %>').style.cursor = "default";
+        }
+
+        function toggleCancel() {
+            $(".fileUploadBox").hide();
+            $(".editPasswordBox").hide();
         }
 
         function showEditBox() {

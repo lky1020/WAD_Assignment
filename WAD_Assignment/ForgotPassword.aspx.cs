@@ -17,9 +17,12 @@ namespace WAD_Assignment
 {
     public partial class ForgotPassword : System.Web.UI.Page
     {
+        //DB
+        string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
 
         private string resetPin;
         private string username;
+        private string userEmail;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -37,12 +40,12 @@ namespace WAD_Assignment
                             UpdateResetPin();
 
                             ScriptManager.RegisterStartupScript(Page, this.GetType(), "Update Password", "alert('Password Update Success, Proceed to Login Page');", true);
-                            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Direct to Login.aspx", "window.location.replace('https://localhost:44336/Login.aspx');", true);
+                            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Direct to Login.aspx", "window.location = 'Login.aspx';", true);
                         }
                         else
                         {
                             ScriptManager.RegisterStartupScript(Page, this.GetType(), "Update Password", "alert('Password Update Unsuccess, Proceed to Homepage');", true);
-                            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Direct to Login.aspx", "window.location.replace('https://localhost:44336/Homepage.aspx');", true);
+                            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Direct to Login.aspx", "window.location = 'Homepage.aspx';", true);
                         }
                     }
                 }
@@ -65,9 +68,8 @@ namespace WAD_Assignment
                         //Use team email to send reset pin to user
                         using (MailMessage mail = new MailMessage())
                         {
-
                             mail.From = new MailAddress("quadCoreTest@gmail.com");
-                            mail.To.Add("limkahyee16@gmail.com");
+                            mail.To.Add(userEmail);
                             mail.Subject = "Your Reset Pin";
                             mail.Body = "Hi " + username + ", this is your reset pin for your password: <b>" + resetPin + "</b><br/> Enter it to Reset Your Password.";
                             mail.IsBodyHtml = true;
@@ -101,7 +103,6 @@ namespace WAD_Assignment
                     //Validate the PIN
                     if (txtResetPin.Text.Equals(resetPin))
                     {
-                        
                         if(btnReset.Text.Equals("Enter New Password"))
                         {
                             //Will execute when the the user want to enter new password
@@ -109,7 +110,6 @@ namespace WAD_Assignment
                             ScriptManager.RegisterStartupScript(Page, this.GetType(), "Confirm Reset Password", "alert('Click Below Reset Password Button to Confirm');", true);
                             btnReset.Text = "Reset Password";
                         }
-                        
                     }
                     else
                     {
@@ -153,11 +153,9 @@ namespace WAD_Assignment
 
         private Boolean GetUserResetPin()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da;
             
-            da = new SqlDataAdapter("SELECT Name, ResetPin FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
+            SqlConnection con = new SqlConnection(cs);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT Name, Email, ResetPin FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
 
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -165,6 +163,7 @@ namespace WAD_Assignment
             if (dt.Rows.Count >= 1)
             {
                 username = dt.Rows[0]["Name"].ToString();
+                userEmail = dt.Rows[0]["Email"].ToString();
                 resetPin = dt.Rows[0]["ResetPin"].ToString();
                 return true;
             }
@@ -196,7 +195,6 @@ namespace WAD_Assignment
         {
             if (!txtEmail.Text.Equals(""))
             {
-                string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
                 SqlConnection con = new SqlConnection(cs);
                 SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail.Text + "' ", con);
                 DataTable dt = new DataTable();
@@ -221,7 +219,6 @@ namespace WAD_Assignment
 
         private Boolean UpdateUserPasswordServer()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("UPDATE[dbo].[User] " +
                                             "SET[Password] = '" + hiddenResetPasswordValue.Value + "' " +
@@ -248,7 +245,6 @@ namespace WAD_Assignment
             Random generator = new Random();
             string resetPin = generator.Next(0, 1000000).ToString("D6");
 
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("UPDATE[dbo].[User] " +
                                             "SET[ResetPin] = '" + resetPin + "' " +

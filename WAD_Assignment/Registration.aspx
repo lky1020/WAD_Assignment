@@ -76,24 +76,29 @@
 	<script type="text/javascript">
 		//Window Load (change ui after register)
 		window.addEventListener("load", function () {
-
+			//Initialize the gender and role radio button
 			selectMale();
 			selectCustomer();
 
 			document.getElementById("isLogin").style.display = "none";
 
+			//Get param from the url that get from code behind
             const queryString = window.location.search;
 			const urlParams = new URLSearchParams(queryString);
 
             if (urlParams.has('successRegister')) {
                 const successRegister = urlParams.get('successRegister')
 
-                if (successRegister === "true") {
+				if (successRegister === "true") {
+
 					document.getElementById("registerbox").style.display = "none";
 					document.getElementById("isLogin").style.display = "flex";
+
 				} else {
+
 					document.getElementById("isLogin").style.display = "none";
-                    document.getElementById("registerbox").style.display = "block";
+					document.getElementById("registerbox").style.display = "block";
+
                 }
             }
 		})
@@ -127,7 +132,7 @@
             document.getElementById("lblFemale").classList.add("checked");
 		}
 
-		//Select role
+		//Select the role
 		function selectArtist() {
             document.getElementById("<%=rdArtist.ClientID %>").checked = true;
             document.getElementById("lblArtist").classList.add("checked");

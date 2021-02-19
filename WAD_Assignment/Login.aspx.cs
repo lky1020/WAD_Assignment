@@ -14,6 +14,9 @@ namespace WAD_Assignment
 {
     public partial class Login : System.Web.UI.Page
     {
+        //DB
+        string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+
         private string loginName;
         private string profilePicPath;
 
@@ -22,6 +25,7 @@ namespace WAD_Assignment
 
             if (IsPostBack == false)
             {
+                //Auto insert username and password that get from param
                 string username = Request.QueryString["username"];
                 string password = Request.QueryString["password"];
 
@@ -62,7 +66,7 @@ namespace WAD_Assignment
                     if(checkPassword(loginMethod) == true)
                     {
                         //Get profile pic path
-                        if(getProfilePic(loginMethod) == true)
+                        if(getProfilePicPath(loginMethod) == true)
                         {
                             //Activate the profile navigation + user account
                             ActivateProfileNavigation();
@@ -70,9 +74,7 @@ namespace WAD_Assignment
                             //Return to homepage
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
                             "alert('Login Success');window.location ='Homepage.aspx';", true);
-
                         }
-
                     }
                     else
                     {
@@ -109,7 +111,6 @@ namespace WAD_Assignment
 
         private Boolean checkExistingUser()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtEmail_Username.Text + "' ", con);
             DataTable dt = new DataTable();
@@ -126,7 +127,6 @@ namespace WAD_Assignment
 
         private Boolean checkExistingEmail()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail_Username.Text + "' ", con);
             DataTable dt = new DataTable();
@@ -142,7 +142,6 @@ namespace WAD_Assignment
 
         private Boolean checkPassword(string loginMethod)
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da;
             if (loginMethod.Equals("Name")){
@@ -165,9 +164,8 @@ namespace WAD_Assignment
             return false;
         }
 
-        private Boolean getProfilePic(string loginMethod)
+        private Boolean getProfilePicPath(string loginMethod)
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da;
             if (loginMethod.Equals("Name"))
@@ -220,7 +218,6 @@ namespace WAD_Assignment
 
         private void ActivateProfileNavigation()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_ProfileActive", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -234,7 +231,6 @@ namespace WAD_Assignment
 
         private void DeactivateProfileNavigation()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
             cmd.CommandType = CommandType.StoredProcedure;

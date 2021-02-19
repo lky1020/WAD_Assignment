@@ -13,6 +13,9 @@ namespace WAD_Assignment
 {
     public partial class Profile : System.Web.UI.Page
     {
+        //DB
+        string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //Set up the user detail (Pic + Name)
@@ -47,8 +50,7 @@ namespace WAD_Assignment
             if (btnEditBio.Text.Equals("Edit Bio"))
             {
                 btnEditBio.Text = "Confirm Bio";
-                /*ScriptManager.RegisterStartupScript(Page, this.GetType(), "Display Cancel Btn", 
-                    "document.getElementById('<%=btnCancelEditBio.ClientID %>').style.display = 'block';", true);*/
+
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "Cancel Btn Background",
                     "changeColorForCancelBtn();", true);
             }
@@ -56,11 +58,13 @@ namespace WAD_Assignment
             {
                 string bio = txtAreaEditBio.Value.ToString();
 
-                //Update the Bio in db
+                //Update the Bio into db
                 UpdateUserBio(bio);
 
                 btnEditBio.Text = "Edit Bio";
                 txtAreaUserBio.Value = bio;
+
+                //Undisplay the editBio and cancel btn fr editBio
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBioUI", 
                     "document.getElementById('editBio').style.display = 'none';", true);
 
@@ -91,7 +95,6 @@ namespace WAD_Assignment
                 {
                     fileUpProfilePic.SaveAs(Server.MapPath("~") + "/img/userPic/" + lblProfileName.Text + imgFileExtension);
 
-                    string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
                     SqlConnection con = new SqlConnection(cs);
                     SqlCommand cmd = new SqlCommand("sp_UpdateProfilePic", con);
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -122,8 +125,6 @@ namespace WAD_Assignment
 
         private void UpdateUserBio(string bio)
         {
-
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_UpdateBio", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -140,7 +141,6 @@ namespace WAD_Assignment
         {
             if (txtAreaEditBio.Value.Equals(""))
             {
-                string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
                 SqlConnection con = new SqlConnection(cs);
                 SqlDataAdapter da;
 
@@ -159,7 +159,7 @@ namespace WAD_Assignment
                 return false;
             }
 
-            //No bio retrieve error
+            //No bio retrieve
             return true;
         }
 
@@ -228,11 +228,8 @@ namespace WAD_Assignment
 
         private Boolean CheckUserCurrentPassword()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da;
-
-            da = new SqlDataAdapter("SELECT Password FROM [dbo].[User] WHERE Name = '" + lblProfileName.Text + "' AND " +
+            SqlDataAdapter da = new SqlDataAdapter("SELECT Password FROM [dbo].[User] WHERE Name = '" + lblProfileName.Text + "' AND " +
                 " Password =  '" + txtBoxCurrentPassword.Text + "' ", con);
 
             DataTable dt = new DataTable();
@@ -248,7 +245,6 @@ namespace WAD_Assignment
 
         private void UpdateUserPassword()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_UpdatePassword", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -263,7 +259,6 @@ namespace WAD_Assignment
 
         private void DeactivateProfileNavigation()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
             cmd.CommandType = CommandType.StoredProcedure;

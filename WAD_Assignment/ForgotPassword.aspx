@@ -61,7 +61,7 @@
             }
 		}
 
-		//Store the user's new password (to be get in code behind)
+		//Store the user's new password (to be call in code behind)
         function storeResetPassword(newPassword) {
 			document.getElementById("<%=hiddenResetPasswordValue.ClientID%>").value = newPassword;
 		}
