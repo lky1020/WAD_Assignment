@@ -141,7 +141,7 @@
     transition: 1.5s;
 }
 
-    .btnViewArtSubmit:hover {
-        box-shadow: 0 3px 5px 0 #ff0157 inset, 0 3px 5px 0 #ff0157;
-        text-shadow: 0 0 1px #FFFFFF, 0 0 1px #FFFFFF;
-    }
+.btnViewArtSubmit:hover {
+    box-shadow: 0 3px 5px 0 #ff0157 inset, 0 3px 5px 0 #ff0157;
+    text-shadow: 0 0 1px #FFFFFF, 0 0 1px #FFFFFF;
+}
