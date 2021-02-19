@@ -133,7 +133,7 @@ namespace WAD_Assignment
             }
             catch (Exception ex)
             {
-                Response.Write("<script>alert('Sorry, Fail to Update the Art Information')</script>");
+                Response.Write("<script>alert('Sorry, Fail to Update the Art Information. Prica and Quantity cannot be 0')</script>");
             }
         }
 
