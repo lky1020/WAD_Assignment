@@ -14,7 +14,7 @@
                         </div>
 
                         <div class="editIcon">
-                            <div id="editIconBox" class="editIconBox"></div>
+                            <div id="editIconBox" class="editIconBox" onclick="showEditIconBox()"></div>
                         </div>
 
                         <div class="profileBarContent">
@@ -38,7 +38,7 @@
                                     <asp:Button ID="btnCancelEditBio" CssClass="editBioBtnStyle" runat="server" Text="Cancel" OnClick="btnCancelEditBio_Click"/>
                                 </div>
                                 
-                                <Button ID="btnEditPassword" Class="profileBtn profileBarBtnStyle" >Edit Password</Button>
+                                <asp:Button ID="btnEdit" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Edit Name & Password" OnClientClick="showEditBox()" OnClick="btnEdit_Click"></asp:Button>
                                 <asp:Button ID="btnManageArt" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Manage Art"></asp:Button>
                             </div>
                         </div>
@@ -58,7 +58,6 @@
                             <img id="previewPic" src="img/userPic/user_default.png" alt="Profile Pic" />
                         </div>
 
-
                         <div class="fileUploadBtnStyle">
                             <asp:Button ID="btnBrowsePic" runat="server" CssClass="btnUploadPic" Text="Browse Picture" OnClientClick="browsePic()"/><br />
                         </div>
@@ -77,7 +76,26 @@
             <asp:FileUpload ID="fileUpProfilePic" runat="server" onChange="profilePicPreview(this)" style="display:none;"/>
         </div>
 
-        <img src="img/Profile/white_texture.jpg" />
+        <div class="editPasswordBox">
+            <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">  
+			    <ContentTemplate> 
+                    <p style="text-align: center; font-weight: 700; font-size: 24px; color: #ff0157;">Edit Username & Password:</p>
+
+                    <div class="editPasswordBoxContent">
+                        efefef
+                        
+                        <div class="fileUploadBtnStyle">
+                            <asp:Button ID="btnUpdateUsernamePassword" runat="server" CssClass="btnUploadPic" Text="Update"/><br />
+                        </div>
+
+                    </div>
+                </ContentTemplate>  
+		    </asp:UpdatePanel> 
+
+            <asp:FileUpload ID="FileUpload1" runat="server" onChange="profilePicPreview(this)" style="display:none;"/>
+        </div>
+
+        <img src="img/Profile/white_texture.jpg" style="left: 0; top: 0" />
     </section>
 
 	<script type="text/javascript">
@@ -124,23 +142,34 @@
             document.getElementById('<%=fileUpProfilePic.ClientID %>').click();
         }
 
-        const editIconBox = document.querySelector('.editIconBox');
+        function showEditBox() {
+            $(".editPasswordBox").animate({
+                height: "toggle"
+            }, 750, function () {
+                $(".editPasswordBox").show();
+            });
+        }
 
-        editIconBox.addEventListener('click', () => {
-
+        function showEditIconBox() {
             $(".fileUploadBox").animate({
                 height: "toggle"
             }, 750, function () {
                 $(".fileUploadBox").show();
             });
-        });
+        }
 
+        //Hide the box if user click outside the box
         $(document).mouseup(function (e) {
-            if ($(e.target).closest(".fileUploadBox").length === 0) {
+            if ($(e.target).closest(".fileUploadBox").length === 0 ) {
 
                 $(".fileUploadBox").hide();
-
+                
             }
+
+            if ($(e.target).closest(".editPasswordBox").length === 0) {
+                $(".editPasswordBox").hide();
+            }
+
         }); 
 
     </script>

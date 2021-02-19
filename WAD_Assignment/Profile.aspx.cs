@@ -43,8 +43,8 @@ namespace WAD_Assignment
             if (btnEditBio.Text.Equals("Edit Bio"))
             {
                 btnEditBio.Text = "Confirm Bio";
-                ScriptManager.RegisterStartupScript(Page, this.GetType(), "Display Cancel Btn", 
-                    "document.getElementById('<%=btnCancelEditBio.ClientID %>').style.display = 'block';", true);
+                /*ScriptManager.RegisterStartupScript(Page, this.GetType(), "Display Cancel Btn", 
+                    "document.getElementById('<%=btnCancelEditBio.ClientID %>').style.display = 'block';", true);*/
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "Cancel Btn Background",
                     "changeColorForCancelBtn();", true);
             }
@@ -159,9 +159,16 @@ namespace WAD_Assignment
             return true;
         }
 
-        /*protected void btnBrowsePic_Click(object sender, EventArgs e)
+        protected void btnEdit_Click(object sender, EventArgs e)
         {
-            btnBrowsePic.Attributes.Add("onclick", "document.getElementById('" + fileUpProfilePic.ClientID + "').click();");
-        }*/
+            //Undisplay the txtAreaEditBio
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBioUI",
+                    "document.getElementById('editBio').style.display = 'none';", true);
+            btnEditBio.Text = "Edit Bio";
+
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UnDisplay Cancel Btn",
+                    "undisplayCancelEditButton();", true);
+        }
+
     }
 }

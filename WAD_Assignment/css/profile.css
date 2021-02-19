@@ -209,3 +209,17 @@
 .uploadBtn input:hover {
     letter-spacing: 4px;
 }
+
+.editPasswordBox {
+    display: none;
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    right: 25%;
+    bottom: 25%;
+    width: 50%;
+    height: 400px;
+    background-color: ghostwhite;
+    z-index: 3;
+    box-shadow: 0 0 10px 100vh rgba(0, 0, 0, 0.8);
+}
