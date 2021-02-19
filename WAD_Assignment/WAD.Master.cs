@@ -12,6 +12,11 @@ namespace WAD_Assignment
 {
     public partial class WAD : System.Web.UI.MasterPage
     {
+
+        //Share the user data to profile.aspx.cs
+        public static string username;
+        public static string userPicPath;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //Always check active user account
@@ -82,14 +87,13 @@ namespace WAD_Assignment
 
             if (dt.Rows.Count >= 1)
             {
-                lblLoginName.Text = dt.Rows[0]["Name"].ToString();
-                string profilePicPath = dt.Rows[0]["ProfileImg"].ToString();
+                username = dt.Rows[0]["Name"].ToString();
+                lblLoginName.Text = username;
+
+                userPicPath = dt.Rows[0]["ProfileImg"].ToString();
 
                 //Update Profile Pic
-                ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfilePicPath", "document.getElementById('profileImg').src ='" + profilePicPath + "';", true);
-
-                //Update the UI
-                ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfileUI", "activateProfileUI();", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfilePicPath", "document.getElementById('profileImg').src ='" + userPicPath + "';", true);
 
                 return true;
             }
@@ -112,6 +116,10 @@ namespace WAD_Assignment
             siteMenu.Items.Clear();
             headerSiteMenu.Items.Clear();
             BindMenu();
+
+            //Return to homepage
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Homepage",
+            "alert('Logout Success');window.location ='Homepage.aspx';", true);
 
         }
 

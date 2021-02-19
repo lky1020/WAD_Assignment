@@ -68,8 +68,9 @@ namespace WAD_Assignment
                             ActivateProfileNavigation();
 
                             //Return to homepage
-                            Response.Redirect("~/Homepage.aspx?");
-                            
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                            "alert('Login Success');window.location ='Homepage.aspx';", true);
+
                         }
 
                     }

@@ -319,6 +319,7 @@ section {
     margin: 100px 0px 50px;
     width: 100%;
     color: #111;
+    padding: 10px;
 }
 
 .showcase.active .sideBar {
@@ -326,10 +327,6 @@ section {
 }
 
 /*Profile*/
-.sideBar .content {
-    padding: 10px;
-}
-
 .sideBar .content .profile {
     width: 95%;
     margin: 0px 5px;

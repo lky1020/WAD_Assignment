@@ -73,6 +73,7 @@
     </Content>
     <Content Include="css\forgotPassword.css" />
     <Content Include="css\login_register.css" />
+    <Content Include="css\profile.css" />
     <Content Include="ForgotPassword.aspx" />
     <Content Include="img\header\up-down.png" />
     <Content Include="img\homepage\artWork\africa_elephant.jpg" />
@@ -104,6 +105,9 @@
     <Content Include="img\login_register\nightCity_Login.jpg" />
     <Content Include="img\login_register\nightCity_Register.jpg" />
     <Content Include="img\login_register\user_default.png" />
+    <Content Include="img\Profile\edit.png" />
+    <Content Include="img\Profile\grey_texture.jpg" />
+    <Content Include="img\Profile\white_texture.jpg" />
     <Content Include="img\userPic\lky1020.jpg" />
     <Content Include="img\userPic\user_default.png" />
     <Content Include="img\video\sky.mp4" />

@@ -159,7 +159,6 @@ namespace WAD_Assignment
             
             da = new SqlDataAdapter("SELECT Name, ResetPin FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
 
-
             DataTable dt = new DataTable();
             da.Fill(dt);
 

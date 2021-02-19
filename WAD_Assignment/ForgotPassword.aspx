@@ -50,6 +50,7 @@
 			if (document.getElementById('<%=txtResetPin.ClientID%>').value === "") {
 				document.getElementById('<%=btnReset.ClientID%>').value = "Sending PIN";
 				document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
+
 			} else if (document.getElementById('<%=btnReset.ClientID%>').value === "Enter New Password") {
                 document.getElementById('<%=btnReset.ClientID%>').value = "Getting Password";
                 document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";

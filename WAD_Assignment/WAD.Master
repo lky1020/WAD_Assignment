@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/login_register.css" />
     <link rel="stylesheet" href="css/forgotPassword.css" />
+    <link rel="stylesheet" href="css/profile.css" />
+
+    <script src= 
+        "https://code.jquery.com/jquery-3.4.0.min.js"> 
+    </script> 
 </head>
 <body>
     <form id="form1" runat="server">
@@ -33,8 +38,8 @@
                 <div class="siteBtn" id="siteBtn"></div>
             </div>
 
-            <header>
-                <a href="Homepage.aspx#" class='logo'>Quad-Core ASG<span>.</span></a>
+            <header id="header">
+                <a href="Homepage.aspx#" class='logo' id="logo">Quad-Core ASG<span>.</span></a>
 
                 <div class="headerMenu">
                     <ul class='navigation' id="navigation">
@@ -52,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="toggle"></div>
+                    <div class="toggle" id="toggle"></div>
                 </div>
             </header>
         </div>
@@ -78,7 +83,7 @@
 
                         <a href="Login.aspx" ID="btnLogin" class="profileBtn">Login</a>
                         <asp:Button ID="btnLogout" CssClass="profileBtn" runat="server" Text="Logout" OnClick="btnLogout_Click"></asp:Button>
-                        <asp:Button ID="btnProfile" CssClass="profileBtn" runat="server" Text="Manage Profile"></asp:Button>
+                        <a href="Profile.aspx" ID="btnProfile" class="profileBtn">Manage Profile</a>
 
                     </div>
 
@@ -200,43 +205,13 @@
             document.getElementById("btnLogout").style.display = "none";
             document.getElementById("btnProfile").style.display = "none";
 
-            //Login
-            //const queryString = window.location.search;
-            //const urlParams = new URLSearchParams(queryString);
-
             if (!document.getElementById('<%=lblLoginName.ClientID%>').innerHTML == "") {
-                alert("Login Success");
 
                 activateProfileUI();
 
             } else {
                 deactiveProfileUI();
             }
-
-            //Override the URL to default
-            history.pushState({}, "", "Homepage.aspx");
-
-            <%--if (urlParams.has('successLogin') || !document.getElementById('<%=lblLoginName.ClientID%>').innerHTML == "") {
-                const successLogin = urlParams.get('successLogin');
-                const username = urlParams.get('username');
-                const profilePicPath = urlParams.get('profilePicPath');
-
-                alert(successLogin);
-
-                if (successLogin === "true" || !document.getElementById('<%=lblLoginName.ClientID%>').innerHTML == "") {
-                    alert("Login Success");
-
-                    activateProfileUI();
-
-                } else {
-                    alert("Invalid Account. Proceed to Homepage...");
-
-                    deactiveProfileUI();
-                }
-
-                //Override the URL to default
-                history.pushState({}, "", "Homepage.aspx");
-            }--%>
         });
 
         //Set up the profile UI for active status
@@ -249,13 +224,6 @@
             document.getElementById("profileBox").style.display = "flex";
             document.getElementById("btnLogout").style.display = "block";
             document.getElementById("btnProfile").style.display = "block";
-
-            //Set loginame, the user account LoginStatus will be update in code behind
-            document.getElementById('<%=lblLoginName.ClientID%>').innerHTML = username;
-
-            //Change profile pic
-            console.log(profilePicPath);
-            document.getElementById("profileImg").src = profilePicPath;
 
             //Undisplay the login btn
             document.getElementById("btnLogin").style.display = "none";
