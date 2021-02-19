@@ -103,20 +103,31 @@ namespace WAD_Assignment
             {
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
                 {
-                    con.Open();
-                    String query = "Update Artist SET ArtName=@ArtName, ArtDescription=@ArtDescription, Price=@Price, Quantity=@Quantity WHERE ArtId =@ArtId";
 
-                    SqlCommand cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@ArtName", (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtArtName") as TextBox).Text.Trim());
-                    cmd.Parameters.AddWithValue("@ArtDescription", (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtArtDescription") as TextBox).Text.Trim());
-                    cmd.Parameters.AddWithValue("@Price", (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtPrice") as TextBox).Text.Trim());
-                    cmd.Parameters.AddWithValue("@Quantity", (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtQuantity") as TextBox).Text.Trim());
-                    cmd.Parameters.AddWithValue("@ArtId", Convert.ToInt32(gvEditImageInfo.DataKeys[e.RowIndex].Value.ToString()));
-                    cmd.ExecuteNonQuery();
-                    gvEditImageInfo.EditIndex = -1;
-                    PopulateGridView();
+                    var price = (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtPrice") as TextBox).Text.Trim();
+                    int qty = int.Parse((gvEditImageInfo.Rows[e.RowIndex].FindControl("txtQuantity") as TextBox).Text.Trim());
 
-                    Response.Write("<script>alert('Congratulation, Art Information Updated Successfully')</script>");
+                    if(price == "0" || qty == 0)
+                    {
+                        throw new Exception();
+                    }
+                    else
+                    {
+                        con.Open();
+                        String query = "Update Artist SET ArtName=@ArtName, ArtDescription=@ArtDescription, Price=@Price, Quantity=@Quantity WHERE ArtId =@ArtId";
+                        SqlCommand cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@ArtName", (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtArtName") as TextBox).Text.Trim());
+                        cmd.Parameters.AddWithValue("@ArtDescription", (gvEditImageInfo.Rows[e.RowIndex].FindControl("txtArtDescription") as TextBox).Text.Trim());
+                        cmd.Parameters.AddWithValue("@Price", price);
+                        cmd.Parameters.AddWithValue("@Quantity", qty);
+                        cmd.Parameters.AddWithValue("@ArtId", Convert.ToInt32(gvEditImageInfo.DataKeys[e.RowIndex].Value.ToString()));
+                        cmd.ExecuteNonQuery();
+                        gvEditImageInfo.EditIndex = -1;
+                        PopulateGridView();
+
+                        Response.Write("<script>alert('Congratulation, Art Information Updated Successfully')</script>");
+                    }
+                   
 
                 }
             }

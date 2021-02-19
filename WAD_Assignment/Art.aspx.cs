@@ -27,58 +27,64 @@ namespace WAD_Assignment
         {
             Int32 userID = 0;
 
-
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
+            try
             {
-
-                con.Open();
-
-                string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Artist' AND LoginStatus='Active'";
-                using (SqlCommand cmdUser = new SqlCommand(query, con))
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
                 {
-                    userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                    con.Open();
+
+                    string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Artist' AND LoginStatus='Active'";
+                    using (SqlCommand cmdUser = new SqlCommand(query, con))
+                    {
+                        userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                    }
                 }
 
+                if(txtBoxArtPrice.Text == "0" || txtBoxArtQuantity.Text == "0")
+                {
+                    throw new Exception();
+                }
+                else
+                {
+                    string path;
 
+                if (FileUpload1.HasFile)
+                {
+                    FileUpload1.SaveAs(Server.MapPath("~/img/Artist/") + FileUpload1.FileName);
 
-            }
+                }
 
-            string path;
+                path = "img/Artist/" + FileUpload1.FileName;
 
-            if (FileUpload1.HasFile)
-            {
-                FileUpload1.SaveAs(Server.MapPath("~/img/Artist/") + FileUpload1.FileName);
+                string sql = "insert into Artist (ArtName, ArtDescription, ArtImage, UserId, Category, Price, Quantity) values('" + txtBoxArtName.Text + "', '"
+                    + txtBoxArtDesc.Text + "', '" + path + "', '" + userID + "', '" + ddlCatArt.SelectedValue + "', '"
+                    + txtBoxArtPrice.Text + "', '" + txtBoxArtQuantity.Text + "')";
 
-            }
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = con;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
 
-            path = "img/Artist/" + FileUpload1.FileName;
+               
 
-            string sql = "insert into Artist (ArtName, ArtDescription, ArtImage, UserId, Category, Price, Quantity) values('" + txtBoxArtName.Text + "', '"
-                + txtBoxArtDesc.Text + "', '" + path + "', '" + userID + "', '" + ddlCatArt.SelectedValue + "', '"
-                + txtBoxArtPrice.Text + "', '" + txtBoxArtQuantity.Text + "')";
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
 
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
-
-            int a = 0;
-
-            con.Open();
-            a = cmd.ExecuteNonQuery();
-            con.Close();
-
-            if (a == 0)
-            {
-                Response.Write("<script>alert('Sorry, Fail to Update the Art')</script>");
-            }
-            else
-            {
+               
+                
                 Response.Write("<script>alert('Congratulation, Art Added Successfully')</script>");
                 txtBoxArtDesc.Text = "";
                 txtBoxArtName.Text = "";
                 txtBoxArtPrice.Text = "";
                 txtBoxArtQuantity.Text = "";
+                
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Sorry, Fail to Update the Art')</script>");
             }
         }
 
