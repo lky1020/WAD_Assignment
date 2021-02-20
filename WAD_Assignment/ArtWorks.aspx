@@ -7,7 +7,7 @@
         <img src="img/artwork/header_bg.jpg" alt="" class="artwork-gallery-header-bg" />
 
         <div id="artwork-gallery-header-text" class="artwork-gallery-header-text">
-            Artist Gallery
+            Art Gallery
         </div>
     </div>
 
@@ -71,8 +71,8 @@
             <!-- Data list -->
             <asp:DataList ID="ArtWorkDataList" runat="server" DataKeyField="ArtId" RepeatColumns="3" RepeatDirection="Horizontal" CellSpacing="35" HorizontalAlign="Center" CellPadding="3">
                 <ItemTemplate>
-                    <table class="padding-b15" id="artwork-table">
-                        <tr>
+                    <table id="artwork-table" style="padding-bottom: 15px;">
+                        <tr style="padding-bottom: 5px;">
                             <td>
                                 <a href="ArtWorkDetails.aspx?ArtId=<%#:Eval("ArtId")%>">
 
@@ -85,7 +85,7 @@
                                 <a href="ArtWorkDetails.aspx?ArtId=<%#:Eval("ArtId")%>" class="art-title">
                                     <asp:Label ID="ArtNameLabel" runat="server" Text='<%# Eval("ArtName") %>' />
                                 </a>
-                                <asp:ImageButton ID="loveBtn" runat="server" AlternateText="Add to WishList" OnClick="loveBtn_Click" ImageUrl="img/wishlist/heart-icon-inactive.png" ImageAlign="right" CssClass="love-btn" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtowishlist" />
+                                
                             </td>
                         </tr>
 
@@ -99,6 +99,8 @@
                         </tr>
                     </table>
                     <asp:Button ID="addToCartBtn" runat="server" Text="Add To Cart" CssClass="art-to-cart-btn add-btn-medium" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtocart" OnClick="addToCartBtn_Click" AutoPostback = false/>
+                    <asp:ImageButton ID="loveBtn" runat="server" AlternateText="Add to WishList" OnClick="loveBtn_Click" ImageUrl="img/wishlist/heart-icon-inactive.png" ImageAlign="right" CssClass="love-btn" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtowishlist" />
+                    <br /><br />
                 </ItemTemplate>
             </asp:DataList>
 

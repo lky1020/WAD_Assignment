@@ -184,5 +184,10 @@ namespace WAD_Assignment.ArtWorks
 
 
         }
+
+        protected void detailsCancelBtn_Click(object sender, ImageClickEventArgs e)
+        {
+            Response.Redirect("/ArtWorks.aspx");
+        }
     }
 }
