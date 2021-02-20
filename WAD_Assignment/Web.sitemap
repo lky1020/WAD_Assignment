@@ -13,8 +13,8 @@
       <siteMapNode url="~/ArtistGallery.aspx" title="Gallery"  description="Testing 2" />
     </siteMapNode>
     
-    <siteMapNode url="~/test3.aspx" title="Testing 3"  description="Testing 3">
-      <siteMapNode url="~/test4.aspx" title="Testing 4"  description="Testing 4" />
+    <siteMapNode url="~/ArtWorks.aspx" title="Customer"  description="Customer">
+      <siteMapNode url="~/WishList.aspx" title="WishList"  description="WishList" />
       <siteMapNode url="~/Cart.aspx" title="Cart"  description="Cart" />
       <siteMapNode url="~/PayHistory.aspx" title="Payment History"  description="Purchase History" />
     </siteMapNode>
