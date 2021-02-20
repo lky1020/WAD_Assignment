@@ -16,12 +16,13 @@
                                     <ItemTemplate>
                                         <div class="pay_gvItem1">
                                             <strong>  
-                                             <asp:Label runat="server" Text='<%# Eval("ArtName") %>' Width="60%"></asp:Label>
-                                             <asp:TextBox runat="server" ID="artItem_Name" Text='<%# Eval("ArtName") %>' Visible="false"></asp:TextBox>
+                                             <asp:Label runat="server" ID="artItem_Name" Text='<%# Eval("ArtName") %>' Width="60%"></asp:Label>
+                                             
                                             </strong> 
                                             <br />
                                             <div class="pay_gvItem2">
-                                                <asp:Label runat="server" ID="item_order_summary_price" >RM <%# Eval("Price") %> x</asp:Label>
+                                                <asp:Label runat="server"  >RM <%# Eval("Price") %> x</asp:Label>
+                                                <asp:TextBox runat="server"  ID="item_order_summary_price" Text='<%# Eval("Price") %>' Visible="false"></asp:TextBox>
                                                 <asp:Label runat="server"> <%# Eval("qtySelected") %></asp:Label>
                                                 <asp:TextBox runat="server" ID="item_order_summary_qty" Text='<%# Eval("qtySelected") %>' Visible="false"></asp:TextBox>
                                              </div>

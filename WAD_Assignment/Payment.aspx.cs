@@ -101,7 +101,7 @@ namespace WAD_Assignment
 
             for (int i = 0; i < gvPayment.Rows.Count; i++)
             {
-                int tempP = int.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
+                double tempP = double.Parse((gvPayment.Rows[i].FindControl("item_order_summary_price") as TextBox).Text.Trim());
                 double tempTP = double.Parse((gvPayment.Rows[i].FindControl("order_subtotal") as TextBox).Text.Trim());
 
 
