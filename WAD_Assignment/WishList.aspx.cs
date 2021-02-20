@@ -173,5 +173,14 @@ namespace WAD_Assignment
         {
             Response.Redirect("ArtWorks.aspx");
         }
+
+        protected void wl_artImg_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton imgButton = sender as ImageButton;
+            Int32 artID = Convert.ToInt32(imgButton.CommandArgument.ToString());
+
+            Response.Redirect("ArtWorkDetails.aspx?ArtId="+ artID);
+ 
+        }
     }
 }

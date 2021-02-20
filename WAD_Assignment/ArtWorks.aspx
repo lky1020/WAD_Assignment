@@ -72,7 +72,7 @@
             <asp:DataList ID="ArtWorkDataList" runat="server" DataKeyField="ArtId" RepeatColumns="3" RepeatDirection="Horizontal" CellSpacing="35" HorizontalAlign="Center" CellPadding="3">
                 <ItemTemplate>
                     <table id="artwork-table" style="padding-bottom: 15px;">
-                        <tr style="padding-bottom: 5px;">
+                        <tr>
                             <td>
                                 <a href="ArtWorkDetails.aspx?ArtId=<%#:Eval("ArtId")%>">
 

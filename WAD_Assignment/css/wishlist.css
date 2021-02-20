@@ -76,6 +76,10 @@
     color: white;
 }
 
+.wl-img {
+    margin: 5px;
+}
+
 .love-btn {
     width: 12%;
 }
