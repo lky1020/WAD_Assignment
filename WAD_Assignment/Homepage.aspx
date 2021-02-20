@@ -60,77 +60,6 @@
         </div>
     </section>
 
-    <%--<section class="artworks" id="artworks">
-        <div class="title">
-            <h2 class="titleText"><span>A</span>rtWorks</h2>
-
-            <p> 
-                The best ArtWorks that launched by Artists. Captured the 
-                best moment in our life.
-            </p>
-        </div>
-
-        <div class="content">
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/artWork/africa_elephant.jpg" alt="Africa Elephant">
-                </div>
-                <div class="text">
-                    <h3>Africa Elephant</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/artWork/sky_boat.jpg" alt="Sky Boat">
-                </div>
-                <div class="text">
-                    <h3>Sky Boat</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/artWork/beautiful_women.jpg" alt="Beautiful Women">
-                </div>
-                <div class="text">
-                    <h3>Beautiful Women</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/artWork/boat.jpg" alt="Boat">
-                </div>
-                <div class="text">
-                    <h3>Boat</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/artWork/forest.jpg" alt="Forest">
-                </div>
-                <div class="text">
-                    <h3>Forest</h3>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="imgBox">
-                    <img src="img/homepage/artWork/window.jpg" alt="Window">
-                </div>
-                <div class="text">
-                    <h3>Window</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="title">
-            <a href="#" class="btn">View All</a>
-        </div>
-    </section>--%>
-  
     <section class="artworks" id="artworks">
         <div class="title">
             <h2 class="titleText"><span>A</span>rtWorks</h2>
@@ -215,21 +144,6 @@
             document.getElementById('<%=btnContactSubmit.ClientID%>').value = "Sending";
             document.getElementById('<%=btnContactSubmit.ClientID%>').style.cursor = "default";
         }
-
-        //Change the paddign for artworks datalist
-        window.addEventListener("load", function () {
-            //Get website name
-            var path = window.location.pathname;
-            var page = path.split("/").pop();
-
-            if (page == "Homepage.aspx") {
-
-                document.querySelector('.padding-b15').classList.add('homepage');
-
-            } else if (page != "Homepage.aspx") {
-                document.querySelector('.padding-b15').classList.remove('homepage');
-            }
-        });
 
     </script>
 
