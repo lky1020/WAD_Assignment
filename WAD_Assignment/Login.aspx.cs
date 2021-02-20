@@ -19,6 +19,7 @@ namespace WAD_Assignment
 
         private string loginName;
         private string profilePicPath;
+        private string userRole;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -71,9 +72,33 @@ namespace WAD_Assignment
                             //Activate the profile navigation + user account
                             ActivateProfileNavigation();
 
+                            //Check whether the user is Artist or not
+                            //If, yes active the navigation to manage artworks
+                            if (userRole.Equals("Artist"))
+                            {
+                                ActiveManageArtworkNavigation();
+                            }
+                            else
+                            {
+                                DeactiveManageArtworkNavigation();
+                            }
+
                             //Return to homepage
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
                             "alert('Login Success');window.location ='Homepage.aspx';", true);
+                        }
+                        //Fail to login
+                        else
+                        {
+                            //Deactive the profile navigation + user account
+                            DeactivateProfileNavigation();
+
+                            //Deactive the manage art navigation
+                            DeactiveManageArtworkNavigation();
+
+                            //Return to homepage
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                            "alert('Login Fail');window.location ='Homepage.aspx';", true);
                         }
                     }
                     else
@@ -145,11 +170,11 @@ namespace WAD_Assignment
             SqlConnection con = new SqlConnection(cs);
             SqlDataAdapter da;
             if (loginMethod.Equals("Name")){
-                da = new SqlDataAdapter("SELECT Name, Email, Password FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text +"' " + "AND Password = '" + txtPassword.Text + "' ", con);
+                da = new SqlDataAdapter("SELECT Name, Role, Password FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text +"' " + "AND Password = '" + txtPassword.Text + "' ", con);
             }
             else
             {
-                da = new SqlDataAdapter("SELECT Name, Email, Password FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+                da = new SqlDataAdapter("SELECT Name, Role, Password FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
             }
             
             DataTable dt = new DataTable();
@@ -158,6 +183,7 @@ namespace WAD_Assignment
             if (dt.Rows.Count >= 1)
             {
                 loginName = dt.Rows[0]["Name"].ToString();
+                userRole = dt.Rows[0]["Role"].ToString();
                 return true;
             }
 
@@ -236,6 +262,28 @@ namespace WAD_Assignment
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("name", loginName);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void ActiveManageArtworkNavigation()
+        {
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ManageArtActive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void DeactiveManageArtworkNavigation()
+        {
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ManageArtDeactive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();
             cmd.ExecuteNonQuery();

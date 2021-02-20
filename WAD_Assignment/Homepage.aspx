@@ -9,7 +9,7 @@
                 In the road to capture all the best moments in the life.
                 The best moments in life always surround us, helping us, supporting us, and giving us strength.
             </p>
-            <a href="#" class='btn'>Our ArtWorks</a>
+            <a href="#artworks" class='btn'>Our ArtWorks</a>
         </div>
 
         <video src="img/video/sky.mp4" muted loop autoplay></video>
@@ -60,7 +60,7 @@
         </div>
     </section>
 
-    <section class="artworks" id="artworks">
+    <%--<section class="artworks" id="artworks">
         <div class="title">
             <h2 class="titleText"><span>A</span>rtWorks</h2>
 
@@ -129,8 +129,52 @@
         <div class="title">
             <a href="#" class="btn">View All</a>
         </div>
-    </section>
+    </section>--%>
   
+    <section class="artworks" id="artworks">
+        <div class="title">
+            <h2 class="titleText"><span>A</span>rtWorks</h2>
+
+            <p> 
+                The best ArtWorks that launched by Artists. Captured the 
+                best moment in our life.
+            </p>
+        </div>
+
+        <div class="content">
+            <asp:DataList ID="ArtWorkDataList" runat="server" DataKeyField="ArtId" RepeatColumns="3" RepeatDirection="Horizontal" CellSpacing="60" HorizontalAlign="Center" CellPadding="3">
+                <ItemTemplate>
+                    <table id="artwork-table">
+                        <tr>
+                            <td>
+                                <asp:Image ID="ArtImage" runat="server" CssClass="artwork-gallery-image" ImageUrl='<%# Eval("ArtImage") %>' />
+                            </td>
+                        </tr>
+                        <tr class="text-a1 padding-b15">
+                            <td>
+                                <asp:Label ID="ArtNameLabel" runat="server" Text='<%# Eval("ArtName") %>' />
+                            </td>
+                        </tr>
+                        <tr class="text-a2">
+                            <td>
+                                <asp:Label ID="ArtDescriptionLabel" runat="server" Text='<%# Eval("ArtDescription") %>' />
+                            </td>
+                        </tr>
+                        <tr class="text-a3">
+                            <td>RM
+                                <asp:Label ID="PriceLabel" runat="server" Text='<%# String.Format("{0:0.00}", Eval("Price"))  %>' />
+                            </td>
+                        </tr>
+                    </table>
+                </ItemTemplate>
+            </asp:DataList>
+        </div>
+
+        <div class="title">
+            <a href="ArtistGallery.aspx" class="btn" style="width: 25%;text-align:center; margin-top: 0px; position: absolute;">View All</a>
+        </div>
+    </section>
+
     <section class="contact" id="contact">
         <div class="title">
             <h2 class="titleText"><span>C</span>ontact Us</h2>
@@ -171,6 +215,21 @@
             document.getElementById('<%=btnContactSubmit.ClientID%>').value = "Sending";
             document.getElementById('<%=btnContactSubmit.ClientID%>').style.cursor = "default";
         }
+
+        //Change the paddign for artworks datalist
+        window.addEventListener("load", function () {
+            //Get website name
+            var path = window.location.pathname;
+            var page = path.split("/").pop();
+
+            if (page == "Homepage.aspx") {
+
+                document.querySelector('.padding-b15').classList.add('homepage');
+
+            } else if (page != "Homepage.aspx") {
+                document.querySelector('.padding-b15').classList.remove('homepage');
+            }
+        });
 
     </script>
 

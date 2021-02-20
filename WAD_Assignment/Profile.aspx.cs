@@ -33,6 +33,16 @@ namespace WAD_Assignment
             //Update the Profile Pic for change pic
             ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBrowsePic", "document.getElementById('previewPic').src ='" + WAD.userPicPath + "';", true);
 
+            //Display manage art btn when role == artist
+            if (WAD.userRole.Equals("Artist")){
+
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DisplayManageArtBtn", "displayManageArt();", true);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "UndisplayManageArtBtn", "undisplayManageArt();", true);
+            }
+
             //Update the Profile Pic for edit username and password
              ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateUserEditPic", "document.getElementById('userPicPreview').src ='" + WAD.userPicPath + "';", true);
 
@@ -191,6 +201,9 @@ namespace WAD_Assignment
                         //Deactive the user account (required login again)
                         DeactivateProfileNavigation();
 
+                        //Deactive the manage art navigation
+                        DeactiveManageArtworkNavigation();
+
                         ScriptManager.RegisterStartupScript(Page, this.GetType(), "Update Password",
                             "alert('Password Update Successfully. Please Login Again!');", true);
 
@@ -224,6 +237,20 @@ namespace WAD_Assignment
                 }
             }
  
+        }
+
+        protected void btnManageArt_Click(object sender, EventArgs e)
+        {
+            //Undisplay the txtAreaEditBio
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBioUI",
+                    "document.getElementById('editBio').style.display = 'none';", true);
+            btnEditBio.Text = "Edit Bio";
+
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UnDisplay Cancel Btn",
+                    "undisplayCancelEditButton();", true);
+
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Direct to manage art",
+                    "window.location = 'Art.aspx';", true);
         }
 
         private Boolean CheckUserCurrentPassword()
@@ -264,6 +291,17 @@ namespace WAD_Assignment
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("name", lblProfileName.Text);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void DeactiveManageArtworkNavigation()
+        {
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ManageArtDeactive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();
             cmd.ExecuteNonQuery();

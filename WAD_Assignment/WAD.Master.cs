@@ -19,6 +19,8 @@ namespace WAD_Assignment
         //Share the user data to profile.aspx.cs
         public static string username;
         public static string userPicPath;
+        public static string userRole;
+        public static string userEmail;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -86,7 +88,7 @@ namespace WAD_Assignment
         {
             //Retrieve the account that is active
             SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da = new SqlDataAdapter("SELECT Name, ProfileImg FROM [dbo].[User] WHERE LoginStatus = 'Active'", con);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT Name, Email, ProfileImg, Role FROM [dbo].[User] WHERE LoginStatus = 'Active'", con);
             DataTable dt = new DataTable();
             da.Fill(dt);
 
@@ -101,6 +103,12 @@ namespace WAD_Assignment
                 //Update Profile Pic
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfilePicPath", "document.getElementById('profileImg').src ='" + userPicPath + "';", true);
 
+                //User Role
+                userRole = dt.Rows[0]["Role"].ToString();
+
+                //Email - for contact form
+                userEmail = dt.Rows[0]["Email"].ToString();
+
                 return true;
             }
 
@@ -112,6 +120,9 @@ namespace WAD_Assignment
             //Deactive the account
             DeactivateProfileNavigation();
 
+            //Deactive the manage art navigation
+            DeactiveManageArtworkNavigation();
+
             //Reset the lblLoginName
             lblLoginName.Text = "";
 
@@ -122,7 +133,7 @@ namespace WAD_Assignment
 
             //Return to homepage
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Homepage",
-            "alert('Logout Success');window.location ='Homepage.aspx';", true);
+            "window.location ='Homepage.aspx';alert('Logout Success');", true);
 
         }
 
@@ -134,6 +145,17 @@ namespace WAD_Assignment
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("name", lblLoginName.Text);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void DeactiveManageArtworkNavigation()
+        {
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ManageArtDeactive", con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();
             cmd.ExecuteNonQuery();

@@ -39,7 +39,7 @@
                                 </div>
                                 
                                 <asp:Button ID="btnEdit" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Edit Password" OnClientClick="showEditBox()" OnClick="btnEdit_Click"></asp:Button>
-                                <asp:Button ID="btnManageArt" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Manage Art"></asp:Button>
+                                <asp:Button ID="btnManageArt" CssClass="profileBtn profileBarBtnStyle" runat="server" Text="Manage Art" OnClick="btnManageArt_Click"></asp:Button>
                             </div>
                         </div>
                     </div>
@@ -172,6 +172,16 @@
         function changeUpdateText() {
             document.getElementById('<%= btnUpdatePassword.ClientID %>').value = "Updating...";
             document.getElementById('<%= btnUpdatePassword.ClientID %>').style.cursor = "default";
+        }
+
+        //display manage art btn when role == artist
+        function displayManageArt() {
+            document.getElementById('<%= btnManageArt.ClientID %>').style.display = "inline-block";
+        }
+
+        //undisplay manage art btn when role != artist
+        function undisplayManageArt() {
+            document.getElementById('<%= btnManageArt.ClientID %>').style.display = "none";
         }
 
         function toggleCancel() {

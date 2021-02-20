@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -21,20 +24,24 @@ namespace WAD_Assignment
                 //Validate the contact form
                 validateContact();
             }
+
+            bindList();
         }
 
         protected void btnContactSubmit_Click(object sender, EventArgs e)
         {
-            if(validateContact())
+            if (validateContact())
             {
                 using (MailMessage mail = new MailMessage())
                 {
                     //Hardcode first
                     //mail.From = new MailAddress(lblContactEmail.Text);
                     mail.From = new MailAddress("quadCoreTest@gmail.com");
-                    mail.To.Add("limkahyee16@gmail.com");
+                    mail.To.Add(WAD.userEmail);
+                    mail.To.Add("quadCoreTest@gmail.com");
                     mail.Subject = "Customer's Comment";
-                    mail.Body = txtContactComment.Text;
+                    mail.Body = txtContactComment.Text + "<br/> From: " + WAD.username + " (" + WAD.userEmail + ")";
+                    mail.IsBodyHtml = true;
                     mail.BodyEncoding = Encoding.UTF8;
 
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
@@ -75,7 +82,7 @@ namespace WAD_Assignment
                 {
                     lblContactComment.Text = "Please Enter Your Message!";
                 }
-                    
+
             }
         }
 
@@ -105,7 +112,7 @@ namespace WAD_Assignment
                     contactValidation = true;
                 }
             }
-           
+
 
             if (!txtContactComment.Text.Equals(""))
             {
@@ -118,6 +125,35 @@ namespace WAD_Assignment
             }
 
             return contactValidation;
+        }
+
+        private void bindList()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+
+            //sorting feature
+            SqlDataAdapter da = new SqlDataAdapter("Select TOP 6 * from Artist", con);
+
+            DataTable dt = new DataTable();
+            con.Open();
+            da.Fill(dt);
+
+            con.Close();
+
+            //paging feature
+            DataListPaging(dt);
+        }
+
+        private void DataListPaging(DataTable dt)
+        {
+            //PagedDataSource setting
+            PagedDataSource PD = new PagedDataSource();
+
+            PD.DataSource = dt.DefaultView;
+            ArtWorkDataList.DataSource = PD;
+            ArtWorkDataList.DataBind();
+
         }
     }
 }
