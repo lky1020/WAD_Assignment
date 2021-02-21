@@ -120,7 +120,7 @@
                         <input type="text" placeholder="Expiry Date" />
                     </div>
                     <div class="payment_item">
-                        <input type="text" placeholder="CVV" />
+                        <input type="password" placeholder="CVV" />
                     </div>
                 </div>
 

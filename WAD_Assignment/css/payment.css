@@ -82,6 +82,12 @@
     border: 2px solid #dddddd;
 }
 
+.payment_item input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #dddddd;
+}
+
 .payment_section input[type="text"]:focus {
     border-color: #e85c4d;
 }

@@ -87,6 +87,9 @@ namespace WAD_Assignment
             }
             else
             {
+                gvCart.DataSource = dt;
+                gvCart.DataBind();
+
                 //set display item
                 cartEmpty.Visible = true;
                 totalPrice.Visible = false;
