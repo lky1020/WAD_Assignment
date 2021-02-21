@@ -37,7 +37,7 @@
             <asp:Button class="btnViewArt" ID="btnViewArt" runat="server" Text="View Art" ForeColor="	#FFFFFF" OnClick="btnViewArt_Click" />
          </div>   
          
-        <div class="formAddArt">
+        <div class="formAddArt" id="formAddArt">
 
             <table class="tblArtInfo">
                 <tr>
@@ -130,4 +130,25 @@
             </table>
         </div>
      </section>
+
+    <script>
+        const artToggle = document.querySelector('.toggle');
+
+        window.setInterval(function () {
+
+            if (artToggle.classList.contains('active')) {
+
+                $(".formAddArt").animate({ left: '150px' });
+
+            } else {
+
+                if (document.getElementById('formAddArt').style.left === "150px") {
+                    $(".formAddArt").animate({ left: '300px' });
+                }
+
+            }
+        }, 500);
+
+    </script>
+
 </asp:Content>

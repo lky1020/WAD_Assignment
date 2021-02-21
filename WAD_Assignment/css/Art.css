@@ -9,7 +9,7 @@
 }
 
 .postArtTbl {
-    position: absolute;
+    position: relative;
     margin-top: 150px;
     width: 100%;
     min-height: 100vh;
