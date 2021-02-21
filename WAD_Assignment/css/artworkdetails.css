@@ -80,23 +80,23 @@
     margin-right: auto;
 }
 
-    .details-about img {
-        width: 50px;
-        height: 50px;
-        margin: 10px 10px 10px 15px;
-    }
+.details-about img {
+    width: 50px;
+    height: 50px;
+    margin: 10px 10px 10px 15px;
+}
 
-    .details-about td {
-        font-size: 35px;
-        letter-spacing: 3px;
-    }
+.details-about td {
+    font-size: 35px;
+    letter-spacing: 3px;
+}
 
-    .details-about span {
-        color: #F2AA4CFF;
-        font-weight: bold;
-        font-size: 55px;
-        margin-left: 15px;
-    }
+.details-about span {
+    color: #F2AA4CFF;
+    font-weight: bold;
+    font-size: 55px;
+    margin-left: 15px;
+}
 
 .details-artabout {
     letter-spacing: 1px;

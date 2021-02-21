@@ -3,14 +3,12 @@
 <asp:Content ID="ArtWorks" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <!-- Header Banner -->
     <div class="container">
-
         <img src="img/artwork/header_bg.jpg" alt="" class="artwork-gallery-header-bg" />
 
         <div id="artwork-gallery-header-text" class="artwork-gallery-header-text">
             Art Gallery
         </div>
     </div>
-
 
     <!-- Filter -->
     <div class="artwork-gallery-filter">
@@ -75,7 +73,6 @@
                         <tr>
                             <td>
                                 <a href="ArtWorkDetails.aspx?ArtId=<%#:Eval("ArtId")%>">
-
                                     <asp:Image ID="ArtImage" runat="server" CssClass="artwork-gallery-image" ImageUrl='<%# Eval("ArtImage") %>' />
                                 </a>
                             </td>
@@ -85,17 +82,18 @@
                                 <a href="ArtWorkDetails.aspx?ArtId=<%#:Eval("ArtId")%>" class="art-title">
                                     <asp:Label ID="ArtNameLabel" runat="server" Text='<%# Eval("ArtName") %>' />
                                 </a>
-                                
                             </td>
                         </tr>
 
                         <tr class="text-a2">
                             <td>
-                                <asp:Label ID="ArtDescriptionLabel" runat="server" CssClass="white-text" Text='<%# Eval("ArtDescription") %>' /></td>
+                                <asp:Label ID="ArtDescriptionLabel" runat="server" CssClass="white-text" Text='<%# Eval("ArtDescription") %>' />
+                            </td>
                         </tr>
                         <tr class="text-a3">
                             <td class="white-text">RM
-                                <asp:Label ID="PriceLabel" CssClass="white-text" runat="server" Text='<%# String.Format("{0:0.00}", Eval("Price"))  %>' /></td>
+                                <asp:Label ID="PriceLabel" CssClass="white-text" runat="server" Text='<%# String.Format("{0:0.00}", Eval("Price"))  %>' />
+                            </td>
                         </tr>
                     </table>
                     <asp:Button ID="addToCartBtn" runat="server" Text="Add To Cart" CssClass="art-to-cart-btn add-btn-medium" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtocart" OnClick="addToCartBtn_Click" AutoPostback = false/>
@@ -103,8 +101,6 @@
                     <br /><br />
                 </ItemTemplate>
             </asp:DataList>
-
-
 
             <!-- Paging -->
             <table class="paging" id="paging">
@@ -129,7 +125,6 @@
         </div>
     </div>
 
-
     <!-- Data Source -->
     <asp:SqlDataSource ID="CategoryDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>" SelectCommand="SELECT * FROM [Category]"></asp:SqlDataSource>
     <asp:SqlDataSource ID="ArtDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>" SelectCommand="SELECT * FROM Artist INNER JOIN Category ON Category.CategoryID = @Category">
@@ -137,4 +132,25 @@
             <asp:ControlParameter ControlID="ArtWorkDataList" Name="Category" PropertyName="SelectedValue" />
         </SelectParameters>
     </asp:SqlDataSource>
+
+    <script type="text/javascript">
+        const customerToggle = document.querySelector('.toggle');
+        const customerGalleryFilter = document.querySelector('.artwork-gallery-filter');
+        const customerGallery = document.querySelector('.artwork-gallery');
+            
+        window.setInterval(function () {
+
+            if (customerToggle.classList.contains('active')) {
+
+                customerGalleryFilter.setAttribute("style", "display: none;");
+                customerGallery.setAttribute("style", "margin-left: 0%; margin-top: 25%;");
+
+            } else {
+
+                customerGalleryFilter.setAttribute("style", "display: block;");
+                customerGallery.setAttribute("style", "margin-left: 14%; margin-top: 20%;");
+
+            }
+        }, 500);
+    </script>
 </asp:Content>

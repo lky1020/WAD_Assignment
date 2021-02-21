@@ -1,8 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/WAD.Master" AutoEventWireup="true" CodeBehind="ForgotPassword.aspx.cs" Inherits="WAD_Assignment.ForgotPassword" %>
 
 <asp:Content ID="ForgotPassword" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-        <section class="banner" id="banner">
-
+    <section class="banner" id="banner">
         <div class="ForgotPasswordForm">
 			<div class="ForgotPasswordBox">
 				<h1>Forgot Password</h1>

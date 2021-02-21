@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/WAD.Master" AutoEventWireup="true" CodeBehind="Homepage.aspx.cs" Inherits="WAD_Assignment.Homepage" %>
 
 <asp:Content ID="Homepage" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <%-- Background --%>
     <section class="banner" id="banner">
-
         <div class="content">
             <h2>Always Choose The Best</h2>
             <p>
@@ -13,9 +13,9 @@
         </div>
 
         <video src="img/video/sky.mp4" muted loop autoplay></video>
-
     </section>
 
+    <%-- About --%>
     <section class="about" id="about">
         <div class="row">
             <div class="col50">
@@ -60,6 +60,7 @@
         </div>
     </section>
 
+    <%-- Artwork --%>
     <section class="artworks" id="artworks">
         <div class="title">
             <h2 class="titleText"><span>A</span>rtWorks</h2>
@@ -100,10 +101,11 @@
         </div>
 
         <div class="title">
-            <a href="ArtistGallery.aspx" class="btn" style="width: 25%;text-align:center; margin-top: 0px; position: absolute;">View All</a>
+            <asp:Button ID="btnViewAll" runat="server" CssClass="btnViewAll" Text="View All" OnClick="btnViewAll_Click" />
         </div>
     </section>
 
+    <%-- Contact --%>
     <section class="contact" id="contact">
         <div class="title">
             <h2 class="titleText"><span>C</span>ontact Us</h2>

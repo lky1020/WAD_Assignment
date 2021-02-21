@@ -155,5 +155,18 @@ namespace WAD_Assignment
             ArtWorkDataList.DataBind();
 
         }
+
+        protected void btnViewAll_Click(object sender, EventArgs e)
+        {
+            //Direct to gallery
+            if (WAD.userRole.Equals("Artist")){
+                
+                Response.Write("<script>window.location = 'ArtistGallery.aspx';</script>");
+            }
+            else
+            {
+                Response.Write("<script>window.location = 'ArtWorks.aspx';</script>");
+            }
+        }
     }
 }

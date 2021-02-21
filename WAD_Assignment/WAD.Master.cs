@@ -25,7 +25,16 @@ namespace WAD_Assignment
         protected void Page_Load(object sender, EventArgs e)
         {
             //Always check active user account
-            RetrieveActiveUserAccount();
+            if(RetrieveActiveUserAccount() == true)
+            {
+                //Always check the user's role (Set up navigation menu)
+                SetUpNavigationMenu();
+            }
+            else
+            {
+                //Active Customer Navigation(By Default)
+                ActiveCustomerNavigation();
+            }
 
             //Initialize webpage
             if (IsPostBack == false)
@@ -51,7 +60,7 @@ namespace WAD_Assignment
             //Retrieve the menu data for menu control
             string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da = new SqlDataAdapter("spGetMenuData", con);
+            SqlDataAdapter da = new SqlDataAdapter("sp_GetMenuData", con);
             DataSet ds = new DataSet();
             da.Fill(ds);
 
@@ -115,19 +124,37 @@ namespace WAD_Assignment
             return false;
         }
 
+        private void SetUpNavigationMenu()
+        {
+            if (userRole.Equals("Artist"))
+            {
+                ActiveArtistNavigation();
+            }
+            else
+            {
+                ActiveCustomerNavigation();
+            }
+        }
+
         protected void btnLogout_Click(object sender, EventArgs e)
         {
             //Deactive the account
             DeactivateProfileNavigation();
 
-            //Deactive the manage art navigation
-            DeactiveManageArtworkNavigation();
+            //Active Customer Navigation (By Default)
+            ActiveCustomerNavigation();
 
             //Reset the lblLoginName
             lblLoginName.Text = "";
 
-            //Update menu (Need to reset siteMenu && headerSiteMenu first)
-            siteMenu.Items.Clear();
+            //Reset Profile
+            username = "";
+            userPicPath = "";
+            userRole = "";
+            userEmail = "";
+
+        //Update menu (Need to reset siteMenu && headerSiteMenu first)
+        siteMenu.Items.Clear();
             headerSiteMenu.Items.Clear();
             BindMenu();
 
@@ -151,10 +178,21 @@ namespace WAD_Assignment
             con.Close();
         }
 
-        private void DeactiveManageArtworkNavigation()
+        private void ActiveArtistNavigation()
         {
             SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ManageArtDeactive", con);
+            SqlCommand cmd = new SqlCommand("sp_ActiveArtist", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        private void ActiveCustomerNavigation()
+        {
+            SqlConnection con = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand("sp_ActiveCustomer", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();

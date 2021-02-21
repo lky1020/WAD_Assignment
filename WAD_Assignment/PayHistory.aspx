@@ -12,16 +12,14 @@
         <asp:GridView ID="gvPayHistory" runat="server"  AutoGenerateColumns="false" ForeColor="White" DataKeyNames="paymentId"
              GridLines ="none" CssClass="payHis_gv">
             <Columns>
-                
                 <%-- GridView ArtImage --%>
                 <asp:TemplateField ItemStyle-Width="14%" HeaderText="Date Paid" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate >  
-                        
                         <asp:Label ID="his_artImg" runat="server">
                             <%# Eval("datePaid", "{0:MM/dd/yyyy}") %>
                         </asp:Label>  
-                        </ItemTemplate>
+                    </ItemTemplate>
                 </asp:TemplateField> 
 
                 <%-- Art Name --%>
@@ -39,7 +37,6 @@
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate>
                             <asp:Label runat="server"> RM <%# Eval("Price") %></asp:Label>
-                        
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -47,11 +44,9 @@
                 <asp:TemplateField ItemStyle-Width="20%" HeaderText="Qty" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate>
-                          
                         <asp:Label ID="his_itemqty" runat="server"> 
                             <%#Eval("qty")%>
                         </asp:Label> 
-                        
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -63,13 +58,9 @@
                          <asp:Label runat="server"> RM <%# Eval("total") %></asp:Label>
                         </ItemTemplate>
                 </asp:TemplateField>
-
-               
             </Columns>
         </asp:GridView>
-       
     </div>
-    
 
 </asp:Content>
 

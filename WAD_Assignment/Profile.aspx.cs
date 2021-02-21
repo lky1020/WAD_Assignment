@@ -18,9 +18,24 @@ namespace WAD_Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Set up the user detail (Pic + Name)
-            InitializeProfile();
-
+            if(WAD.userRole != null)
+            {
+                if (WAD.userRole.Equals(""))
+                {
+                    //Set up the user detail (Pic + Name)
+                    InitializeProfile();
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "ProfileDenied", 
+                        "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
+                }
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "ProfileDenied",
+                        "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
+            }
         }
 
         private void InitializeProfile()
@@ -201,8 +216,8 @@ namespace WAD_Assignment
                         //Deactive the user account (required login again)
                         DeactivateProfileNavigation();
 
-                        //Deactive the manage art navigation
-                        DeactiveManageArtworkNavigation();
+                        //Active Customer Navigation (By Default)
+                        ActiveCustomerNavigation();
 
                         ScriptManager.RegisterStartupScript(Page, this.GetType(), "Update Password",
                             "alert('Password Update Successfully. Please Login Again!');", true);
@@ -297,10 +312,10 @@ namespace WAD_Assignment
             con.Close();
         }
 
-        private void DeactiveManageArtworkNavigation()
+        private void ActiveCustomerNavigation()
         {
             SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ManageArtDeactive", con);
+            SqlCommand cmd = new SqlCommand("sp_ActiveCustomer", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();

@@ -95,50 +95,26 @@
     object-fit: cover;
 }
 
-/*artworks*/
-/*.artworks .content {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-top: 40px;
-}
-
-.artworks .content .box {
-    width: 340px;
-    margin: 20px 25px;
-    border: 15px solid #fff;
-    box-shadow: 0 5px 35px rgba(255, 255, 255, 0.25);
-    background-color: #fff;
-}
-
-.artworks .content .box .imgBox {
-    position: relative;
-    width: 100%;
-    height: 300px;
-}
-
-.artworks .content .box .imgBox img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.artworks .content .box .text {
-    padding: 15px 0 5px;
+/*Artist*/
+.btnViewAll {
+    width: 25%;
+    font-size: 1em;
+    color: #fff;
+    background: #ff0157;
+    display: inline-block;
+    padding: 10px 30px;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: 0.5s;
     text-align: center;
+    margin-top: 0px;
+    position: absolute;
+    cursor: pointer;
 }
 
-.artworks .content .box .text h3 {
-    font-weight: 500;
-    color: #111;
-}*/
-
-.homeArtwork{
-    padding-bottom: 0%;
+.btnViewAll:hover {
+    letter-spacing: 4px;
 }
 
 /*Contact*/
@@ -228,25 +204,8 @@
         margin-top: 20px;
     }
 
-    .artworks .content {
-        margin-top: 20px;
-    }
-
-    .artworks .content .box {
-        margin: 10px;
-    }
-
     .title {
         text-align: center;
-    }
-
-    .testimonials .content {
-        margin-top: 20px;
-    }
-
-    .testimonials .content .box {
-        margin: 10px;
-        padding: 20px;
     }
 
     .contactForm {

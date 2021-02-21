@@ -11,7 +11,7 @@
     left: 0;
     width: 100%;
     height: 45%;
-    z-index: -1;
+    z-index: -3;
 }
 
 .artwork-gallery-header-text {
@@ -50,12 +50,13 @@
     color: white;
     letter-spacing: 1px;
     border: none;
+    cursor: pointer;
 }
 
-    .btn-filter:hover {
-        background-color: rebeccapurple;
-        color: white;
-    }
+.btn-filter:hover {
+    background-color: rebeccapurple;
+    color: white;
+}
 
 .price-table .left {
     width: 52%;
@@ -128,12 +129,13 @@
 .add-btn-medium {
     padding: 10px;
     font-size: 15px;
+    cursor: pointer;
 }
 
-    .add-btn-medium:hover {
-        transition: 0.5s;
-        letter-spacing: 2px;
-    }
+.add-btn-medium:hover {
+    transition: 0.5s;
+    letter-spacing: 2px;
+}
 
 .add-btn-large {
     padding: 15px 25px 15px 25px;
@@ -146,13 +148,14 @@
     border: none;
     letter-spacing: 1px;
     margin-bottom: 3%;
+    cursor: pointer;
 }
 
-    .art-to-cart-btn:hover {
-        background-color: rebeccapurple;
-        color: white;
+.art-to-cart-btn:hover {
+    background-color: rebeccapurple;
+    color: white;
         
-    }
+}
 
 /* Text style */
 .text-f1 {
@@ -200,18 +203,19 @@
     background-color: crimson;
     color: white;
     border: none;
+    cursor: pointer;
 }
 
-    .page-btn:disabled {
-        background-color: darkgrey;
-        color: darkslategrey;
-    }
+.page-btn:disabled {
+    background-color: darkgrey;
+    color: darkslategrey;
+    cursor: default;
+}
 
-
-    .page-btn:enabled:hover {
-        color: white;
-        background-color: firebrick;
-    }
+.page-btn:enabled:hover {
+    color: white;
+    background-color: firebrick;
+}
 
 /* Padding & Margin */
 .padding-b15 {
@@ -221,7 +225,6 @@
 .margin-b10 {
     margin-bottom: 50px;
 }
-
 
 /* Others */
 .flex-parent {

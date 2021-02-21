@@ -76,11 +76,11 @@ namespace WAD_Assignment
                             //If, yes active the navigation to manage artworks
                             if (userRole.Equals("Artist"))
                             {
-                                ActiveManageArtworkNavigation();
+                                ActiveArtistNavigation();
                             }
                             else
                             {
-                                DeactiveManageArtworkNavigation();
+                                ActiveCustomerNavigation();
                             }
 
                             //Return to homepage
@@ -93,8 +93,8 @@ namespace WAD_Assignment
                             //Deactive the profile navigation + user account
                             DeactivateProfileNavigation();
 
-                            //Deactive the manage art navigation
-                            DeactiveManageArtworkNavigation();
+                            //Active Customer Navigation (By Default)
+                            ActiveCustomerNavigation();
 
                             //Return to homepage
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
@@ -268,10 +268,10 @@ namespace WAD_Assignment
             con.Close();
         }
 
-        private void ActiveManageArtworkNavigation()
+        private void ActiveArtistNavigation()
         {
             SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ManageArtActive", con);
+            SqlCommand cmd = new SqlCommand("sp_ActiveArtist", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();
@@ -279,10 +279,10 @@ namespace WAD_Assignment
             con.Close();
         }
 
-        private void DeactiveManageArtworkNavigation()
+        private void ActiveCustomerNavigation()
         {
             SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ManageArtDeactive", con);
+            SqlCommand cmd = new SqlCommand("sp_ActiveCustomer", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             con.Open();

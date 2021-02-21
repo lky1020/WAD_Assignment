@@ -9,7 +9,7 @@
 }*/
 
 .artwork-gallery-header-bg {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -53,6 +53,7 @@
     color: white;
     letter-spacing: 1px;
     border: none;
+    cursor: pointer;
 }
 
 .price-table .left {
@@ -86,9 +87,6 @@
     background-color: #292929;
 }
 
-/* background-color: #cc2a41;*/
-
-
 /* Gallery Part */
 .artwork-gallery {
     /*  position: absolute;
@@ -114,7 +112,6 @@
     display: flex;
     justify-content: center;
 }
-
 
 /* Text style */
 .text-f1 {
@@ -160,18 +157,19 @@
     background-color: crimson;
     color: white;
     border: none;
+    cursor: pointer;
 }
 
-    .page-btn:disabled {
-        background-color: darkgrey;
-        color: darkslategrey;
-    }
+.page-btn:disabled {
+    background-color: darkgrey;
+    color: darkslategrey;
+    cursor: default;
+}
 
-
-    .page-btn:enabled:hover {
-        color: white;
-        background-color: firebrick;
-    }
+.page-btn:enabled:hover {
+    color: white;
+    background-color: firebrick;
+}
 
 /* Padding & Margin */
 .padding-b15 {
@@ -181,7 +179,6 @@
 .margin-b10 {
     margin-bottom: 50px;
 }
-
 
 /* Others */
 .flex-parent {

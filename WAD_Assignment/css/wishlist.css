@@ -39,14 +39,14 @@
     font-size: 17px;
 }
 
-    .btn-wlArt:hover {
-        background-color: rebeccapurple;
-        color: white;
-        transition: 0.5s;
-        letter-spacing: 2px;
-    }
+.btn-wlArt:hover {
+    background-color: rebeccapurple;
+    color: white;
+    transition: 0.5s;
+    letter-spacing: 2px;
+}
 
-    /* Gridview Table */
+/* Gridview Table */
 .wl-table-box {
     width: 1000px;
     margin-top: 2%;
@@ -66,11 +66,9 @@
     padding: 2%;
 }
 
-
 .wl-template-item {
     padding: 3%;
 }
-
 
 .gv-wishList {
     color: white;
@@ -89,12 +87,6 @@
     width: 60px;
     margin: 12px;
 }
-
-.love-btn:hover {
-   
-
-}
-
 
 /* Others */
 .parent-ab {

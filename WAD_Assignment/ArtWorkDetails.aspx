@@ -2,8 +2,8 @@
 
 <asp:Content ID="ArtWorkDetails" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <img src="img/artwork/art_about.jpg" class="art-details-bg" />
-    <div class="details-container">
 
+    <div class="details-container">
         <div class="details-left">
             <asp:Image ID="dArtDetailsImage" runat="server" CssClass="details-image" />
         </div>
@@ -16,7 +16,6 @@
             <%-- Price --%>
             <asp:Label ID="dArtPrice" runat="server" CssClass="details-price"></asp:Label>
 
-
             <hr style="margin: 20px 2px 0px 2px;" />
 
             <%-- Add To Cart & WishList Button --%>
@@ -24,9 +23,11 @@
                 <table class="details-btn">
                     <tr>
                         <td>
-                            <asp:Button ID="addToCartBtn" runat="server" Text="Add To Cart" CssClass="art-to-cart-btn add-btn-large" OnClick="addToCartBtn_Click" /></td>
+                            <asp:Button ID="addToCartBtn" runat="server" Text="Add To Cart" CssClass="art-to-cart-btn add-btn-large" OnClick="addToCartBtn_Click" />
+                        </td>
                         <td>
-                            <asp:ImageButton runat="server" AlternateText="Add to WishList" ImageUrl="img/wishlist/heart-icon-inactive.png" CssClass="love-btn-medium" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtowishlist" OnClick="loveBtn_Click" /></td>
+                            <asp:ImageButton runat="server" AlternateText="Add to WishList" ImageUrl="img/wishlist/heart-icon-inactive.png" CssClass="love-btn-medium" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtowishlist" OnClick="loveBtn_Click" />
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -41,7 +42,6 @@
 
     <%-- Art Description--%>
     <div class="details-box">
-
         <table class="details-about">
             <tr>
                 <td>
@@ -61,7 +61,8 @@
             <table class="details-about">
                 <tr>
                     <td>
-                        <img src="img/artwork/icons8-artist.png" /></td>
+                        <img src="img/artwork/icons8-artist.png" />
+                    </td>
                     <td style="color: white;"><span>A</span>rtist</td>
                 </tr>
             </table>
@@ -70,7 +71,7 @@
             <table style="width: 550px; margin-left:auto;margin-right:auto;">
                 <tr>
                     <td style="width: 220px;">
-                            <asp:Image ID="dArtistImage" runat="server" CssClass="details-artist-img" />
+                        <asp:Image ID="dArtistImage" runat="server" CssClass="details-artist-img" />
                     </td>
 
                     <%-- Artist Description --%>
@@ -83,6 +84,5 @@
             </table>
         </div>
     </div>
-
 
 </asp:Content>
