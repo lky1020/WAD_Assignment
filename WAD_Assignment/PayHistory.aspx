@@ -8,17 +8,30 @@
         </div>
         <br /> <br />
         <%-- Payment History GridView (Table) --%>
+        <asp:Label ID ="historyEmpty" runat="server" Text="No Payment History ... You haven't purchase any art yet" Visible="false">  </asp:Label>
 
-        <asp:GridView ID="gvPayHistory" runat="server"  AutoGenerateColumns="false" ForeColor="White" DataKeyNames="paymentId"
+        <asp:GridView ID="gvPayHistory" runat="server"  AutoGenerateColumns="false" ForeColor="White" DataKeyNames="paymentId" ShowHeaderWhenEmpty="false"
              GridLines ="none" CssClass="payHis_gv">
             <Columns>
                 <%-- GridView ArtImage --%>
-                <asp:TemplateField ItemStyle-Width="14%" HeaderText="Date Paid" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
+                <asp:TemplateField ItemStyle-Width="10%" HeaderText="Date Paid" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate >  
                         <asp:Label ID="his_artImg" runat="server">
                             <%# Eval("datePaid", "{0:MM/dd/yyyy}") %>
                         </asp:Label>  
+                    </ItemTemplate>
+                </asp:TemplateField> 
+
+                <%-- GridView ArtImage --%>
+                <asp:TemplateField ItemStyle-Width="10%" HeaderText="Order ID" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
+                    ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
+                    <ItemTemplate >  
+                        <asp:Label ID="his_orderID" runat="server" Text="-">
+                        </asp:Label>  
+                        <asp:TextBox ID="his_orderID1" runat="server" Text='<%# Eval("paymentId") %>' Visible="false">
+                        </asp:TextBox>  
+
                     </ItemTemplate>
                 </asp:TemplateField> 
 
@@ -41,7 +54,7 @@
                 </asp:TemplateField>
 
                  <%-- Qty --%>
-                <asp:TemplateField ItemStyle-Width="20%" HeaderText="Qty" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
+                <asp:TemplateField ItemStyle-Width="10%" HeaderText="Qty" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate>
                         <asp:Label ID="his_itemqty" runat="server"> 
