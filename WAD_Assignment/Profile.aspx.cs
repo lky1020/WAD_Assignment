@@ -18,24 +18,18 @@ namespace WAD_Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            
             if(WAD.userRole != null)
             {
-                if (WAD.userRole.Equals(""))
-                {
-                    //Set up the user detail (Pic + Name)
-                    InitializeProfile();
-                }
-                else
-                {
-                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "ProfileDenied", 
-                        "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
-                }
+                //Set up the user detail (Pic + Name)
+                InitializeProfile();
             }
             else
             {
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "ProfileDenied",
                         "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
             }
+
         }
 
         private void InitializeProfile()
