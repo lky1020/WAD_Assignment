@@ -20,6 +20,15 @@ namespace WAD_Assignment
             {
                 paymentHistory_refreshdata();
 
+                for(int i = 0; i < gvPayHistory.Rows.Count; i++)
+                {
+                    int payID = 1000000 + int.Parse((gvPayHistory.Rows[i].FindControl("his_orderID1") as TextBox).Text.Trim());
+
+                    gvPayHistory.Rows[i].Cells[1].Text = "P"+payID.ToString();
+                    
+                }
+                
+
             }
             else
             {
@@ -62,18 +71,12 @@ namespace WAD_Assignment
             {
                 gvPayHistory.DataSource = dt;
                 gvPayHistory.DataBind();
+                historyEmpty.Visible = false;
             }
             else
             {
-                dt.Rows.Add(dt.NewRow());
-                gvPayHistory.DataSource = dt;
-                gvPayHistory.DataBind();
-                gvPayHistory.Rows[0].Cells.Clear();
-                gvPayHistory.Rows[0].Cells.Add(new TableCell());
-                gvPayHistory.Rows[0].Cells[0].ColumnSpan = dt.Columns.Count;
-                gvPayHistory.Rows[0].Cells[0].Text = "No Item inside Your Cart ...";
-                gvPayHistory.Rows[0].Cells[0].HorizontalAlign = HorizontalAlign.Center;
-            }
+                historyEmpty.Visible = true;
+               }
             con.Close();
 
 
