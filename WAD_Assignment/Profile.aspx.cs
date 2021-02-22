@@ -125,6 +125,10 @@ namespace WAD_Assignment
                     cmd.ExecuteNonQuery();
                     con.Close();
 
+                    //myImage.Src = "~/car.png" + "?" + DateTime.Now.Ticks.ToString();    // Add date time to prevent caching.
+
+                    WAD.userPicPath += "?" + DateTime.Now.Ticks.ToString();
+
                     ScriptManager.RegisterStartupScript(Page, this.GetType(), "Upload Success", "alert('Profile Pic Upload Success');", true);
                 }
                 else
