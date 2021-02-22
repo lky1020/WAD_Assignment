@@ -311,7 +311,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="img\Artist\a4.webp" />
-    <Content Include="img\Artist\Conrad-Hong-Kong-–-Asia-contemporary-art-show.webp" />
     <None Include="packages.config" />
     <Content Include="WAD.Master" />
     <None Include="Web.Debug.config">
