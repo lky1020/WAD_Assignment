@@ -50,7 +50,7 @@ namespace WAD_Assignment.ArtWorks
                     if (!String.IsNullOrEmpty(profileImage))
                         dArtistImage.ImageUrl = profileImage;
                     else
-                        dArtistImage.ImageUrl = "/img/homepage/test1/jpg";
+                        dArtistImage.ImageUrl = "/img/userPic/user_default.png";
 
                     dArtistName.Text = dtrArt["Name"].ToString();
 
