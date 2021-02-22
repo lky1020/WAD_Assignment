@@ -41,7 +41,7 @@ namespace WAD_Assignment.ArtWorks
             connection();
 
             //sorting feature
-            dataAdapter = new SqlDataAdapter("Select * from Artist", conn);
+            dataAdapter = new SqlDataAdapter("Select * from Artist ORDER BY ArtId DESC", conn);
             if (rblCategory.SelectedIndex != -1)
             {
                 switch (ddlArtSort.SelectedIndex)
@@ -91,7 +91,7 @@ namespace WAD_Assignment.ArtWorks
                 {
                     //Display all
                     case 0:
-                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1'", conn);
+                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1' ORDER BY ArtId DESC", conn);
                         break;
 
                     //Sort by name asscending
@@ -277,6 +277,13 @@ namespace WAD_Assignment.ArtWorks
                     userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
                 }
 
+                if(userID == 0)
+                {
+                    Response.Write("<script>alert('Please Login first!')</script>");
+                }
+                else
+                {
+
                 SqlCommand cmd1 = new SqlCommand("SELECT Price, Quantity from [Artist] Where ArtId = @ArtId", con);
                 cmd1.Parameters.AddWithValue("@ArtId", artID);
 
@@ -308,6 +315,7 @@ namespace WAD_Assignment.ArtWorks
                 conn.Close();
 
                 Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+                }
                 // }
             }
             //  }

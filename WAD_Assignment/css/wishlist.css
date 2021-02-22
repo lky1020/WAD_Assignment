@@ -92,3 +92,7 @@
 .parent-ab {
     position: absolute;
 }
+
+.art-image {
+    object-fit: cover;
+}

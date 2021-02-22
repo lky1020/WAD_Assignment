@@ -48,7 +48,7 @@ namespace WAD_Assignment
             
             SqlConnection con = new SqlConnection(cs);
             con.Open();
-            String query = "Select w.WishlistId, w.UserId, w.ArtId, w.DateAdded, a.ArtName, a.ArtImage, a.Price, a.ArtDescription from [WishList] w INNER JOIN [Artist] a on w.ArtId = a.ArtId Where w.UserId = @userid";
+            String query = "Select w.WishlistId, w.UserId, w.ArtId, w.DateAdded, a.ArtName, a.ArtImage, a.Price, a.ArtDescription from [WishList] w INNER JOIN [Artist] a on w.ArtId = a.ArtId Where w.UserId = @userid ORDER BY w.WishlistId DESC";
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@userid", userID);
             SqlDataAdapter sda = new SqlDataAdapter(cmd);

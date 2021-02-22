@@ -32,7 +32,7 @@
                             <%-- GridView ArtImage --%>
                             <asp:TemplateField HeaderText="Art" ItemStyle-Width="20%" HeaderStyle-Width="20%" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle">
                                 <ItemTemplate>
-                                        <asp:ImageButton ID="wl_artImg" runat="server"  ImageUrl='<%# Eval("ArtImage")%>' Height="160" Width="160" OnClick="wl_artImg_Click" CommandArgument='<%# Eval("ArtId")%>' CommandName="viewdetails"/>
+                                        <asp:ImageButton ID="wl_artImg" runat="server"  ImageUrl='<%# Eval("ArtImage")%>' Height="160" Width="160" OnClick="wl_artImg_Click" CommandArgument='<%# Eval("ArtId")%>' CommandName="viewdetails" CssClass="art-image"/>
                                 </ItemTemplate>
                             </asp:TemplateField>
 
