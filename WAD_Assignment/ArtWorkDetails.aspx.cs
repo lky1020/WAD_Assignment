@@ -14,7 +14,6 @@ namespace WAD_Assignment.ArtWorks
     {
 
         string constr = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
-        int qtySelected = 1;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -45,6 +44,7 @@ namespace WAD_Assignment.ArtWorks
                     dArtName.Text = dtrArt["ArtName"].ToString().ToUpper();
                     dArtPrice.Text = "RM " + String.Format("{0:0.00}", dtrArt["Price"]);
                     dAboutArt.Text = dtrArt["ArtDescription"].ToString();
+                    dArtStock.Text = dtrArt["Quantity"].ToString();
 
                     string profileImage = dtrArt["ProfileImg"].ToString();
                     if (!String.IsNullOrEmpty(profileImage))
@@ -127,7 +127,9 @@ namespace WAD_Assignment.ArtWorks
         protected void addToCartBtn_Click(object sender, EventArgs e)
         {
             Int32 userID = 0;
-            int qty;
+            int qty = 0;
+            int qtySelected = Convert.ToInt32(detailsQtyControl.Text);
+            decimal unitPrice = 0;
             decimal subtotal = 0;
 
             // try
@@ -152,29 +154,40 @@ namespace WAD_Assignment.ArtWorks
                     while (dtrArt.Read())
                     {
                         qty = (int)dtrArt["Quantity"];
-                        subtotal = qtySelected * ((decimal)dtrArt["Price"]);
+                        unitPrice = ((decimal)dtrArt["Price"]);
                     }
 
                 }
                 con.Close();
 
-                //   if (qty != 0)
-                //   {
-                string sql = "INSERT into Cart (UserId, ArtId, qtySelected, Subtotal) values('" + userID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+                //Check whether valid input and enough quantity
+                if (qtySelected == 0)
+                {
+                    Response.Write("<script>alert('The quantity cannot be 0, please enter your quantity.')</script>");
+                }
+                else if (qtySelected > qty)
+                {
+                    Response.Write("<script>alert('Sorry, not enough stock, please enter your quantity.')</script>");
+                }
+                else
+                {
+                    subtotal = qtySelected * unitPrice;
 
-                SqlConnection conn = new SqlConnection(constr);
-                SqlCommand cmd = new SqlCommand();
-                conn.Open();
-                cmd.Connection = conn;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
+                    string sql = "INSERT into Cart (UserId, ArtId, qtySelected, Subtotal) values('" + userID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+
+                    SqlConnection conn = new SqlConnection(constr);
+                    SqlCommand cmd = new SqlCommand();
+                    conn.Open();
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = sql;
 
 
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
 
-                Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
-                // }
+                    Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+                }
             }
             //  }
             //   catch
@@ -188,6 +201,22 @@ namespace WAD_Assignment.ArtWorks
         protected void detailsCancelBtn_Click(object sender, ImageClickEventArgs e)
         {
             Response.Redirect("/ArtWorks.aspx");
+        }
+
+        protected void dPlusControl_Click(object sender, ImageClickEventArgs e)
+        {
+            int qty = Convert.ToInt32(detailsQtyControl.Text);
+            qty += 1;
+            detailsQtyControl.Text = qty.ToString();
+
+        }
+
+        protected void dMinusControl_Click(object sender, ImageClickEventArgs e)
+        {
+            int qty = Convert.ToInt32(detailsQtyControl.Text);
+            if (qty != 0)
+                qty -= 1;
+            detailsQtyControl.Text = qty.ToString();
         }
     }
 }

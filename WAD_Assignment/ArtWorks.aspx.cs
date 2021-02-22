@@ -40,12 +40,6 @@ namespace WAD_Assignment.ArtWorks
 		{
             connection();
 
-            // string strSelect = "Select * from Artist";
-            // SqlCommand cmdSelect = new SqlCommand(strSelect, conn);
-            // cmdSelect.CommandType = CommandType.StoredProcedure;
-            //SELECT * FROM Artist INNER JOIN Category ON Category.CategoryID = 1 AND Artist.Category = 1;
-            //"SELECT * FROM Artist ORDER BY Price ASC"
-
             //sorting feature
             dataAdapter = new SqlDataAdapter("Select * from Artist", conn);
             if (rblCategory.SelectedIndex != -1)
@@ -54,7 +48,7 @@ namespace WAD_Assignment.ArtWorks
                 {
                     //Display all
                     case 0:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY ArtId DESC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex+1);
                         dataAdapter.SelectCommand = command;
                         break;
@@ -274,6 +268,7 @@ namespace WAD_Assignment.ArtWorks
             //Get current user id
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
             {
+
                 con.Open();
 
                 string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Customer' AND LoginStatus='Active'";
