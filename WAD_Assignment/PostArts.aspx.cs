@@ -49,7 +49,7 @@ namespace WAD_Assignment
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
             {
                 con.Open();
-                String query = "SELECT a.ArtId, a.ArtName, a.ArtDescription, a.ArtImage, c.CategoryName, a.Price, a.Quantity FROM [Artist] a INNER JOIN [Category] c ON c.CategoryID = a.Category WHERE a.UserId =@UserId";
+                String query = "SELECT a.ArtId, a.ArtName, a.ArtDescription, a.ArtImage, c.CategoryName, a.Price, a.Quantity FROM [Artist] a INNER JOIN [Category] c ON c.CategoryID = a.Category WHERE a.UserId =@UserId AND a.Availability='1'";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@UserId", userID);
 
@@ -144,7 +144,7 @@ namespace WAD_Assignment
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
                 {
                     con.Open();
-                    String query = "DELETE FROM Artist WHERE ArtId =@ArtId";
+                    String query = "Update Artist SET Availability='0' WHERE ArtId =@ArtId";
 
                     SqlCommand cmd = new SqlCommand(query, con);
 
