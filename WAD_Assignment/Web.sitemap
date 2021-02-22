@@ -9,8 +9,8 @@
     </siteMapNode>
 
     <siteMapNode url="~/PostArts.aspx" title="Artist"  description="Artist">
-      <siteMapNode url="~/Art.aspx" title="Art"  description="Testing 2" />
-      <siteMapNode url="~/ArtistGallery.aspx" title="Gallery"  description="Testing 2" />
+      <siteMapNode url="~/Art.aspx" title="Art"  description="Art" />
+      <siteMapNode url="~/ArtistGallery.aspx" title="Gallery"  description="Gallery" />
     </siteMapNode>
     
     <siteMapNode url="~/ArtWorks.aspx" title="Customer"  description="Customer">
