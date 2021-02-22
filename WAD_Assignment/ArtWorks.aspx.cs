@@ -48,35 +48,35 @@ namespace WAD_Assignment.ArtWorks
                 {
                     //Display all
                     case 0:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY ArtId DESC", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY ArtId DESC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex+1);
                         dataAdapter.SelectCommand = command;
                         break;
 
                     //Sort by name asscending
                     case 1:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY ArtName ASC", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY ArtName ASC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex+1);
                         dataAdapter.SelectCommand = command;
                         break;
 
                     //Sort by name descending
                     case 2:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY ArtName DESC", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY ArtName DESC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
 
                     //Sort by price asscending
                     case 3:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY Price ASC", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY Price ASC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
 
                     //Sort by price descending
                     case 4:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY Price DESC", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY Price DESC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
@@ -91,27 +91,27 @@ namespace WAD_Assignment.ArtWorks
                 {
                     //Display all
                     case 0:
-                        dataAdapter = new SqlDataAdapter("Select * from Artist", conn);
+                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1'", conn);
                         break;
 
                     //Sort by name asscending
                     case 1:
-                        dataAdapter = new SqlDataAdapter("Select * from Artist ORDER BY ArtName ASC", conn);
+                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1' ORDER BY ArtName ASC", conn);
                         break;
 
                     //Sort by name descending
                     case 2:
-                        dataAdapter = new SqlDataAdapter("Select * from Artist ORDER BY ArtName DESC", conn);
+                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1' ORDER BY ArtName DESC", conn);
                         break;
 
                     //Sort by price asscending
                     case 3:
-                        dataAdapter = new SqlDataAdapter("Select * from Artist ORDER BY Price ASC", conn);
+                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1' ORDER BY Price ASC", conn);
                         break;
 
                     //Sort by price descending
                     case 4:
-                        dataAdapter = new SqlDataAdapter("Select * from Artist ORDER BY Price DESC", conn);
+                        dataAdapter = new SqlDataAdapter("Select * from Artist where Availability = '1' ORDER BY Price DESC", conn);
                         break;
                 }
             }

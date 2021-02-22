@@ -67,7 +67,8 @@ namespace WAD_Assignment
             //pass data into grid
             SqlConnection con = new SqlConnection(cs);
             con.Open();
-            String query = "Select c.CartId, c.UserId, c.ArtId, a.ArtName, a.ArtImage, a.Price, a.ArtDescription , c.qtySelected, c.Subtotal from [Cart] c INNER JOIN [Artist] a on c.ArtId = a.ArtId Where c.UserId = @userid";
+            String query = "Select c.CartId, c.UserId, c.ArtId, a.ArtName, a.ArtImage, a.Price, a.ArtDescription , c.qtySelected, c.Subtotal from [Cart] c " +
+                "INNER JOIN [Artist] a on c.ArtId = a.ArtId Where c.UserId = @userid and a.Availability = '1'";
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@userid", userID);
             SqlDataAdapter sda = new SqlDataAdapter(cmd);
