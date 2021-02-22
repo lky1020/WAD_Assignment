@@ -42,6 +42,42 @@ namespace WAD_Assignment.ArtWorks
         protected global::System.Web.UI.WebControls.Label dArtPrice;
 
         /// <summary>
+        /// dArtStock control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label dArtStock;
+
+        /// <summary>
+        /// dPlusControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton dPlusControl;
+
+        /// <summary>
+        /// detailsQtyControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox detailsQtyControl;
+
+        /// <summary>
+        /// dMinusControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton dMinusControl;
+
+        /// <summary>
         /// addToCartBtn control.
         /// </summary>
         /// <remarks>
