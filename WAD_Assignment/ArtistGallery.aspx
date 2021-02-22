@@ -3,7 +3,7 @@
 <asp:Content ID="ArtistGallery" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
         <!-- Header Banner -->
         <div id="artwork-gallery-header" class="container">
-            <img src="img/Artist/mountain.jpg" alt="" class="artwork-gallery-header-bg" />
+            <img src="img/Artist/bedroom.gif" alt="" class="artwork-gallery-header-bg" />
 
             <div id="artwork-gallery-header-text" class="artwork-gallery-header-text">
                 Artist Gallery
