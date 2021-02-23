@@ -56,14 +56,14 @@ namespace WAD_Assignment
                 {
                     //Display all
                     case 0:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category" + " WHERE Availability='1'", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category" + " AND Availability='1'", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
 
                     //Sort by name asscending
                     case 1:
-                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category ORDER BY ArtName ASC" + " WHERE Availability='1'", conn);
+                        command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability='1' ORDER BY ArtName ASC", conn);
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
