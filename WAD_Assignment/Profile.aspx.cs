@@ -125,7 +125,7 @@ namespace WAD_Assignment
                     cmd.ExecuteNonQuery();
                     con.Close();
 
-                    WAD.userPicPath += "?" + DateTime.Now.Ticks.ToString();
+                    WAD.userPicPath = "../img/userPic/" + lblProfileName.Text + imgFileExtension + "?" + DateTime.Now.Ticks.ToString();
 
                     ScriptManager.RegisterStartupScript(Page, this.GetType(), "Upload Success", "alert('Profile Pic Upload Success');", true);
                 }
