@@ -69,7 +69,9 @@ namespace WAD_Assignment
 
             for (int i = 0; i < (orderItem.Length - 1); i++)
             {
-                String query = "Select c.CartId, c.ArtId, a.ArtName, a.Price, c.qtySelected, c.Subtotal from [Cart] c INNER JOIN [Artist] a on c.ArtId = a.ArtId Where c.CartId = @id";
+                String query = "Select a.ArtId, a.ArtName, a.Price, o.OrderDetailId, o.qtySelected, o.Subtotal from [OrderDetails] o " +
+                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId Where o.OrderDetailId = @id";
+                //String query = "Select c.CartId, c.ArtId, a.ArtName, a.Price, c.qtySelected, c.Subtotal from [Cart] c INNER JOIN [Artist] a on c.ArtId = a.ArtId Where c.CartId = @id";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", orderItem[i]);
                 SqlDataAdapter sda = new SqlDataAdapter(cmd);
@@ -95,45 +97,97 @@ namespace WAD_Assignment
 
         protected void pay_Btn_Click(object sender, EventArgs e)
         {
+            Int32 cartID = 0;
 
             SqlConnection con = new SqlConnection(cs);
             con.Open();
 
+            //create new cart for status = 'pending'
+            String status = "pending";
+            string sql = "INSERT into Cart (UserId, status) values('" + currentUser + "', '" + status + "')";
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = sql;
+
+            cmd.ExecuteNonQuery();
+           // con.Close();
+
+
+            //retrieve 'pending' cartid
+           // con.Open();
+            string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
+
+            using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, con))
+            {
+                cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+            }
+           // con.Close();
+
+
+            //update selected item with the cartid
+            //con.Open();
             for (int i = 0; i < gvPayment.Rows.Count; i++)
             {
-                double tempP = double.Parse((gvPayment.Rows[i].FindControl("item_order_summary_price") as TextBox).Text.Trim());
-                double tempTP = double.Parse((gvPayment.Rows[i].FindControl("order_subtotal") as TextBox).Text.Trim()) + 3.0;
+                String queryUpdate = "Update OrderDetails SET CartId=@cartid, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
 
+                SqlCommand cmdUpdate = new SqlCommand(queryUpdate, con);
 
-                SqlCommand cmd = new SqlCommand("sp_createPayment", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@userId", currentUser);
-                cmd.Parameters.AddWithValue("@artId", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
-                cmd.Parameters.AddWithValue("@artprice", tempP);
-                cmd.Parameters.AddWithValue("@datePaid", DateTime.Now.ToString());
-                cmd.Parameters.AddWithValue("@qty", (gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
-                cmd.Parameters.AddWithValue("@total", tempTP);
+                double qty = double.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim()) * 3;
+                double subtotal = qty + double.Parse((gvPayment.Rows[i].FindControl("order_subtotal") as TextBox).Text.Trim());
+
+                cmdUpdate.Parameters.AddWithValue("@cartid", cartID);
+                cmdUpdate.Parameters.AddWithValue("@subtotal", subtotal);
+
+                cmdUpdate.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
+                cmdUpdate.ExecuteNonQuery();
+            
+            gvPayment.EditIndex = -1;
+            }
+            //con.Close();
+
+            //insert data to payment table 
+            //con.Open();
+
+            //double artPrice = double.Parse((gvPayment.Rows[i].FindControl("item_order_summary_price") as TextBox).Text.Trim());
+            // double eachTotalPrice = double.Parse((gvPayment.FindControl("total_payment") as TextBox).Text.Trim())+ 3.0;
+           
+                string sqlPayment = "INSERT into Payment (CartId, datepaid, total) values('" + cartID + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "')";
+
+                SqlCommand cmdPayment = new SqlCommand();
+                
+              /*  cmdPayment.Parameters.AddWithValue("@artId", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
+                cmdPayment.Parameters.AddWithValue("@artprice", tempP);
+                cmdPayment.Parameters.AddWithValue("@datePaid", DateTime.Now.ToString());
+                cmdPayment.Parameters.AddWithValue("@qty", (gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
+                cmdPayment.Parameters.AddWithValue("@total", tempTP);
+              */
+                cmdPayment.Connection = con;
+                cmdPayment.CommandType = CommandType.Text;
+                cmdPayment.CommandText = sqlPayment;
                 //con.Open();
-                cmd.ExecuteNonQuery();
-                //(gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim())
-            }
-            con.Close();
+                cmdPayment.ExecuteNonQuery();
+               
 
-            //delete the data from cart db
 
-            con.Open();
 
-            for (int i = 0; i < (orderItem.Length - 1); i++)
+            //update the pending cartid status = 'ordered'
+            //con.Open();
+            for (int i = 0; i < gvPayment.Rows.Count; i++)
             {
-                String query = "DELETE FROM Cart WHERE CartId = @cartid";
+                String queryUpdateCart = "Update Cart SET status = 'ordered' WHERE CartId=@cartid";
 
-                SqlCommand cmdDel = new SqlCommand(query, con);
-                cmdDel.Parameters.AddWithValue("@cartid", orderItem[i]);
-                cmdDel.ExecuteNonQuery();
+                SqlCommand cmdUpdate = new SqlCommand(queryUpdateCart, con);
 
+                cmdUpdate.Parameters.AddWithValue("@cartid", cartID);
 
+                cmdUpdate.ExecuteNonQuery();
+
+                gvPayment.EditIndex = -1;
             }
             con.Close();
+
 
             Response.Redirect("PayHistory.aspx");
         }

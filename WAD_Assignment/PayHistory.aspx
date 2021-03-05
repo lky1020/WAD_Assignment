@@ -24,12 +24,12 @@
                 </asp:TemplateField> 
 
                 <%-- GridView ArtImage --%>
-                <asp:TemplateField ItemStyle-Width="10%" HeaderText="Order ID" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
+                <asp:TemplateField ItemStyle-Width="10%" HeaderText="Tracking Number" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate >  
                         <asp:Label ID="his_orderID" runat="server" Text="-">
                         </asp:Label>  
-                        <asp:TextBox ID="his_orderID1" runat="server" Text='<%# Eval("paymentId") %>' Visible="false">
+                        <asp:TextBox ID="his_orderID1" runat="server" Text='<%# Eval("OrderDetailId") %>' Visible="false">
                         </asp:TextBox>  
 
                     </ItemTemplate>
@@ -58,8 +58,10 @@
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate>
                         <asp:Label ID="his_itemqty" runat="server"> 
-                            <%#Eval("qty")%>
+                            <%#Eval("qtySelected")%>
                         </asp:Label> 
+                        <asp:TextBox ID="his_qty" runat="server" Text='<%# Eval("qtySelected") %>' Visible="false">
+                        </asp:TextBox>  
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -68,7 +70,9 @@
                 <asp:TemplateField ItemStyle-Width="11%" HeaderText="Paid Amount" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" 
                     ItemStyle-HorizontalAlign="Center" ItemStyle-CssClass="payHis_gv_item">
                     <ItemTemplate>
-                         <asp:Label runat="server"> RM <%# Eval("total") %></asp:Label>
+                         <asp:Label runat="server"> RM <%# Eval("Subtotal") %></asp:Label>
+                        <asp:TextBox ID="his_subtotal" runat="server" Text='<%# Eval("Subtotal") %>' Visible="false">
+                        </asp:TextBox>  
                         </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

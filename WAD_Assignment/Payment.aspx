@@ -8,7 +8,7 @@
                 <div class="order_info_content">
                     <p><b>Order Summary </b></p>
 
-                    <asp:GridView ID="gvPayment" runat="server"  AutoGenerateColumns="false" ForeColor="White" DataKeyNames="ArtId"
+                    <asp:GridView ID="gvPayment" runat="server"  AutoGenerateColumns="false" ForeColor="White" DataKeyNames="orderDetailId"
                         GridLines ="none" CssClass="pay_gv">
                         <Columns>
                             <%-- GridView CheckBox --%>

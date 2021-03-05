@@ -67,9 +67,11 @@ namespace WAD_Assignment
             //pass data into grid
             SqlConnection con = new SqlConnection(cs);
             con.Open();
-            String query = "Select c.CartId, c.UserId, c.ArtId, a.ArtName, a.ArtImage, a.Price, a.ArtDescription , c.qtySelected, c.Subtotal from [Cart] c " +
-                "INNER JOIN [Artist] a on c.ArtId = a.ArtId Where c.UserId = @userid and a.Availability = '1'";
-            SqlCommand cmd = new SqlCommand(query, con);
+            String queryGetData = "Select a.ArtName, a.ArtImage, a.Price, a.ArtDescription,o.orderDetailId, o.qtySelected, o.Subtotal from [Cart] c " +
+                "INNER JOIN [OrderDetails] o on c.CartId = o.CartId " +
+                "INNER JOIN [Artist] a on o.ArtId = a.ArtId AND a.Availability = '1' " +
+                "Where c.UserId = @userid AND c.status = 'cart'";
+            SqlCommand cmd = new SqlCommand(queryGetData, con);
             cmd.Parameters.AddWithValue("@userid", userID);
             SqlDataAdapter sda = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
@@ -118,7 +120,7 @@ namespace WAD_Assignment
             //if invalid input
             if (int.Parse((gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim()) <= 0)
             {
-                Response.Write("<script>alert('Qauntiy must be 1 or greater than 1. Please enter again, if you do not want it in your cart, you can delete it from your cart.')</script>");
+                Response.Write("<script>alert('Quantiy must be 1 or greater than 1. Please enter again, if you do not want it in your cart, you can delete it from your cart.')</script>");
             }
             else
             {
@@ -126,7 +128,8 @@ namespace WAD_Assignment
                 using (SqlConnection con = new SqlConnection(cs))
                 {
                     con.Open();
-                    String query = "Update Cart SET qtySelected=@qty, Subtotal=@subtotal WHERE CartId =@cartid";
+                    String query = "Update OrderDetails SET qtySelected=@qty, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
+                    //String query = "Update Cart SET qtySelected=@qty, Subtotal=@subtotal WHERE CartId =@cartid";
 
                     SqlCommand cmd = new SqlCommand(query, con);
 
@@ -137,14 +140,14 @@ namespace WAD_Assignment
 
                     cmd.Parameters.AddWithValue("@qty", (gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim());
                     cmd.Parameters.AddWithValue("@subtotal", subTotal);
-                    cmd.Parameters.AddWithValue("@cartid", Convert.ToInt32(gvCart.DataKeys[e.RowIndex].Value.ToString()));
+                    cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[e.RowIndex].Value.ToString()));
                     cmd.ExecuteNonQuery();
                     gvCart.EditIndex = -1;
 
                     refreshdata();
 
                     // Response.Write("<script>alert('Cart Information is Updated.')</script>");
-
+                    con.Close();
                 }
             }
 
@@ -156,11 +159,11 @@ namespace WAD_Assignment
             using (SqlConnection con = new SqlConnection(cs))
             {
                 con.Open();
-                String query = "DELETE FROM Cart WHERE CartId = @cartid";
+                String query = "DELETE FROM OrderDetails WHERE OrderDetailId = @detailId";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 
-                cmd.Parameters.AddWithValue("@cartid", Convert.ToInt32(gvCart.DataKeys[e.RowIndex].Value.ToString()));
+                cmd.Parameters.AddWithValue("@detailId", Convert.ToInt32(gvCart.DataKeys[e.RowIndex].Value.ToString()));
                 cmd.ExecuteNonQuery();
 
                 refreshdata();
@@ -220,7 +223,6 @@ namespace WAD_Assignment
                     chckrw.Checked = true;
                 }
                 else
-
                 {
                     chckrw.Checked = false;
                 }

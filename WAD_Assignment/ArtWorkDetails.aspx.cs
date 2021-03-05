@@ -14,7 +14,7 @@ namespace WAD_Assignment.ArtWorks
     {
 
         string constr = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
-
+       
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!this.IsPostBack)
@@ -127,10 +127,11 @@ namespace WAD_Assignment.ArtWorks
         protected void addToCartBtn_Click(object sender, EventArgs e)
         {
             Int32 userID = 0;
+            Int32 cartID = 0;
             int qty = 0;
             int qtySelected = Convert.ToInt32(detailsQtyControl.Text);
             decimal unitPrice = 0;
-            decimal subtotal = 0;
+            decimal subtotal = qtySelected * unitPrice;
 
             // try
             // {
@@ -171,23 +172,79 @@ namespace WAD_Assignment.ArtWorks
                 }
                 else
                 {
-                    subtotal = qtySelected * unitPrice;
+                    con.Open();
+                    string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'cart'";
 
-                    string sql = "INSERT into Cart (UserId, ArtId, qtySelected, Subtotal) values('" + userID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+                    using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
+                    {
+                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                    }
+                    con.Close();
 
-                    SqlConnection conn = new SqlConnection(constr);
-                    SqlCommand cmd = new SqlCommand();
-                    conn.Open();
-                    cmd.Connection = conn;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = sql;
+                    if (cartID == 0)
+                    {
+                        //insert to create a new cart
+                        String status = "cart";
+                        string sql = "INSERT into Cart (UserId, status) values('" + userID + "', '" + status + "')";
+
+                        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
+                        SqlCommand cmd = new SqlCommand();
+                        conn.Open();
+                        cmd.Connection = conn;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+
+                        //search the new cartid
+                        conn.Open();
+                        string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'cart'";
+
+                        using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
+                        {
+                            cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                        }
+                        conn.Close();
 
 
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+
+                    }
+
+                    //insert order details based on cartid
+
+                    string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + Request.QueryString["ArtId"] + "', '" + 1 + "', '" + unitPrice + "')";
+
+                    SqlCommand cmdInsertOrder = new SqlCommand();
+                    con.Open();
+                    cmdInsertOrder.Connection = con;
+                    cmdInsertOrder.CommandType = CommandType.Text;
+                    cmdInsertOrder.CommandText = sqlInsertOrder;
+
+
+                    cmdInsertOrder.ExecuteNonQuery();
+                    con.Close();
 
                     Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
                 }
+                /*
+                subtotal = qtySelected * unitPrice;
+
+                string sql = "INSERT into Cart (UserId, ArtId, qtySelected, Subtotal) values('" + userID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+
+                SqlConnection conn = new SqlConnection(constr);
+                SqlCommand cmd = new SqlCommand();
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+
+
+                cmd.ExecuteNonQuery();
+                conn.Close();
+
+                Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+            }*/
             }
             //  }
             //   catch

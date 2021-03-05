@@ -260,6 +260,7 @@ namespace WAD_Assignment.ArtWorks
 
             Int32 userID = 0;
             Int32 artID = Convert.ToInt32(btn.CommandArgument.ToString());
+            Int32 cartID = 0;
             int qty;
             decimal unitPrice = 0;
 
@@ -299,25 +300,69 @@ namespace WAD_Assignment.ArtWorks
                 }
                 con.Close();
 
-                //   if (qty != 0)
-                //   {
-                string sql = "INSERT into Cart (UserId, ArtId, qtySelected, Subtotal) values('" + userID + "', '" + artID + "', '" + 1 + "', '" + unitPrice + "')";
+                    //   if (qty != 0)
+                    //   {
 
-                SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
-                SqlCommand cmd = new SqlCommand();
-                conn.Open();
-                cmd.Connection = conn;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
+                    //check if cart exist
+                    con.Open();
+                    string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '"+ userID+ "'AND status = 'cart'";
+
+                    using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
+                    {
+                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                    }
+                    con.Close();
+
+                    if(cartID == 0)
+                    {
+                        //insert to create a new cart
+                        String status = "cart";
+                        string sql = "INSERT into Cart (UserId, status) values('" + userID + "', '" + status+"')";
+
+                        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
+                        SqlCommand cmd = new SqlCommand();
+                        conn.Open();
+                        cmd.Connection = conn;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+
+                        //search the new cartid
+                        conn.Open();
+                        string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'cart'";
+
+                        using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
+                        {
+                            cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                        }
+                        conn.Close();
 
 
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                        
+                    }
 
-                Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+                    //insert order details based on cartid
+            
+                   string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + artID + "', '" + 1 + "', '" + unitPrice + "')";
+
+                   SqlCommand cmdInsertOrder = new SqlCommand();
+                   con.Open();
+                    cmdInsertOrder.Connection = con;
+                    cmdInsertOrder.CommandType = CommandType.Text;
+                    cmdInsertOrder.CommandText = sqlInsertOrder;
+
+
+                    cmdInsertOrder.ExecuteNonQuery();
+                   con.Close();
+
+                   Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+                   }
+                    
+
+                    // }
                 }
-                // }
-            }
             //  }
             //   catch
             //   {

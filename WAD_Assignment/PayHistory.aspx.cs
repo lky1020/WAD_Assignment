@@ -27,12 +27,6 @@ namespace WAD_Assignment
                     gvPayHistory.Rows[i].Cells[1].Text = "P"+payID.ToString();
                     
                 }
-                
-
-            }
-            else
-            {
-
             }
         }
 
@@ -55,23 +49,29 @@ namespace WAD_Assignment
 
             }
 
+            
             //pass data into grid
             SqlConnection con = new SqlConnection(cs);
             con.Open();
 
 
-            String query = "Select p.paymentId, a.ArtName, a.Price, p.qty, p.total, p.datePaid from [Payment] p INNER JOIN [Artist] a on p.ArtId = a.artId Where p.userId = @id ORDER BY p.paymentId DESC";
+            String query = "Select p.paymentId, o.OrderDetailId, a.ArtName, a.Price, o.qtySelected, o.Subtotal, p.datePaid from [Payment] p " +
+                "INNER JOIN [Cart] c on p.CartId = c.CartId INNER JOIN [OrderDetails] o on o.CartId = c.CartId " +
+                "INNER JOIN [Artist] a on o.ArtId = a.ArtId " +
+                "Where c.UserId = @id " +
+                "ORDER BY p.paymentId DESC";
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@id", userID);
             SqlDataAdapter sda = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             sda.Fill(dt);
-
+            
             if (dt.Rows.Count > 0)
             {
                 gvPayHistory.DataSource = dt;
                 gvPayHistory.DataBind();
                 historyEmpty.Visible = false;
+                
             }
             else
             {
