@@ -120,7 +120,7 @@ namespace WAD_Assignment
             //if invalid input
             if (int.Parse((gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim()) <= 0)
             {
-                Response.Write("<script>alert('Quantiy must be 1 or greater than 1. Please enter again, if you do not want it in your cart, you can delete it from your cart.')</script>");
+                Response.Write("<script>alert('Quantity must be 1 or greater than 1. Please enter again, if you do not want it in your cart, you can delete it from your cart.')</script>");
             }
             else
             {
