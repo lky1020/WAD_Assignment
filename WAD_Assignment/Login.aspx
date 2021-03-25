@@ -15,8 +15,18 @@
 						<div class="loginFormContent">
 							<div style="margin-bottom: 15px;">
 								<p>Email or Username</p>
-								<asp:TextBox ID="txtEmail_Username" runat="server" placeholder="Enter Email/Username" AutoPostBack="true"></asp:TextBox>
-								<asp:Label ID="lblEmail_Username" runat="server" CssClass="loginValidation"></asp:Label>
+								<asp:TextBox ID="txtEmail_Username" runat="server" placeholder="Enter Email/Username"></asp:TextBox>
+								<asp:RequiredFieldValidator ID="rfvEmail_Username" runat="server" 
+									ControlToValidate="txtEmail_Username" ErrorMessage="Please Enter Email or Username" 
+									ForeColor="Red" Display="Dynamic">
+
+								</asp:RequiredFieldValidator>
+
+								<asp:CustomValidator ID="cvEmail_Username" runat="server" 
+									ControlToValidate="txtEmail_Username"
+									OnServerValidate="cvEmail_Username_ServerValidate" ForeColor="Red"
+									Display="Dynamic">
+								</asp:CustomValidator>
 							</div>
 							
 							<div style="margin-bottom: 15px;">
@@ -26,10 +36,22 @@
 									<i class="fas fa-eye inlinePassword" onclick="passwordFunction()"></i>	
 								</div>
 							
-								<asp:Label ID="lblPassword" runat="server" CssClass="loginValidation"></asp:Label>
+								<%--<asp:Label ID="lblPassword" runat="server" CssClass="loginValidation"></asp:Label>--%>
+								<asp:RequiredFieldValidator ID="rfvPassword" runat="server" 
+									ControlToValidate="txtPassword" ErrorMessage="Please Enter Password" 
+									ForeColor="Red" Display="Dynamic">
+
+								</asp:RequiredFieldValidator>
+
+								<asp:CustomValidator ID="cvPassword" runat="server" 
+									ControlToValidate="txtPassword"
+									OnServerValidate="cvPassword_ServerValidate"
+									ForeColor="Red"
+									Display="Dynamic">
+								</asp:CustomValidator>
 							</div>
 
-							<asp:Button ID="btnLogin" runat="server" Text="Login" OnClick="btnLogin_Click" />	
+							<asp:Button ID="btnLogin" runat="server" Text="Login"/>	
 						</div>
 					</ContentTemplate>  
 				</asp:UpdatePanel> 
@@ -55,6 +77,19 @@
                 x.setAttribute("type", "password");
             }
 		}
+
+		//Validation
+<%--		function validateEmailUsername(source, args) {
+			var txtEmail_Username = document.getElementById('<%= txtEmail_Username.ClientID %>');
+
+			if (txtEmail_Username.value == '') {
+				window.alert("Error");
+				args.isValid = false;
+
+			} else {
+                args.isValid = true;
+            }
+        }--%>
     </script>
 
 </asp:Content>

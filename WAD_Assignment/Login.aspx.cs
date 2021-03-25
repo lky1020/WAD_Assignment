@@ -23,7 +23,6 @@ namespace WAD_Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (IsPostBack == false)
             {
                 //Auto insert username and password that get from param
@@ -35,101 +34,6 @@ namespace WAD_Assignment
                 txtPassword.TextMode = TextBoxMode.SingleLine;
                 txtPassword.Text = password;
                 txtPassword.Attributes["type"] = "password";
-
-            }else
-            {
-                //Validate the login form
-                validateLogin();
-            }
-        }
-
-        protected void btnLogin_Click(object sender, EventArgs e)
-        {
-            string loginMethod;
-
-            if (validateLogin())
-            {
-                //Check db
-                if(checkExistingUser() == true || checkExistingEmail() == true)
-                {
-                    if(checkExistingUser() == true)
-                    {
-                        //Username
-                        loginMethod = "Name";
-                    }
-                    else
-                    {
-                        //Email
-                        loginMethod = "Email";
-                    }
-
-                    //Check password
-                    if(checkPassword(loginMethod) == true)
-                    {
-                        //Get profile pic path
-                        if(getProfilePicPath(loginMethod) == true)
-                        {
-                            //Activate the profile navigation + user account
-                            ActivateProfileNavigation();
-
-                            //Check whether the user is Artist or not
-                            //If, yes active the navigation to manage artworks
-                            if (userRole.Equals("Artist"))
-                            {
-                                ActiveArtistNavigation();
-                            }
-                            else
-                            {
-                                ActiveCustomerNavigation();
-                            }
-
-                            //Return to homepage
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-                            "alert('Login Success');window.location ='Homepage.aspx';", true);
-                        }
-                        //Fail to login
-                        else
-                        {
-                            //Deactive the profile navigation + user account
-                            DeactivateProfileNavigation();
-
-                            //Active Customer Navigation (By Default)
-                            ActiveCustomerNavigation();
-
-                            //Return to homepage
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-                            "alert('Login Fail');window.location ='Homepage.aspx';", true);
-                        }
-                    }
-                    else
-                    {
-                        lblPassword.Text = "Invalid Password";
-                    }
-                }
-                else
-                {
-                    //Invalid Username
-                    if (checkExistingUser() == false)
-                    {
-                        lblEmail_Username.Text = "Invalid Username";
-                    }
-                    else
-                    {
-                        lblEmail_Username.Text = "Invalid Email";
-                    }
-                }
-            }
-            else
-            {
-                if (txtEmail_Username.Text.Equals(""))
-                {
-                    lblEmail_Username.Text = "Please Enter Your Username or Email!";
-                }
-
-                if (txtPassword.Text.Equals(""))
-                {
-                    lblPassword.Text = "Please Enter Your Password!";
-                }
 
             }
         }
@@ -147,7 +51,6 @@ namespace WAD_Assignment
             }
 
             return false;
-
         }
 
         private Boolean checkExistingEmail()
@@ -215,33 +118,6 @@ namespace WAD_Assignment
             return false;
         }
 
-        private Boolean validateLogin()
-        {
-            Boolean loginValidation = false;
-
-            //Username
-            if (!txtEmail_Username.Text.Equals(""))
-            {
-                loginValidation = true;
-            }
-            else
-            {
-                loginValidation = false;
-            }
-
-            //Password
-            if (!txtPassword.Text.Equals(""))
-            {
-                loginValidation = true;
-            }
-            else
-            {
-                loginValidation = false;
-            }
-
-            return loginValidation;
-        }
-
         private void ActivateProfileNavigation()
         {
             SqlConnection con = new SqlConnection(cs);
@@ -288,6 +164,90 @@ namespace WAD_Assignment
             con.Open();
             cmd.ExecuteNonQuery();
             con.Close();
+        }
+
+        protected void cvEmail_Username_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+
+            if (checkExistingUser() == false)
+            {
+                cvEmail_Username.ErrorMessage = "Username or Email Not Exist";
+                args.IsValid = false;
+            }
+            else
+            {
+                cvEmail_Username.ErrorMessage = "";
+                args.IsValid = true;
+            }
+        }
+
+        protected void cvPassword_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string loginMethod = "";
+
+            //Check db
+            if (checkExistingUser() == true || checkExistingEmail() == true)
+            {
+                if (checkExistingUser() == true)
+                {
+                    //Username
+                    loginMethod = "Name";
+                }
+                else
+                {
+                    //Email
+                    loginMethod = "Email";
+                }
+            }
+
+            if (checkPassword(loginMethod) == true)
+            {
+                //Get profile pic path
+                if (getProfilePicPath(loginMethod) == true)
+                {
+                    //Activate the profile navigation + user account
+                    ActivateProfileNavigation();
+
+                    //Check whether the user is Artist or not
+                    //If, yes active the navigation to manage artworks
+                    if (userRole.Equals("Artist"))
+                    {
+                        ActiveArtistNavigation();
+                    }
+                    else
+                    {
+                        ActiveCustomerNavigation();
+                    }
+
+                    args.IsValid = true;
+
+                    //Return to homepage
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                    "alert('Login Success');window.location ='Homepage.aspx';", true);
+
+                }
+                //Fail to login
+                else
+                {
+                    //Deactive the profile navigation + user account
+                    DeactivateProfileNavigation();
+
+                    //Active Customer Navigation (By Default)
+                    ActiveCustomerNavigation();
+
+                    args.IsValid = true;
+
+                    //Return to homepage
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                    "alert('Login Fail'); window.location ='Homepage.aspx';", true);
+
+                }
+            }
+            else
+            {
+                cvPassword.ErrorMessage = "Invalid Password";
+                args.IsValid = false;
+            }
         }
     }
 }
