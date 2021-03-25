@@ -36,7 +36,6 @@
 									<i class="fas fa-eye inlinePassword" onclick="passwordFunction()"></i>	
 								</div>
 							
-								<%--<asp:Label ID="lblPassword" runat="server" CssClass="loginValidation"></asp:Label>--%>
 								<asp:RequiredFieldValidator ID="rfvPassword" runat="server" 
 									ControlToValidate="txtPassword" ErrorMessage="Please Enter Password" 
 									ForeColor="Red" Display="Dynamic">
@@ -77,19 +76,6 @@
                 x.setAttribute("type", "password");
             }
 		}
-
-		//Validation
-<%--		function validateEmailUsername(source, args) {
-			var txtEmail_Username = document.getElementById('<%= txtEmail_Username.ClientID %>');
-
-			if (txtEmail_Username.value == '') {
-				window.alert("Error");
-				args.isValid = false;
-
-			} else {
-                args.isValid = true;
-            }
-        }--%>
     </script>
 
 </asp:Content>
