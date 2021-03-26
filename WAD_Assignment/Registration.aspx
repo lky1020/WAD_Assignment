@@ -13,21 +13,48 @@
 					<div class="registerForm">
 						<div>
 							<asp:Label ID="lblUsername" runat="server" CssClass="registerLabel">Username</asp:Label>
-							<asp:TextBox ID="txtUsername" runat="server" placeholder="Enter Your Username" CssClass="txtStyle" AutoPostBack="true"></asp:TextBox>
-							<asp:Label ID="lblUsername_Validation" runat="server" CssClass="registerValidation"></asp:Label>
+							<asp:TextBox ID="txtUsername" runat="server" placeholder="Enter Your Username" CssClass="txtStyle"></asp:TextBox>
+
+							<asp:RequiredFieldValidator ID="rfvUsername" runat="server" 
+								ControlToValidate="txtUsername" ErrorMessage="Please Enter Your Name" 
+								ForeColor="Red" Display="Dynamic">
+							</asp:RequiredFieldValidator>
+
+							<asp:CustomValidator ID="cvUsername" runat="server" 
+								ControlToValidate="txtUsername"
+								OnServerValidate="cvUsername_ServerValidate"
+								ForeColor="Red"
+								Display="Dynamic">
+							</asp:CustomValidator>
 						</div>
 
 						<div>
 							<asp:Label ID="lblEmail" runat="server" CssClass="registerLabel">Email Address</asp:Label>
-							<asp:TextBox ID="txtEmail" TextMode="Email" runat="server" placeholder="someone@exmaple.com" CssClass="txtStyle" AutoPostBack="true"></asp:TextBox>
-							<asp:Label ID="lblEmail_Validation" runat="server" CssClass="registerValidation"></asp:Label>
+							<asp:TextBox ID="txtEmail" runat="server" placeholder="someone@exmaple.com" CssClass="txtStyle"></asp:TextBox>
+							
+							<asp:RequiredFieldValidator ID="rfvEmail" runat="server" 
+								ControlToValidate="txtEmail" ErrorMessage="Please Enter Your Email" 
+								ForeColor="Red" Display="Dynamic">
+							</asp:RequiredFieldValidator>
+
+							<asp:CustomValidator ID="cvEmail" runat="server" 
+								ControlToValidate="txtEmail"
+								OnServerValidate="cvEmail_ServerValidate"
+								ErrorMessage="hihihi"
+								ForeColor="Red"
+								Display="Dynamic">
+							</asp:CustomValidator>
 						</div>
 
 						<div>
 							<asp:Label ID="lblPassword" runat="server" CssClass="registerLabel">Password</asp:Label>
 							<asp:TextBox ID="txtPassword" TextMode="Password" runat="server" placeholder="Enter Your Password" CssClass="txtStyle"></asp:TextBox>
 							<i class="fas fa-eye" onclick="passwordFunction()"></i>	
-							<asp:Label ID="lblPassword_Validation" runat="server" CssClass="registerValidation"></asp:Label>
+
+							<asp:RequiredFieldValidator ID="rfvPassword" runat="server" 
+								ControlToValidate="txtPassword" ErrorMessage="Please Enter Your Password!" 
+								ForeColor="Red" Display="Dynamic">
+							</asp:RequiredFieldValidator>
 						</div>
 						
 						<asp:Label ID="lblGender" runat="server" CssClass="registerLabel">Gender</asp:Label>
@@ -65,11 +92,6 @@
 			</div>
 		</div>
 
-		<div class="isLogin" id="isLogin">
-			<asp:Button ID="btnLogin" runat="server" Text="Login?" CssClass="btnProceedStyle btnLogin"/>
-			<asp:Button ID="btnHomepage" runat="server" Text="Homepage?" CssClass="btnProceedStyle btnHomepage" PostBackUrl="~/Homepage.aspx"/>
-		</div>
-
         <img src="img/login_register/nightCity_Register.jpg" />
     </section>
 
@@ -80,27 +102,6 @@
 			selectMale();
 			selectCustomer();
 
-			document.getElementById("isLogin").style.display = "none";
-
-			//Get param from the url that get from code behind
-            const queryString = window.location.search;
-			const urlParams = new URLSearchParams(queryString);
-
-            if (urlParams.has('successRegister')) {
-                const successRegister = urlParams.get('successRegister')
-
-				if (successRegister === "true") {
-
-					document.getElementById("registerbox").style.display = "none";
-					document.getElementById("isLogin").style.display = "flex";
-
-				} else {
-
-					document.getElementById("isLogin").style.display = "none";
-					document.getElementById("registerbox").style.display = "block";
-
-                }
-            }
 		})
 
         //Show Password

@@ -20,99 +20,57 @@ namespace WAD_Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            string username = Request.QueryString["username"];
-            string password = Request.QueryString["password"];
             string successRegister = Request.QueryString["successRegister"];
-            string postBackUrl = Request.QueryString["postBackUrl"];
 
-            if(IsPostBack == true)
+            if (IsPostBack == true)
             {
-                //Validate the register form
-                validateRegister();
-                checkExistingUser();
-                checkExistingEmail();
 
-                //keep password when still not register
-                if (validateRegister() == false)
+                //Initialize the Gender
+                if (rdMale.Checked)
                 {
-                    txtUsername.Attributes["value"] = txtUsername.Text;
-                    txtEmail.Attributes["value"] = txtEmail.Text;
-                    txtPassword.Attributes["value"] = txtPassword.Text;
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeGender", "selectMale();", true);
+                }
+                else if (rdFemale.Checked)
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeGender", "selectFemale();", true);
+                }
 
-                    //Initialize the Gender
-                    if (rdMale.Checked)
-                    {
-                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeGender", "selectMale();", true);
-                    }else if (rdFemale.Checked)
-                    {
-                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeGender", "selectFemale();", true);
-                    }
-
-                    //Initialize the Role
-                    if (rdArtist.Checked)
-                    {
-                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeRole", "selectArtist();", true);
-                    }
-                    else if (rdCustomer.Checked)
-                    {
-                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeRole", "selectCustomer();", true);
-                    }
+                //Initialize the Role
+                if (rdArtist.Checked)
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeRole", "selectArtist();", true);
+                }
+                else if (rdCustomer.Checked)
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "initializeRole", "selectCustomer();", true);
                 }
             }
 
+            // Proceed after success register
             if (successRegister != null)
             {
-                if (successRegister.Equals("true"))
+                if (successRegister.Equals("false"))
                 {
-                    btnLogin.PostBackUrl = postBackUrl + "?username=" + username + "&password=" + password;
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Register Status", "alert('Successfully Registered')", true);
-                }
-                else
-                {
+                    // Remain in the registration if register fail
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Register Status", "alert('UnSuccessfully Registered')", true);
                 }
             }
         }
 
+        protected override void OnPreRender(EventArgs e)
+        {
+            //Prevent password gone after postback
+            txtPassword.Attributes.Add("value", txtPassword.Text);
+            base.OnPreRender(e);
+        }
+
         protected void btnRegister_Click(object sender, EventArgs e)
         {
 
-            if (validateRegister() && checkExistingUser() == false && checkExistingEmail() == false)
+            if (Page.IsValid)
             {
+                // Insert the data to db and proceed
                 insertRegisterData();
-
-                //Reset to default
-                txtUsername.Text = "";
-                txtEmail.Text = "";
-                txtPassword.Text = "";
-
-            }
-            else
-            {
-                if (txtUsername.Text.Equals(""))
-                {
-                    lblUsername_Validation.Text = "Please Enter Your Name!";
-                }
-
-                if (txtEmail.Text.Equals(""))
-                {
-                    lblEmail_Validation.Text = "Please Enter Your Email!";
-                }
-
-                if (txtPassword.Text.Equals(""))
-                {
-                    lblPassword_Validation.Text = "Please Enter Your Password!";
-                }
-
-                if (!rdMale.Checked && !rdFemale.Checked)
-                {
-                    lblGender_Validation.Text = "Please Select Your Gender <br/>";
-                }
-
-                if (!rdArtist.Checked && !rdCustomer.Checked)
-                {
-                    lblRole_Validation.Text = "Please Select Your Role  <br/>";
-                }
             }
         }
 
@@ -161,14 +119,12 @@ namespace WAD_Assignment
             if (k != 0)
             {
                 //Pass param to login.aspx, so user not need to type it username and password again
-                string str = "~/login.aspx";
-                Response.Redirect("~/registration.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text + "&successRegister=true" + "&postBackUrl=" + str);
+                Response.Redirect("~/login.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text);
             }
             else
             {
                 Response.Redirect("~/registration.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text + "&successRegister=false");
             }
-
         }
 
         private Boolean checkExistingUser()
@@ -183,12 +139,7 @@ namespace WAD_Assignment
 
                 if (dt.Rows.Count >= 1)
                 {
-                    lblUsername_Validation.Text = "Username already exist!";
                     return true;
-                }
-                else
-                {
-                    lblUsername_Validation.Text = "";
                 }
 
                 return false;
@@ -210,12 +161,7 @@ namespace WAD_Assignment
 
                 if (dt.Rows.Count >= 1)
                 {
-                    lblEmail_Validation.Text = "Email already exist!";
                     return true;
-                }
-                else
-                {
-                    lblEmail_Validation.Text = "";
                 }
 
                 return false;
@@ -225,47 +171,43 @@ namespace WAD_Assignment
             return true;
         }
 
-        private Boolean validateRegister()
+        protected void cvUsername_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            Boolean registerValidation = false;
-
-            //Username
-            if (!txtUsername.Text.Equals(""))
+            //Check the username
+            if(checkExistingUser() == true)
             {
-                registerValidation = true;
+                cvUsername.ErrorMessage = "Username already exist!";
+                args.IsValid = false;
             }
             else
             {
-                registerValidation = false;
+                cvUsername.ErrorMessage = "";
+                args.IsValid = true;
             }
+        }
 
-            //Email
-            if (!txtEmail.Text.Equals(""))
+        protected void cvEmail_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+
+            if (!Regex.IsMatch(txtEmail.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
             {
-                if (!Regex.IsMatch(txtEmail.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
+                cvEmail.ErrorMessage = "Invalid Email Format!";
+                args.IsValid = false;
+            }
+            else
+            {
+                //Check the Email
+                if (checkExistingEmail() == true)
                 {
-                    lblEmail_Validation.Text = "Invalid Email Format! <br/>";
-                    registerValidation = false;
+                    cvEmail.ErrorMessage = "Email already exist!";
+                    args.IsValid = false;
                 }
                 else
                 {
-                    lblEmail_Validation.Text = "";
-                    registerValidation = true;
+                    cvEmail.ErrorMessage = "";
+                    args.IsValid = true;
                 }
             }
-
-            //Password
-            if (!txtPassword.Text.Equals(""))
-            {
-                registerValidation = true;
-            }
-            else
-            {
-                registerValidation = false;
-            }
-
-            return registerValidation;
         }
-
     }
 }

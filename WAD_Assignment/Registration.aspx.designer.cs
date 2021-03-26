@@ -51,13 +51,22 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtUsername;
 
         /// <summary>
-        /// lblUsername_Validation control.
+        /// rfvUsername control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUsername_Validation;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUsername;
+
+        /// <summary>
+        /// cvUsername control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvUsername;
 
         /// <summary>
         /// lblEmail control.
@@ -78,13 +87,22 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtEmail;
 
         /// <summary>
-        /// lblEmail_Validation control.
+        /// rfvEmail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEmail_Validation;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmail;
+
+        /// <summary>
+        /// cvEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvEmail;
 
         /// <summary>
         /// lblPassword control.
@@ -105,13 +123,13 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtPassword;
 
         /// <summary>
-        /// lblPassword_Validation control.
+        /// rfvPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPassword_Validation;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPassword;
 
         /// <summary>
         /// lblGender control.
@@ -193,23 +211,5 @@ namespace WAD_Assignment
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRegister;
-
-        /// <summary>
-        /// btnLogin control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogin;
-
-        /// <summary>
-        /// btnHomepage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnHomepage;
     }
 }

@@ -29,12 +29,16 @@ namespace WAD_Assignment
                 string username = Request.QueryString["username"];
                 string password = Request.QueryString["password"];
 
-                txtEmail_Username.Text = username;
+                if(username != null && password != null)
+                {
+                    txtEmail_Username.Text = username;
 
-                txtPassword.TextMode = TextBoxMode.SingleLine;
-                txtPassword.Text = password;
-                txtPassword.Attributes["type"] = "password";
+                    txtPassword.TextMode = TextBoxMode.SingleLine;
+                    txtPassword.Text = password;
+                    txtPassword.Attributes["type"] = "password";
 
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Register Status", "alert('Successfully Registered')", true);
+                }
             }
         }
 
