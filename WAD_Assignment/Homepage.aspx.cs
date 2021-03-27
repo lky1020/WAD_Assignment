@@ -18,29 +18,43 @@ namespace WAD_Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            if (IsPostBack == true)
-            {
-                //Validate the contact form
-                validateContact();
-            }
-
+            // For the artwork
             bindList();
         }
 
         protected void btnContactSubmit_Click(object sender, EventArgs e)
         {
-            if (validateContact())
+            if (Page.IsValid)
             {
+
                 using (MailMessage mail = new MailMessage())
                 {
-                    //Hardcode first
-                    //mail.From = new MailAddress(lblContactEmail.Text);
                     mail.From = new MailAddress("quadCoreTest@gmail.com");
-                    mail.To.Add(WAD.userEmail);
+
+                    // Take the user logged in email if userEmail not null
+                    if(WAD.userEmail != null)
+                    {
+                        mail.To.Add(WAD.userEmail);
+                    }
+                    else
+                    {
+                        //Get the user typed email
+                        mail.To.Add(txtContactEmail.Text);
+                    }
+
                     mail.To.Add("quadCoreTest@gmail.com");
                     mail.Subject = "Customer's Comment";
-                    mail.Body = txtContactComment.Text + "<br/> From: " + WAD.username + " (" + WAD.userEmail + ")";
+
+                    if(WAD.username != null && WAD.userEmail != null)
+                    {
+                        mail.Body = txtContactComment.Text + "<br/> From: " + WAD.username + " (" + WAD.userEmail + ")";
+                    }
+                    else
+                    {
+                        mail.Body = txtContactComment.Text + "<br/> From: " + txtContactName.Text + " (" + txtContactEmail.Text + ")";
+                    }
+
+                    
                     mail.IsBodyHtml = true;
                     mail.BodyEncoding = Encoding.UTF8;
 
@@ -59,73 +73,15 @@ namespace WAD_Assignment
                             btnContactSubmit.Text = "Submit";
                             btnContactSubmit.Style.Add("cursor", "pointer");
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                            throw ex;
+                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Email Status", "alert('Sorry, Quad-Core ASG Email Account Down!')", true);
                         }
                     }
                 }
             }
-            else
-            {
-                if (txtContactName.Text.Equals(""))
-                {
-                    lblContactName.Text = "Please Enter Your Name!";
-                }
-
-                if (txtContactEmail.Text.Equals(""))
-                {
-                    lblContactEmail.Text = "Please Enter Your Email!";
-                }
-
-                if (txtContactComment.Text.Equals(""))
-                {
-                    lblContactComment.Text = "Please Enter Your Message!";
-                }
-
-            }
         }
 
-        private Boolean validateContact()
-        {
-            Boolean contactValidation = false;
-
-            if (!txtContactName.Text.Equals(""))
-            {
-                contactValidation = true;
-            }
-            else
-            {
-                contactValidation = false;
-            }
-
-            if (!txtContactEmail.Text.Equals(""))
-            {
-                if (!Regex.IsMatch(txtContactEmail.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
-                {
-                    lblContactEmail.Text = "Invalid Email Format!";
-                    contactValidation = false;
-                }
-                else
-                {
-                    lblContactEmail.Text = "";
-                    contactValidation = true;
-                }
-            }
-
-
-            if (!txtContactComment.Text.Equals(""))
-            {
-                lblContactComment.Text = "";
-                contactValidation = true;
-            }
-            else
-            {
-                contactValidation = false;
-            }
-
-            return contactValidation;
-        }
 
         private void bindList()
         {
@@ -158,7 +114,7 @@ namespace WAD_Assignment
 
         protected void btnViewAll_Click(object sender, EventArgs e)
         {
-            if(WAD.userRole != null)
+            if (WAD.userRole != null)
             {
                 //Direct to gallery
                 if (WAD.userRole.Equals("Artist"))
@@ -175,6 +131,19 @@ namespace WAD_Assignment
                 Response.Write("<script>window.location = 'ArtWorks.aspx';</script>");
             }
 
+        }
+
+        protected void cvContactEmail_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (!Regex.IsMatch(txtContactEmail.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
+            {
+                cvContactEmail.ErrorMessage = "Invalid Email Format!";
+                args.IsValid = false;
+            }
+            else
+            {
+                args.IsValid = true;
+            }
         }
     }
 }

@@ -60,13 +60,13 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtContactName;
 
         /// <summary>
-        /// lblContactName control.
+        /// rfvContactName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblContactName;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvContactName;
 
         /// <summary>
         /// txtContactEmail control.
@@ -78,13 +78,22 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtContactEmail;
 
         /// <summary>
-        /// lblContactEmail control.
+        /// rfvContactEmail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblContactEmail;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvContactEmail;
+
+        /// <summary>
+        /// cvContactEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvContactEmail;
 
         /// <summary>
         /// txtContactComment control.
@@ -96,13 +105,13 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtContactComment;
 
         /// <summary>
-        /// lblContactComment control.
+        /// rfvContactComment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblContactComment;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvContactComment;
 
         /// <summary>
         /// btnContactSubmit control.

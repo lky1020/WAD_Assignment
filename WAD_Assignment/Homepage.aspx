@@ -121,16 +121,37 @@
                 <ContentTemplate> 
                     <h3>Send Message</h3>
                     <div class="inputBox">
-                        <asp:TextBox ID="txtContactName" CssClass="contactInput" runat="server" placeholder="Your Name" AutoPostBack="true"></asp:TextBox>
-                        <asp:Label ID="lblContactName" CssClass="validationStyle" runat="server"></asp:Label>
+                        <asp:TextBox ID="txtContactName" CssClass="contactInput" runat="server" placeholder="Your Name"></asp:TextBox>
+                        
+                        <asp:RequiredFieldValidator ID="rfvContactName" runat="server" 
+							ControlToValidate="txtContactName" ErrorMessage="Please Enter Your Name" 
+							ForeColor="Red" Display="Dynamic">
+						</asp:RequiredFieldValidator>
+
                     </div>
                     <div class="inputBox">
-                        <asp:TextBox ID="txtContactEmail" CssClass="contactInput" runat="server" placeholder="Your Email" AutoPostBack="true"></asp:TextBox>
-                        <asp:Label ID="lblContactEmail" CssClass="validationStyle" runat="server"></asp:Label>
+                        <asp:TextBox ID="txtContactEmail" CssClass="contactInput" runat="server" placeholder="Your Email"></asp:TextBox>
+                        
+                        <asp:RequiredFieldValidator ID="rfvContactEmail" runat="server" 
+							ControlToValidate="txtContactEmail" ErrorMessage="Please Enter Your Email" 
+							ForeColor="Red" Display="Dynamic">
+						</asp:RequiredFieldValidator>
+
+						<asp:CustomValidator ID="cvContactEmail" runat="server" 
+							ControlToValidate="txtContactEmail"
+							OnServerValidate="cvContactEmail_ServerValidate"
+							ForeColor="Red"
+							Display="Dynamic">
+						</asp:CustomValidator>
+
                     </div>
                     <div class="inputBox">
-                        <asp:TextBox ID="txtContactComment" TextMode="MultiLine" CssClass="contactInput" runat="server" placeholder="Your Comment" AutoPostBack="true"></asp:TextBox>
-                        <asp:Label ID="lblContactComment" CssClass="validationStyle" runat="server"></asp:Label>
+                        <asp:TextBox ID="txtContactComment" TextMode="MultiLine" CssClass="contactInput" runat="server" placeholder="Your Comment"></asp:TextBox>
+                        
+                        <asp:RequiredFieldValidator ID="rfvContactComment" runat="server" 
+							ControlToValidate="txtContactComment" ErrorMessage="Please Enter Your Message" 
+							ForeColor="Red" Display="Dynamic">
+						</asp:RequiredFieldValidator>
                     </div>
                     <div class="inputBox">
                         <asp:Button ID="btnContactSubmit" CssClass="contactSubmit" runat="server" Text="Submit" OnClientClick="changeSubmitText()"  OnClick="btnContactSubmit_Click"/>
