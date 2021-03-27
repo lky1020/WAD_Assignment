@@ -14,8 +14,20 @@
 						<div class="ForgotPasswordFormContent">
 							<div style="margin-bottom: 15px;">
 								<p>Email</p>
-								<asp:TextBox ID="txtEmail" runat="server" placeholder="Enter Your Email" AutoPostBack="true"></asp:TextBox>
-								<asp:Label ID="lblEmail" runat="server" CssClass="ForgotPasswordValidation"></asp:Label>
+								<asp:TextBox ID="txtEmail" runat="server" placeholder="Enter Your Email"></asp:TextBox>
+								
+								<asp:RequiredFieldValidator ID="rfvEmail" runat="server" 
+									ControlToValidate="txtEmail" ErrorMessage="Please Enter Your Email" 
+									ForeColor="Red" Display="Dynamic">
+								</asp:RequiredFieldValidator>
+
+								<asp:CustomValidator ID="cvEmail" runat="server" 
+									ControlToValidate="txtEmail"
+									OnServerValidate="cvEmail_ServerValidate"
+									ForeColor="Red"
+									Display="Dynamic">
+								</asp:CustomValidator>
+
 							</div>
 							
 							<div style="margin-bottom: 15px;">
@@ -46,7 +58,7 @@
 		//Change the text when user click the btn
 		function changeRequestText() {
 
-			if (document.getElementById('<%=txtResetPin.ClientID%>').value === "") {
+            if (document.getElementById('<%=txtEmail.ClientID%>').value != "" && document.getElementById('<%=txtResetPin.ClientID%>').value === "") {
 				document.getElementById('<%=btnReset.ClientID%>').value = "Sending PIN";
 				document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
 

@@ -54,7 +54,8 @@ namespace WAD_Assignment
 
         protected void btnReset_Click(object sender, EventArgs e)
         {
-            if(validateForgotPasswordEmail() == true)
+            //Email Entered
+            if(Page.IsValid)
             {
                 //Request PIN First
                 if (txtResetPin.Text.Equals(""))
@@ -77,21 +78,26 @@ namespace WAD_Assignment
 
                             using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                             {
+                                smtp.UseDefaultCredentials = false;
                                 smtp.Credentials = new System.Net.NetworkCredential("quadCoreTest@gmail.com", "quad_core");
                                 smtp.EnableSsl = true;
 
                                 try
                                 {
                                     smtp.Send(mail);
-                                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Reset Pin", "alert('Reset PIN Sent')", true);
+                                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Reset Pin", "alert('Reset PIN Sent. Please Check Your Email!')", true);
                                     btnReset.Text = "Enter New Password";
                                 }
-                                catch (Exception ex)
+                                catch (Exception)
                                 {
-                                    throw ex;
+                                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Reset Pin", "alert('Sorry, Quad-Core ASG Email Account Down!')", true);
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Reset Pin", "alert('Email Not Exist!!! Please Enter Again')", true);
                     }
                 }
                 //PIN Entered
@@ -123,32 +129,8 @@ namespace WAD_Assignment
             }
             else
             {
-                if (txtEmail.Text.Equals(""))
-                {
-                    lblEmail.Text = "Please Enter Your Email!";
-                }
+                btnReset.Text = "Request Pin";
             }
-
-        }
-
-        private Boolean validateForgotPasswordEmail()
-        {
-            //Email
-            if (!txtEmail.Text.Equals(""))
-            {
-                if (!Regex.IsMatch(txtEmail.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
-                {
-                    lblEmail.Text = "Invalid Email Format! <br/>";
-                    return false;
-                }
-                else
-                {
-                    lblEmail.Text = "";
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private Boolean GetUserResetPin()
@@ -202,12 +184,7 @@ namespace WAD_Assignment
 
                 if (dt.Rows.Count >= 1)
                 {
-                    lblEmail.Text = "";
                     return true;
-                }
-                else
-                {
-                    lblEmail.Text = "Email Not Exist!";
                 }
 
                 return false;
@@ -262,6 +239,20 @@ namespace WAD_Assignment
             else
             {
                 return false;
+            }
+        }
+
+        protected void cvEmail_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+
+            if (!Regex.IsMatch(txtEmail.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
+            {
+                cvEmail.ErrorMessage = "Invalid Email Format!";
+                args.IsValid = false;
+            }
+            else
+            {
+                args.IsValid = true;
             }
         }
     }
