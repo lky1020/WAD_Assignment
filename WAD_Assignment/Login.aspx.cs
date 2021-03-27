@@ -42,16 +42,35 @@ namespace WAD_Assignment
             }
         }
 
+        protected override void OnPreRender(EventArgs e)
+        {
+            //Prevent password gone after postback
+            txtPassword.Attributes.Add("value", txtPassword.Text);
+            base.OnPreRender(e);
+        }
+
         private Boolean checkExistingUser()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtEmail_Username.Text + "' ", con);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-
-            if (dt.Rows.Count >= 1)
+            try
             {
-                return true;
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtEmail_Username.Text + "' ", con);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
 
             return false;
@@ -59,14 +78,26 @@ namespace WAD_Assignment
 
         private Boolean checkExistingEmail()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail_Username.Text + "' ", con);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-
-            if (dt.Rows.Count >= 1)
+            try
             {
-                return true;
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail_Username.Text + "' ", con);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
 
             return false;
@@ -74,24 +105,37 @@ namespace WAD_Assignment
 
         private Boolean checkPassword(string loginMethod)
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da;
-            if (loginMethod.Equals("Name")){
-                da = new SqlDataAdapter("SELECT Name, Role, Password FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text +"' " + "AND Password = '" + txtPassword.Text + "' ", con);
-            }
-            else
+            try
             {
-                da = new SqlDataAdapter("SELECT Name, Role, Password FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
-            }
-            
-            DataTable dt = new DataTable();
-            da.Fill(dt);
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlDataAdapter da;
+                    if (loginMethod.Equals("Name"))
+                    {
+                        da = new SqlDataAdapter("SELECT Name, Role, Password FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+                    }
+                    else
+                    {
+                        da = new SqlDataAdapter("SELECT Name, Role, Password FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+                    }
 
-            if (dt.Rows.Count >= 1)
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        loginName = dt.Rows[0]["Name"].ToString();
+                        userRole = dt.Rows[0]["Role"].ToString();
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
             {
-                loginName = dt.Rows[0]["Name"].ToString();
-                userRole = dt.Rows[0]["Role"].ToString();
-                return true;
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
 
             return false;
@@ -99,24 +143,36 @@ namespace WAD_Assignment
 
         private Boolean getProfilePicPath(string loginMethod)
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da;
-            if (loginMethod.Equals("Name"))
+            try
             {
-                da = new SqlDataAdapter("SELECT ProfileImg FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
-            }
-            else
-            {
-                da = new SqlDataAdapter("SELECT ProfileImg FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
-            }
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlDataAdapter da;
+                    if (loginMethod.Equals("Name"))
+                    {
+                        da = new SqlDataAdapter("SELECT ProfileImg FROM [dbo].[User] WHERE " + "Name = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+                    }
+                    else
+                    {
+                        da = new SqlDataAdapter("SELECT ProfileImg FROM [dbo].[User] WHERE " + "Email = '" + txtEmail_Username.Text + "' " + "AND Password = '" + txtPassword.Text + "' ", con);
+                    }
 
-            DataTable dt = new DataTable();
-            da.Fill(dt);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-            if (dt.Rows.Count >= 1)
+                    if (dt.Rows.Count >= 1)
+                    {
+                        profilePicPath = dt.Rows[0]["ProfileImg"].ToString();
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
             {
-                profilePicPath = dt.Rows[0]["ProfileImg"].ToString();
-                return true;
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
 
             return false;
@@ -124,50 +180,90 @@ namespace WAD_Assignment
 
         private void ActivateProfileNavigation()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ProfileActive", con);
-            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_ProfileActive", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("name", loginName);
+                    cmd.Parameters.AddWithValue("name", loginName);
 
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+            }
         }
 
         private void DeactivateProfileNavigation()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
-            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("name", loginName);
+                    cmd.Parameters.AddWithValue("name", loginName);
 
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+            }
         }
 
         private void ActiveArtistNavigation()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ActiveArtist", con);
-            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_ActiveArtist", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+            }
         }
 
         private void ActiveCustomerNavigation()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_ActiveCustomer", con);
-            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_ActiveCustomer", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "LoginpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+            }
         }
 
         protected void cvEmail_Username_ServerValidate(object source, ServerValidateEventArgs args)
@@ -225,7 +321,7 @@ namespace WAD_Assignment
 
                     args.IsValid = true;
 
-                    //Return to homepage
+                    //Return to Homepage
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
                     "alert('Login Success');window.location ='Homepage.aspx';", true);
 
@@ -241,7 +337,7 @@ namespace WAD_Assignment
 
                     args.IsValid = true;
 
-                    //Return to homepage
+                    //Return to Homepage
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
                     "alert('Login Fail'); window.location ='Homepage.aspx';", true);
 

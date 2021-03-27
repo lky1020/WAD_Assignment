@@ -104,7 +104,8 @@ namespace WAD_Assignment
                 //paging feature
                 DataListPaging(dt);
 
-            }catch(Exception)
+            }
+            catch(Exception)
             {
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "HomepageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
             }
