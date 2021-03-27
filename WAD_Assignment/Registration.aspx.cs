@@ -18,6 +18,7 @@ namespace WAD_Assignment
         //DB
         string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
 
+
         protected void Page_Load(object sender, EventArgs e)
         {
             string successRegister = Request.QueryString["successRegister"];
@@ -101,48 +102,69 @@ namespace WAD_Assignment
             Random generator = new Random();
             string resetPin = generator.Next(0, 1000000).ToString("D6");
 
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("sp_registerUser", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("name", txtUsername.Text);
-            cmd.Parameters.AddWithValue("password", txtPassword.Text);
-            cmd.Parameters.AddWithValue("email", txtEmail.Text);
-            cmd.Parameters.AddWithValue("gender", gender);
-            cmd.Parameters.AddWithValue("profilePic", "../img/userPic/user_default.png");   //initialize the profile pic
-            cmd.Parameters.AddWithValue("resetPin", resetPin);
-            cmd.Parameters.AddWithValue("role", role);
-
-            con.Open();
-            int k = cmd.ExecuteNonQuery();
-            con.Close();
-            if (k != 0)
+            try
             {
-                //Pass param to login.aspx, so user not need to type it username and password again
-                Response.Redirect("~/login.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text);
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_registerUser", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("name", txtUsername.Text);
+                    cmd.Parameters.AddWithValue("password", txtPassword.Text);
+                    cmd.Parameters.AddWithValue("email", txtEmail.Text);
+                    cmd.Parameters.AddWithValue("gender", gender);
+                    cmd.Parameters.AddWithValue("profilePic", "../img/userPic/user_default.png");   //initialize the profile pic
+                    cmd.Parameters.AddWithValue("resetPin", resetPin);
+                    cmd.Parameters.AddWithValue("role", role);
+
+                    con.Open();
+                    int k = cmd.ExecuteNonQuery();
+                    con.Close();
+                    if (k != 0)
+                    {
+                        //Pass param to login.aspx, so user not need to type it username and password again
+                        Response.Redirect("~/login.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text);
+                    }
+                    else
+                    {
+                        Response.Redirect("~/registration.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text + "&successRegister=false");
+                    }
+                }
             }
-            else
+            catch (Exception)
             {
-                Response.Redirect("~/registration.aspx?username=" + txtUsername.Text + "&password=" + txtPassword.Text + "&successRegister=false");
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "RegistrationpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
+
         }
 
         private Boolean checkExistingUser()
         {
-            if(!txtUsername.Text.Equals(""))
+            if (!txtUsername.Text.Equals(""))
             {
                 //Check whether username already exist
-                SqlConnection con = new SqlConnection(cs);
-                SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtUsername.Text + "' ", con);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-
-                if (dt.Rows.Count >= 1)
+                try
                 {
-                    return true;
-                }
+                    using (SqlConnection con = new SqlConnection(cs))
+                    {
+                        SqlDataAdapter da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE Name = '" + txtUsername.Text + "' ", con);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
 
-                return false;
+                        if (dt.Rows.Count >= 1)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                }
+                catch (Exception)
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "RegistrationpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+                }
             }
 
             //return true means it is invalid
@@ -154,17 +176,27 @@ namespace WAD_Assignment
             //Check whether email already exist
             if (!txtEmail.Text.Equals(""))
             {
-                SqlConnection con = new SqlConnection(cs);
-                SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail.Text + "' ", con);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-
-                if (dt.Rows.Count >= 1)
+                try
                 {
-                    return true;
-                }
+                    using (SqlConnection con = new SqlConnection(cs))
+                    {
+                        SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail.Text + "' ", con);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
 
-                return false;
+                        if (dt.Rows.Count >= 1)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                }
+                catch (Exception)
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "RegistrationpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+                }
             }
 
             //return true means it is invalid

@@ -135,39 +135,63 @@ namespace WAD_Assignment
 
         private Boolean GetUserResetPin()
         {
-            
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da = new SqlDataAdapter("SELECT Name, Email, ResetPin FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
 
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-
-            if (dt.Rows.Count >= 1)
+            try
             {
-                username = dt.Rows[0]["Name"].ToString();
-                userEmail = dt.Rows[0]["Email"].ToString();
-                resetPin = dt.Rows[0]["ResetPin"].ToString();
-                return true;
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT Name, Email, ResetPin FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
+
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        username = dt.Rows[0]["Name"].ToString();
+                        userEmail = dt.Rows[0]["Email"].ToString();
+                        resetPin = dt.Rows[0]["ResetPin"].ToString();
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "ForgotPasswordpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
 
             return false;
+
         }
 
         private Boolean GetUsername()
         {
-            string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
-            SqlConnection con = new SqlConnection(cs);
-            SqlDataAdapter da;
-
-            da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
-
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-
-            if (dt.Rows.Count >= 1)
+            try
             {
-                username = dt.Rows[0]["Name"].ToString();
-                return true;
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlDataAdapter da;
+
+                    da = new SqlDataAdapter("SELECT Name FROM [dbo].[User] WHERE " + "Email = '" + txtEmail.Text + "' ", con);
+
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        username = dt.Rows[0]["Name"].ToString();
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "ForgotPasswordpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
 
             return false;
@@ -177,17 +201,27 @@ namespace WAD_Assignment
         {
             if (!txtEmail.Text.Equals(""))
             {
-                SqlConnection con = new SqlConnection(cs);
-                SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail.Text + "' ", con);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-
-                if (dt.Rows.Count >= 1)
+                try
                 {
-                    return true;
-                }
+                    using (SqlConnection con = new SqlConnection(cs))
+                    {
+                        SqlDataAdapter da = new SqlDataAdapter("SELECT Email FROM [dbo].[User] WHERE Email = '" + txtEmail.Text + "' ", con);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
 
-                return false;
+                        if (dt.Rows.Count >= 1)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                }
+                catch (Exception)
+                {
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "ForgotPasswordpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                    ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
+                }
             }
 
             //Email invalid
@@ -196,24 +230,36 @@ namespace WAD_Assignment
 
         private Boolean UpdateUserPasswordServer()
         {
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("UPDATE[dbo].[User] " +
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("UPDATE[dbo].[User] " +
                                             "SET[Password] = '" + hiddenResetPasswordValue.Value + "' " +
                                             "WHERE [Name] = '" + username + "' ", con);
-            cmd.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.Text;
 
-            con.Open();
-            int k = cmd.ExecuteNonQuery();
-            con.Close();
+                    con.Open();
+                    int k = cmd.ExecuteNonQuery();
+                    con.Close();
 
-            if (k != 0)
-            {
-                return true;
+                    if (k != 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
-            else
+            catch (Exception)
             {
-                return false;
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "ForgotPasswordpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
+
+            return false;
         }
 
         private Boolean UpdateResetPin()
@@ -222,24 +268,36 @@ namespace WAD_Assignment
             Random generator = new Random();
             string resetPin = generator.Next(0, 1000000).ToString("D6");
 
-            SqlConnection con = new SqlConnection(cs);
-            SqlCommand cmd = new SqlCommand("UPDATE[dbo].[User] " +
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    SqlCommand cmd = new SqlCommand("UPDATE[dbo].[User] " +
                                             "SET[ResetPin] = '" + resetPin + "' " +
                                             "WHERE [Name] = '" + username + "' ", con);
-            cmd.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.Text;
 
-            con.Open();
-            int k = cmd.ExecuteNonQuery();
-            con.Close();
+                    con.Open();
+                    int k = cmd.ExecuteNonQuery();
+                    con.Close();
 
-            if (k != 0)
-            {
-                return true;
+                    if (k != 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
-            else
+            catch (Exception)
             {
-                return false;
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "ForgotPasswordpageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "DirectToHomepage", "alert('Redirecting you to Homepage!'); window.location = 'Homepage.aspx';", true);
             }
+
+            return false;
         }
 
         protected void cvEmail_ServerValidate(object source, ServerValidateEventArgs args)
