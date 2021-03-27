@@ -54,7 +54,6 @@ namespace WAD_Assignment
                         mail.Body = txtContactComment.Text + "<br/> From: " + txtContactName.Text + " (" + txtContactEmail.Text + ")";
                     }
 
-                    
                     mail.IsBodyHtml = true;
                     mail.BodyEncoding = Encoding.UTF8;
 
@@ -75,7 +74,7 @@ namespace WAD_Assignment
                         }
                         catch (Exception)
                         {
-                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Email Status", "alert('Sorry, Quad-Core ASG Email Account Down!')", true);
+                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Email Status", "alert('Sorry, Quad-Core ASG Email Account Down. Please Contact Quad-Core AWS!')", true);
                         }
                     }
                 }
@@ -86,19 +85,30 @@ namespace WAD_Assignment
         private void bindList()
         {
             string cs = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-            SqlConnection con = new SqlConnection(cs);
-
-            //sorting feature
-            SqlDataAdapter da = new SqlDataAdapter("Select TOP 6 * from Artist", con);
-
             DataTable dt = new DataTable();
-            con.Open();
-            da.Fill(dt);
 
-            con.Close();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    //sorting feature
+                    SqlDataAdapter da = new SqlDataAdapter("Select TOP 6 * from Artist", con);
 
-            //paging feature
-            DataListPaging(dt);
+
+                    con.Open();
+                    da.Fill(dt);
+
+                    con.Close();
+                }
+
+                //paging feature
+                DataListPaging(dt);
+
+            }catch(Exception)
+            {
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "HomepageDBError", "alert('Error Occur in Database. Please Contact Quad-Core AWS!');", true);
+            }
+
         }
 
         private void DataListPaging(DataTable dt)
