@@ -16,18 +16,20 @@
                                 <ItemTemplate>
                                     <div class="pay_gvItem1">
                                         <strong>  
-                                            <asp:Label runat="server" ID="artItem_Name" Text='<%# Eval("ArtName") %>' Width="60%"></asp:Label>
+                                            <asp:Label runat="server" ID="artItem_Name1" Text='<%# Eval("ArtName") %>' Width="60%"></asp:Label>
+                                             <asp:TextBox runat="server"  ID="artItem_Name" Text='<%# Eval("ArtName") %>' Visible="false"></asp:TextBox>
+                                           
                                         </strong>
 
                                         <br />
 
                                         <div class="pay_gvItem2">
-                                            <asp:Label runat="server"  >RM <%# Eval("Price") %> x</asp:Label>
+                                            <asp:Label runat="server"  ID="item_order_summary_price1" >RM <%# Eval("Price") %> x</asp:Label>
                                             <asp:TextBox runat="server"  ID="item_order_summary_price" Text='<%# Eval("Price") %>' Visible="false"></asp:TextBox>
                                             <asp:Label runat="server"> <%# Eval("qtySelected") %></asp:Label>
                                             <asp:TextBox runat="server" ID="item_order_summary_qty" Text='<%# Eval("qtySelected") %>' Visible="false"></asp:TextBox>
-                                            </div>
                                         </div>
+                                    </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
 
@@ -125,9 +127,18 @@
                 </div>
 
                 <div>
-                    <asp:Button ID="pay_Btn" Text="Pay" class="payment_btn" runat="server" OnClick="pay_Btn_Click" />
-                </div>     
+                    <asp:Button ID="pay_Btn" Text="Pay" class="payment_btn" runat="server" OnClick="pay_Btn_Click"/>
+                </div>   
+                
             </div>
         </div>
     </div>
+
+     <script type="text/javascript">
+         function changeSubmitText() {
+             document.getElementById('<%=pay_Btn.ClientID%>').value = "Sending";
+            document.getElementById('<%=pay_Btn.ClientID%>').style.cursor = "default";
+         }
+
+     </script>
 </asp:Content>
