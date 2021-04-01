@@ -87,6 +87,7 @@ namespace WAD_Assignment
 
         }
 
+       
         public double checkDeliveryFees()
         {
 
@@ -113,23 +114,19 @@ namespace WAD_Assignment
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = sql;
 
-            cmd.ExecuteNonQuery();
-           // con.Close();
+            cmd.ExecuteNonQuery(); 
 
 
-            //retrieve 'pending' cartid
-           // con.Open();
+            //retrieve 'pending' cartid 
             string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
 
             using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, con))
             {
                 cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
             }
-           // con.Close();
 
 
-            //update selected item with the cartid
-            //con.Open();
+            //update selected item with the cartid 
             for (int i = 0; i < gvPayment.Rows.Count; i++)
             {
                 String queryUpdate = "Update OrderDetails SET CartId=@cartid, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
@@ -147,20 +144,17 @@ namespace WAD_Assignment
             
             gvPayment.EditIndex = -1;
             }
-            //con.Close();
 
             //insert data to payment table 
-            //con.Open();
+           
+             string sqlPayment = "INSERT into Payment (CartId, datepaid, total) values('" + cartID + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "')";
 
-              string sqlPayment = "INSERT into Payment (CartId, datepaid, total) values('" + cartID + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "')";
-
-                SqlCommand cmdPayment = new SqlCommand();
+             SqlCommand cmdPayment = new SqlCommand();
                 
               /*  cmdPayment.Parameters.AddWithValue("@artId", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
                 cmdPayment.Parameters.AddWithValue("@artprice", tempP);
                 cmdPayment.Parameters.AddWithValue("@datePaid", DateTime.Now.ToString());
                 cmdPayment.Parameters.AddWithValue("@qty", (gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
-                cmdPayment.Parameters.AddWithValue("@total", tempTP);
               */
                 cmdPayment.Connection = con;
                 cmdPayment.CommandType = CommandType.Text;
@@ -179,11 +173,58 @@ namespace WAD_Assignment
 
                 gvPayment.EditIndex = -1;
             }
+
+            //retrieve art qty left 
+            int quantity = 0;
+            for (int i = 0; i < gvPayment.Rows.Count; i++)
+            {
+                quantity = 0;
+                string queryArtQty = "SELECT Quantity FROM Artist WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id); ";
+
+
+                using (SqlCommand cmdArtQty = new SqlCommand(queryArtQty, con))
+                {
+
+                    cmdArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+                    quantity = ((Int32?)cmdArtQty.ExecuteScalar()) ?? 0;
+                    quantity -= int.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
+
+                }
+
+                //update qty & availability of the art
+                if (quantity <= 0)
+                {
+                    //update art qty & availability
+                    String queryUpdateQty = "Update Artist SET Quantity = 0, Availability = '0' WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
+                    SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+
+                    cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+
+                    cmdUpdateArtQty.ExecuteNonQuery();
+
+                    gvPayment.EditIndex = -1;
+                }
+                else
+                {
+                    //update art qty left 
+                    String queryUpdateQty = "Update Artist SET Quantity = @qty WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
+                    SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+
+                    cmdUpdateArtQty.Parameters.AddWithValue("@qty", quantity);
+                    cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+
+                    cmdUpdateArtQty.ExecuteNonQuery();
+
+                    gvPayment.EditIndex = -1;
+                }
+                
+            }
+
             con.Close();
+
 
             //send email then redirect to payment history
             sendEmail();
-
 
         }
 

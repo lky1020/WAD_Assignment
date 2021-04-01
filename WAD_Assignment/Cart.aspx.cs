@@ -117,15 +117,38 @@ namespace WAD_Assignment
 
         protected void gvCart_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
+            //check availability
+            SqlConnection con = new SqlConnection(cs);
+            con.Open();
+            int qty = 0;
+
+            //retrieve qty left
+            string queryArtQty = "SELECT Quantity FROM Artist WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id); ";
+
+            using (SqlCommand cmdArtQty = new SqlCommand(queryArtQty, con))
+            {
+                cmdArtQty.Parameters.AddWithValue("@od_Id", gvCart.DataKeys[e.RowIndex].Value.ToString());
+                qty = ((Int32?)cmdArtQty.ExecuteScalar()) ?? 0;
+
+            }
+            con.Close();
+
+            int select_qty = int.Parse((gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim());
+
             //if invalid input
-            if (int.Parse((gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim()) <= 0)
+            if (select_qty <= 0)
             {
                 Response.Write("<script>alert('Quantity must be 1 or greater than 1. Please enter again, if you do not want it in your cart, you can delete it from your cart.')</script>");
             }
-            else
+            //if input qty more than available qty
+            else if (select_qty > qty)
             {
+                Response.Write("<script>alert('There is only " + qty.ToString() + " quantity for this art is available. Therefore, quantity should not more than " + qty.ToString()+ ".')</script>");
+            }
+            else { 
+                
                 //if valid input qty
-                using (SqlConnection con = new SqlConnection(cs))
+                using (con)
                 {
                     con.Open();
                     String query = "Update OrderDetails SET qtySelected=@qty, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
