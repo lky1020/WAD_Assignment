@@ -23,7 +23,7 @@
                         </HeaderTemplate>
 
                         <ItemTemplate>
-                            <asp:CheckBox ID="chkItems" runat="server" Font-Size="XX-Large" AutoPostBack="True" />
+                            <asp:CheckBox ID="chkItems" runat="server" Font-Size="XX-Large" AutoPostBack="True" OnCheckedChanged="chkItems_CheckedChanged" />
                         </ItemTemplate>
                     </asp:TemplateField>
 
@@ -84,7 +84,7 @@
                     <%-- Edit Qty / Delete Art --%>
                     <asp:TemplateField HeaderText="" ItemStyle-Width="7%" ItemStyle-HorizontalAlign="Center" HeaderStyle-BackColor="#484848">
                         <ItemTemplate>
-                            <asp:ImageButton ImageUrl="~/img/icon/edit.png" runat="server" CommandName="Edit" ToolTip="Edit" Width="20px" Height="20px" style="text-align: center"/>
+                            <asp:ImageButton ID="editBtn" ImageUrl="~/img/icon/edit.png" runat="server" CommandName="Edit" ToolTip="Edit" Width="20px" Height="20px" style="text-align: center"/>
                             &nbsp;
                             <asp:ImageButton class="cart_page_deleteBtn" ImageUrl="~/img/icon/dusbin.png" runat="server" CommandName="Delete" ToolTip="Delete" />
                         </ItemTemplate>
