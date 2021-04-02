@@ -3,8 +3,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 60%;
-    height: 75%;
+    width: 65%;
+    height: 80%;
     margin-top: 3%;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .order_info {
-    width: 55%;
+    width: 45%;
     background: #ff236d;
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
@@ -50,14 +50,15 @@
 
 .pay_gvItem3 {
     text-align: right;
+    margin-right: 30px;
 }
 
 .checkout_form {
-    width: 45%;
+    width: 55%;
     background: #fff;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
-    padding: 50px 30px;
+    padding: 30px 30px;
     margin-left: 1%;
     padding-left: 4%;
     padding-right: 4%;
@@ -71,24 +72,26 @@
 }
 
 .payment_section {
-    margin-bottom: 10px;
-    margin-top: 20px;
+    margin-top: 5px;
+    
+}
+
+.text_box {
+    width: 95%;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 2px solid #dddddd;
 }
 
 
-.payment_section input[type="text"] {
-    width: 100%;
+.payment_section .text_box {
+    width: 90%;
     padding: 10px;
     border: 2px solid #dddddd;
 }
 
-.payment_item input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid #dddddd;
-}
-
-.payment_section input[type="text"]:focus {
+.payment_section .text_box:focus {
     border-color: #e85c4d;
 }
 
@@ -97,8 +100,12 @@
     justify-content: space-between;
 }
 
-.payment_section.payment_last_section .item {
-    width: 48%;
+.payment_section.payment_last_section .payment_item_box {
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 2px solid #dddddd;
+    width: 80%;
 }
 
 .payment_btn {
@@ -107,7 +114,7 @@
     padding: 10px;
     border-radius: 25px;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 5px;
     background-color: #ff0157;
     color: white;
 }

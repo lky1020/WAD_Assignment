@@ -37,7 +37,7 @@
                                 <ItemTemplate>
                                     <div class="pay_gvItem3">
                                         <strong> 
-                                            <asp:Label runat="server" >  RM <%# Eval("Subtotal") %></asp:Label>
+                                            <asp:Label runat="server">  RM <%# Eval("Subtotal") %></asp:Label>
                                             <asp:TextBox runat="server" ID="order_subtotal" Text='<%# Eval("Subtotal") %>' Visible="false">  </asp:TextBox>
                                         </strong> 
                                     </div>
@@ -100,30 +100,55 @@
             <div class="checkout_form">
                 <p>Payment Section</p>
 
-                <asp:RadioButtonList ID="RadioButtonList1" runat="server" Font-Size="Medium" ForeColor="#999999" RepeatDirection="Horizontal" Width="280px">
-                    <asp:ListItem>Debit Card </asp:ListItem>
-                    <asp:ListItem>Credit Card</asp:ListItem>
+                <asp:RadioButtonList ID="RadioButtonList1" runat="server" Font-Size="15px" ForeColor="#999999" RepeatDirection="Horizontal" Width="80%">
+                    <asp:ListItem Selected="True">   Debit Card </asp:ListItem>
+                    <asp:ListItem>   Credit Card</asp:ListItem>
                 </asp:RadioButtonList>
 
                 <div class="payment_section">
-                    <input type="text" placeholder="Address" />
+                    <p style="font-size:10px;margin-bottom:0px">Address</p>
+                    <!--input type="text" ID="Address" placeholder="Address" /-->
+                    <asp:TextBox ID="Address" runat="server" Height="40px" class="text_box"/>
+                    <asp:RequiredFieldValidator ID="Address_RequiredField" runat="server" ErrorMessage="Address is Required." ForeColor="Red" ControlToValidate="Address">*</asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator ID="Address_RegularExpression" runat="server" ErrorMessage="Invalid Address" 
+                        ForeColor="Red" ControlToValidate="Address" ValidationExpression="^[a-zA-Z0-9/., -]*$" Font-Size="11px"></asp:RegularExpressionValidator>
                 </div>
 
                 <div class="payment_section">
-                    <input type="text" placeholder="Card Number" />
+                    <p style="font-size:10px;margin-bottom:0px">Card Number</p>
+                    <!-- input type="text" placeholder="Card Number" /-->
+                    <asp:TextBox ID="Card_Number" runat="server" Height="40px" class="text_box"/>
+                    <asp:RequiredFieldValidator ID="CardNum_RequiredField" runat="server" ErrorMessage="Card Number is Required." ForeColor="Red" ControlToValidate="Card_Number">*</asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator ID="CardNum_RegularExpression" runat="server" ErrorMessage="Invalid Card Number (E.g. 4567873847384596)" 
+                        ForeColor="Red" ControlToValidate="Card_Number" ValidationExpression="^[0-9]{16}$" Font-Size="11px"></asp:RegularExpressionValidator>
                 </div>
 
                 <div class="payment_section">
-                    <input type="text" placeholder="Cardholder Name" />
+                    <p style="font-size:10px;margin-bottom:0px">Card Holder Name</p>
+                    <!-- input type="text" placeholder="Cardholder Name" /-->
+                    <asp:TextBox ID="CardHolderName" runat="server" Height="40px" class="text_box"/>
+                    <asp:RequiredFieldValidator ID="CardHolderName_RequiredField" runat="server" ErrorMessage="Card Holder Name is Required." ForeColor="Red" ControlToValidate="CardHolderName">*</asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator ID="CardHolderName_RegularExpression" runat="server" ErrorMessage="Invalid Card Holder Name" 
+                        ForeColor="Red" ControlToValidate="CardHolderName" ValidationExpression="^[a-zA-Z/ ]*$" Font-Size="11px"></asp:RegularExpressionValidator>
+               
                 </div>
 
                 <div class="payment_section payment_last_section">
-                    <div class="payment_item">
-                        <input type="text" placeholder="Expiry Date" />
+                    <div>
+                        <p style="font-size:10px;margin-bottom:0px">Expiry Date (E.g. 02/20/2025)</p>
+                        <!-- input type="text" placeholder="Expiry Date" /-->
+                        <asp:TextBox ID="Exp_Date" runat="server" Height="40px" class="payment_item_box" TextMode="Date"/>
+                        <asp:RequiredFieldValidator ID="ExpDate_RequiredField" runat="server" ErrorMessage="Expiry Date is Required." ForeColor="Red" ControlToValidate="Exp_Date">*</asp:RequiredFieldValidator>
+                       
                     </div>
-                    <div class="payment_item">
-                        <input type="password" placeholder="CVV" />
-                    </div>
+                    <div>
+                        <p style="font-size:10px;margin-bottom:0px">CVV</p>
+                        <!-- input type="password" placeholder="CVV" /-->
+                        <asp:TextBox ID="CVV" runat="server" Height="40px" class="payment_item_box" TextMode="Password"/>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="CVV is Required." ForeColor="Red" ControlToValidate="CVV">*</asp:RequiredFieldValidator>
+                        <asp:RegularExpressionValidator ID="CVV_RegularExpression" runat="server" ErrorMessage="Invalid CVV" 
+                            ForeColor="Red" ControlToValidate="CVV" ValidationExpression="^[0-9]{3}$" Font-Size="11px"></asp:RegularExpressionValidator>
+               </div>
                 </div>
 
                 <div>
