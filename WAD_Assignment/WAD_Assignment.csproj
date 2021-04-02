@@ -89,6 +89,7 @@
     <Content Include="css\profile.css" />
     <Content Include="css\wishlist.css" />
     <Content Include="ForgotPassword.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="img\Artist\1180w-463h_010920-riviera-art-gallery-780x440.jpg" />
     <Content Include="img\Artist\a1.jpg" />
     <Content Include="img\Artist\a2.jpg" />
@@ -193,6 +194,7 @@
     <Content Include="js\jquery.min.js" />
     <Content Include="Login.aspx" />
     <Content Include="img\header\menu.png" />
+    <Content Include="LoginControl.ascx" />
     <Content Include="PayHistory.aspx" />
     <Content Include="Payment.aspx" />
     <Content Include="PostArts.aspx" />
@@ -244,6 +246,9 @@
     <Compile Include="ForgotPassword.aspx.designer.cs">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Homepage.aspx.cs">
       <DependentUpon>Homepage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -257,6 +262,13 @@
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoginControl.ascx.cs">
+      <DependentUpon>LoginControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoginControl.ascx.designer.cs">
+      <DependentUpon>LoginControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="PayHistory.aspx.cs">
       <DependentUpon>PayHistory.aspx</DependentUpon>
