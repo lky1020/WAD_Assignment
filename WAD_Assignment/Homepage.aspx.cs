@@ -32,9 +32,9 @@ namespace WAD_Assignment
                     mail.From = new MailAddress("quadCoreTest@gmail.com");
 
                     // Take the user logged in email if userEmail not null
-                    if(WAD.userEmail != null)
+                    if(Session["userEmail"] != null)
                     {
-                        mail.To.Add(WAD.userEmail);
+                        mail.To.Add(Session["userEmail"].ToString());
                     }
                     else
                     {
@@ -45,9 +45,9 @@ namespace WAD_Assignment
                     mail.To.Add("quadCoreTest@gmail.com");
                     mail.Subject = "Customer's Comment";
 
-                    if(WAD.username != null && WAD.userEmail != null)
+                    if(Session["username"] != null && Session["userEmail"] != null)
                     {
-                        mail.Body = txtContactComment.Text + "<br/> From: " + WAD.username + " (" + WAD.userEmail + ")";
+                        mail.Body = txtContactComment.Text + "<br/> From: " + Session["username"].ToString() + " (" + Session["userEmail"].ToString() + ")";
                     }
                     else
                     {
@@ -125,10 +125,10 @@ namespace WAD_Assignment
 
         protected void btnViewAll_Click(object sender, EventArgs e)
         {
-            if (WAD.userRole != null)
+            if (Session["userRole"] != null)
             {
                 //Direct to gallery
-                if (WAD.userRole.Equals("Artist"))
+                if (Session["userRole"].ToString().Equals("Artist"))
                 {
                     Response.Write("<script>window.location = 'ArtistGallery.aspx';</script>");
                 }

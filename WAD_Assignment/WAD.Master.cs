@@ -18,10 +18,10 @@ namespace WAD_Assignment
         private string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
 
         //Share the user data to profile.aspx.cs
-        public static string username;
+        /*public static string username;
         public static string userPicPath;
         public static string userRole;
-        public static string userEmail;
+        public static string userEmail;*/
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -52,29 +52,32 @@ namespace WAD_Assignment
         private void createTicket()
         {
             // Create a new ticket used for authentication
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
+            if(Session["username"] != null && Session["userRole"] != null)
+            {
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
                 1, // Ticket version
-                username, // username associated with ticket
+                Session["username"].ToString(), // username associated with ticket
                 DateTime.Now, // Date/time issued
                 DateTime.Now.AddDays(1), // Date/time to expire
                 true, // "true" for a persistent user cookie
-                userRole,
+                Session["userRole"].ToString(),
                 FormsAuthentication.FormsCookiePath); // Path cookie
 
-            // Encrypt the cookie using the machine key for secure transport
-            string hash = FormsAuthentication.Encrypt(ticket);
+                // Encrypt the cookie using the machine key for secure transport
+                string hash = FormsAuthentication.Encrypt(ticket);
 
-            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, // Name of auth cookie
-               hash); // Hashed ticket
+                HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, // Name of auth cookie
+                   hash); // Hashed ticket
 
-            // Set the cookie's expiration time to the tickets expiration time
-            if (ticket.IsPersistent)
-            {
-                cookie.Expires = ticket.Expiration;
+                // Set the cookie's expiration time to the tickets expiration time
+                if (ticket.IsPersistent)
+                {
+                    cookie.Expires = ticket.Expiration;
+                }
+
+                // Add the cookie to the list for outgoing response
+                Response.Cookies.Add(cookie);
             }
-
-            // Add the cookie to the list for outgoing response
-            Response.Cookies.Add(cookie);
         }
 
         private void BindMenu()
@@ -158,19 +161,19 @@ namespace WAD_Assignment
                     //Update the sidebar with user account
                     if (dt.Rows.Count >= 1)
                     {
-                        username = dt.Rows[0]["Name"].ToString();
-                        lblLoginName.Text = username;
+                        Session["username"] = dt.Rows[0]["Name"].ToString();
+                        lblLoginName.Text = Session["username"].ToString();
 
-                        userPicPath = dt.Rows[0]["ProfileImg"].ToString();
+                        Session["userPicPath"] = dt.Rows[0]["ProfileImg"].ToString();
 
                         //Update Profile Pic
-                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfilePicPath", "document.getElementById('profileImg').src ='" + userPicPath + "';", true);
+                        ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateProfilePicPath", "document.getElementById('profileImg').src ='" + Session["userPicPath"].ToString() + "';", true);
 
                         //User Role
-                        userRole = dt.Rows[0]["Role"].ToString();
+                        Session["userRole"] = dt.Rows[0]["Role"].ToString();
 
                         //Email - for contact form
-                        userEmail = dt.Rows[0]["Email"].ToString();
+                        Session["userEmail"] = dt.Rows[0]["Email"].ToString();
 
                         return true;
                     }
@@ -189,7 +192,7 @@ namespace WAD_Assignment
         private void SetUpNavigationMenu()
         {
 
-            if (userRole.Equals("Artist"))
+            if (Session["userRole"].ToString().Equals("Artist"))
             {
                 ActiveArtistNavigation();
             }
@@ -214,10 +217,10 @@ namespace WAD_Assignment
             lblLoginName.Text = "";
 
             //Reset Profile
-            username = "";
-            userPicPath = "";
-            userRole = "";
-            userEmail = "";
+            Session["username"] = "";
+            Session["userPicPath"] = "";
+            Session["userRole"] = "";
+            Session["userEmail"] = "";
 
             //Update menu (Need to reset siteMenu && headerSiteMenu first)
             siteMenu.Items.Clear();

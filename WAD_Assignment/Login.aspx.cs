@@ -15,7 +15,7 @@ namespace WAD_Assignment
         protected void Page_Load(object sender, EventArgs e)
         {
             // If already got account exist, deactive it && delete the form authentication cookie
-            if (WAD.username != null)
+            if (Session["username"] != null)
             {
                 try
                 {
@@ -24,7 +24,7 @@ namespace WAD_Assignment
                         SqlCommand cmd = new SqlCommand("sp_ProfileDeactive", con);
                         cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.AddWithValue("name", WAD.username);
+                        cmd.Parameters.AddWithValue("name", Session["username"].ToString());
 
                         con.Open();
                         cmd.ExecuteNonQuery();

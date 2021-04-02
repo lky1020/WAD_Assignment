@@ -19,7 +19,7 @@ namespace WAD_Assignment
         protected void Page_Load(object sender, EventArgs e)
         {
             
-            if(WAD.userRole != null)
+            if(Session["userRole"] != null)
             {
                 //Set up the user detail (Pic + Name)
                 InitializeProfile();
@@ -34,16 +34,16 @@ namespace WAD_Assignment
 
         private void InitializeProfile()
         {
-            lblProfileName.Text = WAD.username;
+            lblProfileName.Text = Session["username"].ToString();
 
             //Update Profile Pic
-            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateUserPic", "document.getElementById('userPic').src ='" + WAD.userPicPath + "';", true);
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateUserPic", "document.getElementById('userPic').src ='" + Session["userPicPath"].ToString() + "';", true);
 
             //Update the Profile Pic for change pic
-            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBrowsePic", "document.getElementById('previewPic').src ='" + WAD.userPicPath + "';", true);
+            ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateBrowsePic", "document.getElementById('previewPic').src ='" + Session["userPicPath"].ToString() + "';", true);
 
             //Display manage art btn when role == artist
-            if (WAD.userRole.Equals("Artist")){
+            if (Session["userRole"].ToString().Equals("Artist")){
 
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "DisplayManageArtBtn", "displayManageArt();", true);
             }
@@ -53,7 +53,7 @@ namespace WAD_Assignment
             }
 
             //Update the Profile Pic for edit username and password
-             ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateUserEditPic", "document.getElementById('userPicPreview').src ='" + WAD.userPicPath + "';", true);
+             ScriptManager.RegisterStartupScript(Page, this.GetType(), "UpdateUserEditPic", "document.getElementById('userPicPreview').src ='" + Session["userPicPath"].ToString() + "';", true);
 
             //Set user bio
             if (RetrieveUserBio() == false)
@@ -128,7 +128,7 @@ namespace WAD_Assignment
                             cmd.ExecuteNonQuery();
                             con.Close();
 
-                            WAD.userPicPath = "../img/userPic/" + lblProfileName.Text + imgFileExtension + "?" + DateTime.Now.Ticks.ToString();
+                            Session["userPicPath"] = "../img/userPic/" + lblProfileName.Text + imgFileExtension + "?" + DateTime.Now.Ticks.ToString();
 
                             ScriptManager.RegisterStartupScript(Page, this.GetType(), "Upload Success", "alert('Profile Pic Upload Success');", true);
                         }
