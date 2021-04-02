@@ -222,6 +222,10 @@ namespace WAD_Assignment
             Session["userRole"] = "";
             Session["userEmail"] = "";
 
+            //Clear Session
+            Session.Abandon();
+            Session.Clear();
+
             //Update menu (Need to reset siteMenu && headerSiteMenu first)
             siteMenu.Items.Clear();
             headerSiteMenu.Items.Clear();
