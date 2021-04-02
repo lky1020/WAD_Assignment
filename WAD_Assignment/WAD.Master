@@ -93,7 +93,8 @@
                         </div>
 
                         <a href="Login.aspx" ID="btnLogin" class="profileBtn">Login</a>
-                        <asp:Button ID="btnLogout" CssClass="profileBtn" runat="server" Text="Logout" OnClick="btnLogout_Click"></asp:Button>
+                        <asp:Button ID="btnLogout" CssClass="profileBtn" runat="server" Text="Logout" OnClick="btnLogout_Click" EnableViewState="False"
+                            CausesValidation="False"></asp:Button>
                         <a href="Profile.aspx" ID="btnProfile" class="profileBtn">Manage Profile</a>
 
                     </div>

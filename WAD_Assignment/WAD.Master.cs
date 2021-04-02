@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
+using System.Web.Security;
 
 namespace WAD_Assignment
 {
@@ -24,22 +25,24 @@ namespace WAD_Assignment
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Always check active user account
-            if(RetrieveActiveUserAccount() == true)
-            {
-                //Always check the user's role (Set up navigation menu)
-                SetUpNavigationMenu();
-            }
-            else
-            {
-                //Active Customer Navigation(By Default)
-                ActiveCustomerNavigation();
-            }
 
             //Initialize webpage
             if (IsPostBack == false)
             {
                 BindMenu();
+            }
+
+            //Always check active user account
+            if (RetrieveActiveUserAccount() == true)
+            {
+                //Always check the user's role (Set up navigation menu)
+                SetUpNavigationMenu();
+
+            }
+            else
+            {
+                //Active Customer Navigation(By Default)
+                ActiveCustomerNavigation();
             }
 
         }
@@ -126,15 +129,45 @@ namespace WAD_Assignment
 
         private void SetUpNavigationMenu()
         {
+            //TreeNodeCollection nodes = tvMenu.Nodes;
+            //Response.Write("<script>alert('" + tvMenu.Nodes.Count + "');</script>");
+
             if (userRole.Equals("Artist"))
             {
                 ActiveArtistNavigation();
+
+                //RemoveNodeRecurrently(tvMenu.Nodes, "Customer");
+
+                //foreach (TreeNode item in nodes)//TESTING SDN BHD
+                //{
+                //    for (int i = 0; i < item.ChildNodes.Count; i++)
+                //    {
+                //        item.ChildNodes[i].Text = "";//TOWERs to empty string, it's hiding the node
+                //    }
+                //    item.Collapse();//It will Collapse the paretn node to hide space of child nodes
+                //}
             }
             else
             {
                 ActiveCustomerNavigation();
             }
         }
+
+        //private void RemoveNodeRecurrently(TreeNodeCollection childNodeCollection, string text)
+        //{
+        //    foreach (TreeNode childNode in childNodeCollection)
+        //    {
+        //        if (childNode.ChildNodes.Count > 0)
+        //            RemoveNodeRecurrently(childNode.ChildNodes, text);
+
+        //        if (childNode.Text == text)
+        //        {
+        //            TreeNode parentNode = childNode.Parent;
+        //            parentNode.ChildNodes.Remove(childNode);
+        //            break;
+        //        }
+        //    }
+        //}
 
         protected void btnLogout_Click(object sender, EventArgs e)
         {
@@ -143,6 +176,9 @@ namespace WAD_Assignment
 
             //Active Customer Navigation (By Default)
             ActiveCustomerNavigation();
+
+            //Reset Authentication (Cookie)
+            FormsAuthentication.SignOut();
 
             //Reset the lblLoginName
             lblLoginName.Text = "";
@@ -153,8 +189,8 @@ namespace WAD_Assignment
             userRole = "";
             userEmail = "";
 
-        //Update menu (Need to reset siteMenu && headerSiteMenu first)
-        siteMenu.Items.Clear();
+            //Update menu (Need to reset siteMenu && headerSiteMenu first)
+            siteMenu.Items.Clear();
             headerSiteMenu.Items.Clear();
             BindMenu();
 
