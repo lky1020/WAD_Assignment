@@ -17,11 +17,6 @@ namespace WAD_Assignment
         //DB
         private string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
 
-        //Share the user data to profile.aspx.cs
-        /*public static string username;
-        public static string userPicPath;
-        public static string userRole;
-        public static string userEmail;*/
 
         protected void Page_Load(object sender, EventArgs e)
         {
