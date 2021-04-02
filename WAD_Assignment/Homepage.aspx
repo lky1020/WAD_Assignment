@@ -28,7 +28,6 @@
                     Quad-Core ArtWork Sales and Display Gallery intend
                     to collect and capture all the beauty moments in
                     the life to promote to all the world. 
-
                 </p>
 
                 <br/><br/>
@@ -127,8 +126,8 @@
 							ControlToValidate="txtContactName" ErrorMessage="Please Enter Your Name" 
 							ForeColor="Red" Display="Dynamic">
 						</asp:RequiredFieldValidator>
-
                     </div>
+
                     <div class="inputBox">
                         <asp:TextBox ID="txtContactEmail" CssClass="contactInput" runat="server" placeholder="Your Email"></asp:TextBox>
                         
@@ -139,12 +138,13 @@
 
 						<asp:CustomValidator ID="cvContactEmail" runat="server" 
 							ControlToValidate="txtContactEmail"
+                            ClientValidationFunction="ValidateEmail"
 							OnServerValidate="cvContactEmail_ServerValidate"
 							ForeColor="Red"
 							Display="Dynamic">
 						</asp:CustomValidator>
-
                     </div>
+
                     <div class="inputBox">
                         <asp:TextBox ID="txtContactComment" TextMode="MultiLine" CssClass="contactInput" runat="server" placeholder="Your Comment"></asp:TextBox>
                         
@@ -153,9 +153,11 @@
 							ForeColor="Red" Display="Dynamic">
 						</asp:RequiredFieldValidator>
                     </div>
+
                     <div class="inputBox">
                         <asp:Button ID="btnContactSubmit" CssClass="contactSubmit" runat="server" Text="Submit" OnClientClick="changeSubmitText()"  OnClick="btnContactSubmit_Click"/>
                     </div>
+
                 </ContentTemplate>  
             </asp:UpdatePanel> 
         </div>
@@ -166,6 +168,21 @@
         function changeSubmitText() {
             document.getElementById('<%=btnContactSubmit.ClientID%>').value = "Sending";
             document.getElementById('<%=btnContactSubmit.ClientID%>').style.cursor = "default";
+        }
+
+        //Client-side validation
+        function ValidateEmail(source, args) {
+            var txtEmail = document.getElementById('<%=txtContactEmail.ClientID%>');
+            var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+            if (emailRegex.test(txtEmail.value) == false) {
+                alert('Invalid Email Format!');
+                source.innerHTML = "Invalid Email Format!";
+                args.IsValid = false;
+
+            } else {
+                args.IsValid = true;
+            }
         }
 
     </script>

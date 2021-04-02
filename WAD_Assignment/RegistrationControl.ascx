@@ -17,6 +17,7 @@
 						ForeColor="Red" Display="Dynamic">
 					</asp:RequiredFieldValidator>
 
+					<%-- Server Side Validation only for existing user check --%>
 					<asp:CustomValidator ID="cvUsername" runat="server" 
 						ControlToValidate="txtUsername"
 						OnServerValidate="cvUsername_ServerValidate"
@@ -36,6 +37,7 @@
 
 					<asp:CustomValidator ID="cvEmail" runat="server" 
 						ControlToValidate="txtEmail"
+						ClientValidationFunction="ValidateEmail"
 						OnServerValidate="cvEmail_ServerValidate"
 						ErrorMessage="hihihi"
 						ForeColor="Red"
@@ -144,5 +146,20 @@
 
         document.getElementById("<%=rdCustomer.ClientID %>").checked = true;
         document.getElementById("lblCustomer").classList.add("checked");
+	}
+
+    //Client-side validation
+    function ValidateEmail(source, args) {
+        var txtEmail = document.getElementById('<%=txtEmail.ClientID%>');
+        var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+        if (emailRegex.test(txtEmail.value) == false) {
+            alert('Invalid Email Format!');
+            source.innerHTML = "Invalid Email Format!";
+            args.IsValid = false;
+
+        } else {
+            args.IsValid = true;
+        }
     }
 </script>

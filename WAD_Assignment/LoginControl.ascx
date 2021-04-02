@@ -19,6 +19,7 @@
 
 						</asp:RequiredFieldValidator>
 
+						<%-- Server Side Validation only for existing user check --%>
 						<asp:CustomValidator ID="cvEmail_Username" runat="server" 
 							ControlToValidate="txtEmail_Username"
 							OnServerValidate="cvEmail_Username_ServerValidate" ForeColor="Red"
@@ -39,6 +40,7 @@
 
 						</asp:RequiredFieldValidator>
 
+						<%-- Server Side Validation only for password check --%>
 						<asp:CustomValidator ID="cvPassword" runat="server" 
 							ControlToValidate="txtPassword"
 							OnServerValidate="cvPassword_ServerValidate"
