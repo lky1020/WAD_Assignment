@@ -35,11 +35,11 @@
 						ForeColor="Red" Display="Dynamic">
 					</asp:RequiredFieldValidator>
 
+					<%-- Server Side Validation only for existing email --%>
 					<asp:CustomValidator ID="cvEmail" runat="server" 
 						ControlToValidate="txtEmail"
 						ClientValidationFunction="ValidateEmail"
 						OnServerValidate="cvEmail_ServerValidate"
-						ErrorMessage="hihihi"
 						ForeColor="Red"
 						Display="Dynamic">
 					</asp:CustomValidator>
