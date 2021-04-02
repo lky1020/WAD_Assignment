@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace WAD_Assignment
 {
@@ -40,7 +34,7 @@ namespace WAD_Assignment
                     //Reset Authentication (Cookie)
                     FormsAuthentication.SignOut();
 
-                    Response.Write("<script>alert('Invalid Role Access, You been Direct to Login Page!');</script>");
+                    Response.Write("<script>alert('You been Direct to Login Page!');</script>");
                 }
                 catch (Exception)
                 {

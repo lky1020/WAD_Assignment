@@ -59,3 +59,17 @@
 </div>
 
 <img src="img/login_register/nightCity_Login.jpg" />
+
+<script type="text/javascript">
+    //Show Password
+    function passwordFunction() {
+        var x = document.getElementById('<%= txtPassword.ClientID %>');
+
+		if (x.type == "password") {
+			x.setAttribute("type", "text");
+
+		} else {
+            x.setAttribute("type", "password");
+        }
+	}
+</script>

@@ -89,6 +89,7 @@
     <Content Include="css\profile.css" />
     <Content Include="css\wishlist.css" />
     <Content Include="ForgotPassword.aspx" />
+    <Content Include="ForgotPasswordControl.ascx" />
     <Content Include="Global.asax" />
     <Content Include="img\Artist\1180w-463h_010920-riviera-art-gallery-780x440.jpg" />
     <Content Include="img\Artist\a1.jpg" />
@@ -200,6 +201,7 @@
     <Content Include="PostArts.aspx" />
     <Content Include="Profile.aspx" />
     <Content Include="Registration.aspx" />
+    <Content Include="RegistrationControl.ascx" />
     <Content Include="Web.config" />
     <Content Include="WishList.aspx" />
   </ItemGroup>
@@ -245,6 +247,13 @@
     </Compile>
     <Compile Include="ForgotPassword.aspx.designer.cs">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ForgotPasswordControl.ascx.cs">
+      <DependentUpon>ForgotPasswordControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ForgotPasswordControl.ascx.designer.cs">
+      <DependentUpon>ForgotPasswordControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -305,6 +314,13 @@
     </Compile>
     <Compile Include="Registration.aspx.designer.cs">
       <DependentUpon>Registration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegistrationControl.ascx.cs">
+      <DependentUpon>RegistrationControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegistrationControl.ascx.designer.cs">
+      <DependentUpon>RegistrationControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="WAD.Master.cs">
       <DependentUpon>WAD.Master</DependentUpon>
