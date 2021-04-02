@@ -21,7 +21,6 @@
 
 						<asp:CustomValidator ID="cvEmail" runat="server" 
 							ControlToValidate="txtEmail"
-							ClientValidationFunction="ValidateEmail"
 							OnServerValidate="cvEmail_ServerValidate"
 							ForeColor="Red"
 							Display="Dynamic">
@@ -56,23 +55,17 @@
 	//Change the text when user click the btn
 	function changeRequestText() {
 
-        var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        if (document.getElementById('<%=txtEmail.ClientID%>').value != "" && document.getElementById('<%=txtResetPin.ClientID%>').value === "") {
+			document.getElementById('<%=btnReset.ClientID%>').value = "Sending PIN";
+			document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
 
-		if (emailRegex.test(document.getElementById('<%=txtEmail.ClientID%>').value) == true) {
-
-            if (document.getElementById('<%=txtEmail.ClientID%>').value != "" && document.getElementById('<%=txtResetPin.ClientID%>').value === "") {
-                document.getElementById('<%=btnReset.ClientID%>').value = "Sending PIN";
-                document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
-
-            } else if (document.getElementById('<%=btnReset.ClientID%>').value === "Enter New Password") {
-				document.getElementById('<%=btnReset.ClientID%>').value = "Getting Password";
-				document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
-
-			}
-			else if (document.getElementById('<%=btnReset.ClientID%>').value === "Reset Password"){
-				document.getElementById('<%=btnReset.ClientID%>').value = "Resetting Password";
-				document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
-			}
+		} else if (document.getElementById('<%=btnReset.ClientID%>').value === "Enter New Password") {
+            document.getElementById('<%=btnReset.ClientID%>').value = "Getting Password";
+            document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
+        }
+        else if (document.getElementById('<%=btnReset.ClientID%>').value === "Reset Password"){
+            document.getElementById('<%=btnReset.ClientID%>').value = "Resetting Password";
+            document.getElementById('<%=btnReset.ClientID%>').style.cursor = "default";
         }
 	}
 
@@ -80,22 +73,4 @@
     function storeResetPassword(newPassword) {
 		document.getElementById("<%=hiddenResetPasswordValue.ClientID%>").value = newPassword;
 	}
-
-
-	//Client-side validation
-	function ValidateEmail(source, args) {
-		var txtEmail = document.getElementById('<%=txtEmail.ClientID%>');
-		var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-
-		if (emailRegex.test(txtEmail.value) == false) {
-			alert('Invalid Email Format!');
-            source.innerHTML = "Invalid Email Format!";
-			args.IsValid = false;
-
-		} else {
-			args.IsValid = true;
-
-        }
-    }
-
 </script>

@@ -16,9 +16,9 @@
 						<asp:RequiredFieldValidator ID="rfvEmail_Username" runat="server" 
 							ControlToValidate="txtEmail_Username" ErrorMessage="Please Enter Email or Username" 
 							ForeColor="Red" Display="Dynamic">
+
 						</asp:RequiredFieldValidator>
 
-                        <%-- Server Side Validation only for existing user check --%>
 						<asp:CustomValidator ID="cvEmail_Username" runat="server" 
 							ControlToValidate="txtEmail_Username"
 							OnServerValidate="cvEmail_Username_ServerValidate" ForeColor="Red"
@@ -36,9 +36,9 @@
 						<asp:RequiredFieldValidator ID="rfvPassword" runat="server" 
 							ControlToValidate="txtPassword" ErrorMessage="Please Enter Password" 
 							ForeColor="Red" Display="Dynamic">
+
 						</asp:RequiredFieldValidator>
 
-						<%-- Server Side Validation only for password check --%>
 						<asp:CustomValidator ID="cvPassword" runat="server" 
 							ControlToValidate="txtPassword"
 							OnServerValidate="cvPassword_ServerValidate"
