@@ -301,9 +301,6 @@ namespace WAD_Assignment
 
             if (checkPassword(loginMethod) == true)
             {
-                // Initialize FormsAuthentication
-                //Reset Authentication (Cookie)
-                //FormsAuthentication.SignOut();
 
                 //Get profile pic path
                 if (getProfilePicPath(loginMethod) == true)
@@ -324,10 +321,6 @@ namespace WAD_Assignment
 
                     args.IsValid = true;
 
-                    ////Authenticate the user
-                    //FormsAuthentication.RedirectFromLoginPage(txtEmail_Username.Text, false);
-                    
-                    
                     // Create a new ticket used for authentication
                     FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
                         1, // Ticket version
