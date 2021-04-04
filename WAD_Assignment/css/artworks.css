@@ -1,10 +1,4 @@
 ﻿/* Header Banner */
-
-
-/*.artwork-gallery-header img {
-    object-fit: fill;
-}*/
-
 .artwork-gallery-header-bg {
     position: absolute;
     top: 0;
@@ -33,8 +27,6 @@
     width: 15%;
     padding: 2% 0% 0% 2%;
     float: left;
-    /*flex-direction: row;
-    flex-wrap: nowrap;*/
 }
 
 .filter-line {
@@ -89,20 +81,8 @@
     background-color: #292929;
 }
 
-
-
-/* background-color: #cc2a41;*/
-
-
 /* Gallery Part */
 .artwork-gallery {
-    /*  position: absolute;
-    top: 55%;
-    left: 28%;
-    right: 5%;*/
-    /*   width: 85%;
-    position: relative;
-    left: 10%;*/
     position: relative;
     margin-top: 20%;
     margin-left: 14%;
