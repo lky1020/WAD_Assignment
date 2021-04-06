@@ -28,58 +28,67 @@ namespace WAD_Assignment
         {
             Int32 userID = 0;
 
-            //detect current user id
-            using (SqlConnection conn = new SqlConnection(cs))
+            if (Session["username"] != null)
             {
-                conn.Open();
-                string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'"; //Role = 'Customer' AND LoginStatus = 'Active' ";
-                using (SqlCommand cmd1 = new SqlCommand(query1, conn))
+                //detect current user id
+                using (SqlConnection conn = new SqlConnection(cs))
                 {
-                    userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                    conn.Open();
+                    string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'"; //Role = 'Customer' AND LoginStatus = 'Active' ";
+                    using (SqlCommand cmd1 = new SqlCommand(query1, conn))
+                    {
+                        userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                    }
+                    conn.Close();
+
                 }
-                conn.Close();
-
-            }
-
-            //pass data into grid
-            SqlConnection con = new SqlConnection(cs);
-            con.Open();
-            String queryGetData = "Select a.ArtName, a.ArtImage, a.Price, a.ArtDescription,o.orderDetailId, o.qtySelected, o.Subtotal from [Cart] c " +
-                "INNER JOIN [OrderDetails] o on c.CartId = o.CartId " +
-                "INNER JOIN [Artist] a on o.ArtId = a.ArtId  " + //AND a.Availability = '1'
-                "Where c.UserId = @userid AND c.status = 'cart'";
-            SqlCommand cmd = new SqlCommand(queryGetData, con);
-            cmd.Parameters.AddWithValue("@userid", userID);
-            SqlDataAdapter sda = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            sda.Fill(dt);
 
 
-            if (dt.Rows.Count > 0)
-            {
-                gvCart.DataSource = dt;
-                gvCart.DataBind();
+                //pass data into grid
+                SqlConnection con = new SqlConnection(cs);
+                con.Open();
+                String queryGetData = "Select a.ArtName, a.ArtImage, a.Price, a.ArtDescription,o.orderDetailId, o.qtySelected, o.Subtotal from [Cart] c " +
+                    "INNER JOIN [OrderDetails] o on c.CartId = o.CartId " +
+                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId  " + //AND a.Availability = '1'
+                    "Where c.UserId = @userid AND c.status = 'cart'";
+                SqlCommand cmd = new SqlCommand(queryGetData, con);
+                cmd.Parameters.AddWithValue("@userid", userID);
+                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                sda.Fill(dt);
 
-                //set displayItem
-                cartEmpty.Visible = false;
-                totalPrice.Visible = true;
-                cart_orderBtn.Visible = true;
+
+                if (dt.Rows.Count > 0)
+                {
+                    gvCart.DataSource = dt;
+                    gvCart.DataBind();
+
+                    //set displayItem
+                    cartEmpty.Visible = false;
+                    totalPrice.Visible = true;
+                    cart_orderBtn.Visible = true;
+                }
+                else
+                {
+                    gvCart.DataSource = dt;
+                    gvCart.DataBind();
+
+                    //set display item
+                    cartEmpty.Visible = true;
+                    totalPrice.Visible = false;
+                    cart_orderBtn.Visible = false;
+                }
+
+
+                checkArtAvailability();
+
             }
             else
             {
-                gvCart.DataSource = dt;
-                gvCart.DataBind();
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "CartDenied",
+                        "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
 
-                //set display item
-                cartEmpty.Visible = true;
-                totalPrice.Visible = false;
-                cart_orderBtn.Visible = false;
             }
-
-
-            checkArtAvailability();
-
-
         }
 
         //detect art product availability
