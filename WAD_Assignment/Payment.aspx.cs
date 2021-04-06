@@ -51,7 +51,7 @@ namespace WAD_Assignment
             using (SqlConnection conn = new SqlConnection(cs))
             {
                 conn.Open();
-                string query1 = "Select UserId FROM [dbo].[User] WHERE Role = 'Customer' AND LoginStatus = 'Active' ";
+                string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'";
                 using (SqlCommand cmd1 = new SqlCommand(query1, conn))
                 {
                     currentUser = ((Int32?)cmd1.ExecuteScalar()) ?? 0;

@@ -3,63 +3,23 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.WebControls;
+using System.Web.UI;
 
 namespace WAD_Assignment
 {
+
     public partial class Cart : System.Web.UI.Page
     {
         string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
         double totalSelectPrice = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
-
-
+            
             if (!IsPostBack)
             {
                 refreshdata();
-
             }
-            else
-            {
-
-               /* CheckBox chckheader = (CheckBox)gvCart.HeaderRow.FindControl("CheckBoxHead");
-                
-                //chkItems
-                for (int i = 0; i < gvCart.Rows.Count; i++)
-                {
-
-                    CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
-                    if (chkb.Checked && gvCart.Rows[i].Cells[0].Enabled == true)
-                    {
-
-                        // selectedItem += gvCart.DataKeys[i].Value.ToString() + " ";
-                            
-                        totalSelectPrice += double.Parse((gvCart.Rows[i].FindControl("cart_artSubPrice") as TextBox).Text.ToString());
-                        totalPrice.Text = "Total : RM " + totalSelectPrice.ToString("F");
-                       
-
-                    }else if(chckheader.Checked == true && chkb.Checked == false && gvCart.Rows[i].Cells[0].Enabled == true)
-                    {
-                        chckheader.Checked = false;
-
-                        totalSelectPrice += 0;
-                    }
-                    else if(gvCart.Rows[i].Cells[0].Enabled == false)
-                    {
-                        // gvCart.Rows[i].Cells[1].Text = "Item is not available";
-                        gvCart.Rows[i].Cells[3].Text = "-";
-                        gvCart.Rows[i].Cells[4].Text = "-";
-                        gvCart.Rows[i].Cells[5].Text = "RM - ";
-
-                        totalSelectPrice += 0;
-                    }
-
-                }*/
-
-
-            }
-
-
+            
         }
 
 
@@ -72,7 +32,7 @@ namespace WAD_Assignment
             using (SqlConnection conn = new SqlConnection(cs))
             {
                 conn.Open();
-                string query1 = "Select UserId FROM [dbo].[User] WHERE Role = 'Customer' AND LoginStatus = 'Active' ";
+                string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'"; //Role = 'Customer' AND LoginStatus = 'Active' ";
                 using (SqlCommand cmd1 = new SqlCommand(query1, conn))
                 {
                     userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
@@ -119,6 +79,7 @@ namespace WAD_Assignment
 
             checkArtAvailability();
 
+
         }
 
         //detect art product availability
@@ -144,7 +105,7 @@ namespace WAD_Assignment
                         gvCart.Rows[i].Cells[3].Text = "-";
                         gvCart.Rows[i].Cells[4].Text = "-";
                         gvCart.Rows[i].Cells[5].Text = "RM - ";
-                       //cart_artName
+                     
                     }
 
                 }
@@ -170,7 +131,7 @@ namespace WAD_Assignment
 
         protected void gvCart_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            try//if (gvCart.Rows[e.RowIndex].Cells[0].Enabled)
+            try
             {
                 //check availability
                 SqlConnection con = new SqlConnection(cs);
@@ -208,8 +169,7 @@ namespace WAD_Assignment
                     {
                         con.Open();
                         String query = "Update OrderDetails SET qtySelected=@qty, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
-                        //String query = "Update Cart SET qtySelected=@qty, Subtotal=@subtotal WHERE CartId =@cartid";
-
+                        
                         SqlCommand cmd = new SqlCommand(query, con);
 
                         int itemQty = int.Parse((gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim());
@@ -230,7 +190,6 @@ namespace WAD_Assignment
                     }
                 }
             }catch (Exception)
-            //else //for disable check box
             {
                 Response.Write("<script>alert('Update is fail. This product is no longer available. Please remove it from your cart, thank you.')</script>");
                 refreshdata();
@@ -259,7 +218,7 @@ namespace WAD_Assignment
 
         }
 
-
+        //Order Btn
         protected void cart_orderBtn_Click(object sender, EventArgs e)
         {
             String orderItem = null;
@@ -288,10 +247,9 @@ namespace WAD_Assignment
                 Response.Write("<script>alert('Please select art before proceed payment.')</script>");
             }
 
-
-
         }
 
+        //the header checkbox
         protected void CheckBoxHead_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox chckheader = (CheckBox)gvCart.HeaderRow.FindControl("CheckBoxHead");
@@ -339,15 +297,16 @@ namespace WAD_Assignment
         protected void chkItems_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox chckheader = (CheckBox)gvCart.HeaderRow.FindControl("CheckBoxHead");
-
+            
             //chkItems
             for (int i = 0; i < gvCart.Rows.Count; i++)
             {
 
                 CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
+
+
                 if (chkb.Checked && gvCart.Rows[i].Cells[0].Enabled == true)
                 {
-
                     totalSelectPrice += double.Parse((gvCart.Rows[i].FindControl("cart_artSubPrice") as TextBox).Text.ToString());
                     
                 }
@@ -371,6 +330,30 @@ namespace WAD_Assignment
                 totalPrice.Text = "Total : RM " + totalSelectPrice.ToString("F");
 
             }
+
+            if (chckheader.Checked == false)
+            {
+                //these 2 var is used to check if all box is selected - if yes then the header box will be chk else unchk
+                int numChecked = 0;
+                int availableChkBox = 0;
+
+                //chkItems
+                for (int i = 0; i < gvCart.Rows.Count; i++)
+                {
+
+                    CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
+
+                    if (gvCart.Rows[i].Cells[0].Enabled)
+                        availableChkBox += 1;
+
+                    if (chkb.Checked)
+                        numChecked += 1;
+                }
+
+                if (numChecked == availableChkBox)
+                    chckheader.Checked = true;
+            }
+
         }
     }
 }
