@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace WAD_Assignment
@@ -32,50 +33,58 @@ namespace WAD_Assignment
 
             Int32 userID = 0;
 
-            //detect current user id
-            using (SqlConnection conn = new SqlConnection(cs))
+            if (Session["username"] != null)
             {
-                conn.Open();
-                string query1 = "Select UserId FROM [dbo].[User] WHERE Role = 'Customer' AND LoginStatus = 'Active' ";
-                using (SqlCommand cmd1 = new SqlCommand(query1, conn))
+                //detect current user id
+                using (SqlConnection conn = new SqlConnection(cs))
                 {
-                    userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                    conn.Open();
+                    string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'";
+                    using (SqlCommand cmd1 = new SqlCommand(query1, conn))
+                    {
+                        userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                    }
+                    conn.Close();
+
                 }
-                conn.Close();
-
-            }
-
-            
-            //pass data into grid
-            SqlConnection con = new SqlConnection(cs);
-            con.Open();
 
 
-            String query = "Select p.paymentId, o.OrderDetailId, a.ArtName, a.Price, o.qtySelected, o.Subtotal, p.datePaid from [Payment] p " +
-                "INNER JOIN [Cart] c on p.CartId = c.CartId INNER JOIN [OrderDetails] o on o.CartId = c.CartId " +
-                "INNER JOIN [Artist] a on o.ArtId = a.ArtId " +
-                "Where c.UserId = @id " +
-                "ORDER BY p.paymentId DESC";
-            SqlCommand cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@id", userID);
-            SqlDataAdapter sda = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            sda.Fill(dt);
-            
-            if (dt.Rows.Count > 0)
-            {
-                gvPayHistory.DataSource = dt;
-                gvPayHistory.DataBind();
-                historyEmpty.Visible = false;
-                
+                //pass data into grid
+                SqlConnection con = new SqlConnection(cs);
+                con.Open();
+
+
+                String query = "Select p.paymentId, o.OrderDetailId, a.ArtName, a.Price, o.qtySelected, o.Subtotal, p.datePaid from [Payment] p " +
+                    "INNER JOIN [Cart] c on p.CartId = c.CartId INNER JOIN [OrderDetails] o on o.CartId = c.CartId " +
+                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId " +
+                    "Where c.UserId = @id " +
+                    "ORDER BY p.paymentId DESC";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", userID);
+                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                sda.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    gvPayHistory.DataSource = dt;
+                    gvPayHistory.DataBind();
+                    historyEmpty.Visible = false;
+
+                }
+                else
+                {
+                    historyEmpty.Visible = true;
+                }
+                con.Close();
+
             }
             else
             {
-                historyEmpty.Visible = true;
-               }
-            con.Close();
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "HistoryDenied",
+                        "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
 
-
+            }
         }
     }
 }

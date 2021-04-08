@@ -203,8 +203,6 @@ namespace WAD_Assignment.ArtWorks
         {
             ImageButton imgButton = sender as ImageButton;
             
-            
-            //Response.Redirect("/WishList.aspx");
 
             Int32 userID = 0;
             Int32 artID = Convert.ToInt32(imgButton.CommandArgument.ToString());
@@ -258,11 +256,15 @@ namespace WAD_Assignment.ArtWorks
             Int32 userID = 0;
             Int32 artID = Convert.ToInt32(btn.CommandArgument.ToString());
             Int32 cartID = 0;
+            Int32 orderDetailID = 0;
             int qty;
             decimal unitPrice = 0;
+            int qtyOrderDetail = 0;
+            decimal subtotalOrderDetail = 0;
 
             // try
             // {
+
             //Get current user id
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
             {
@@ -340,19 +342,64 @@ namespace WAD_Assignment.ArtWorks
                         
                     }
 
-                    //insert order details based on cartid
-            
-                   string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + artID + "', '" + 1 + "', '" + unitPrice + "')";
+                    //get exist order detail
 
-                   SqlCommand cmdInsertOrder = new SqlCommand();
-                   con.Open();
-                    cmdInsertOrder.Connection = con;
-                    cmdInsertOrder.CommandType = CommandType.Text;
-                    cmdInsertOrder.CommandText = sqlInsertOrder;
+                    con.Open();
+
+                    SqlCommand cmdOrderDetailID = new SqlCommand("SELECT OrderDetailId, qtySelected, Subtotal from [OrderDetails] Where CartId = @CartId AND ArtId = @ArtId", con);
+                    cmdOrderDetailID.Parameters.AddWithValue("@CartId", cartID);
+                    cmdOrderDetailID.Parameters.AddWithValue("@ArtId", artID);
+
+                    SqlDataReader dtrOrderDetail = cmdOrderDetailID.ExecuteReader();
+                    if (dtrOrderDetail.HasRows)
+                    {
+                        while (dtrOrderDetail.Read())
+                        {
+                            orderDetailID = (Int32)dtrOrderDetail["OrderDetailId"];
+                            qtyOrderDetail = (int)dtrOrderDetail["qtySelected"];
+                            subtotalOrderDetail = (decimal)dtrOrderDetail["Subtotal"];
+                        }
+
+                    }
+                    con.Close();
+
+                    //check whether exist same art (order detail)
+                    if (orderDetailID != 0)
+                    {
+                        //update order details
+                        qtyOrderDetail++;
+                        subtotalOrderDetail += unitPrice;
+
+                        string sqlUpdateOrder = "UPDATE OrderDetails SET qtySelected = '"+ qtyOrderDetail + "', Subtotal = '" + subtotalOrderDetail + "' WHERE orderDetailID = '" + orderDetailID + "'";
+
+                        SqlCommand cmdUpdateOrder = new SqlCommand();
+                        con.Open();
+                        cmdUpdateOrder.Connection = con;
+                        cmdUpdateOrder.CommandType = CommandType.Text;
+                        cmdUpdateOrder.CommandText = sqlUpdateOrder;
 
 
-                    cmdInsertOrder.ExecuteNonQuery();
-                   con.Close();
+                        cmdUpdateOrder.ExecuteNonQuery();
+                        con.Close();
+                    }
+                    else
+                    {
+                        //insert order details based on cartid
+
+                        string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + artID + "', '" + 1 + "', '" + unitPrice + "')";
+
+                        SqlCommand cmdInsertOrder = new SqlCommand();
+                        con.Open();
+                        cmdInsertOrder.Connection = con;
+                        cmdInsertOrder.CommandType = CommandType.Text;
+                        cmdInsertOrder.CommandText = sqlInsertOrder;
+
+
+                        cmdInsertOrder.ExecuteNonQuery();
+                        con.Close();
+                    }
+
+                    
 
                    Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
                    }
