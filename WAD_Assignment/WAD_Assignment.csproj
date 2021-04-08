@@ -88,6 +88,7 @@
     <Content Include="css\PostArt.css" />
     <Content Include="css\profile.css" />
     <Content Include="css\wishlist.css" />
+    <Content Include="ErrorPages\FileNotFound.htm" />
     <Content Include="ForgotPassword.aspx" />
     <Content Include="ForgotPasswordControl.ascx" />
     <Content Include="Global.asax" />
@@ -173,6 +174,9 @@
     <Content Include="img\icon\done.png" />
     <Content Include="img\icon\dusbin.png" />
     <Content Include="img\icon\edit.png" />
+    <Content Include="img\icon\minus.png" />
+    <Content Include="img\icon\plus.png" />
+    <Content Include="img\icon\repair.png" />
     <Content Include="img\login_register\nightCity_Login.jpg" />
     <Content Include="img\login_register\nightCity_Register.jpg" />
     <Content Include="img\login_register\user_default.png" />

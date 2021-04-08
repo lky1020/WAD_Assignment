@@ -46,6 +46,32 @@ namespace WAD_Assignment
 
         protected void Application_Error(object sender, EventArgs e)
         {
+            Exception ex = Server.GetLastError();
+            HttpException httpException = (HttpException)ex;
+            int httpCode = httpException.GetHttpCode();
+
+            //store the error for later
+            Application["exception"] = ex;
+
+            //Store the location of file that made error
+            Application["location"] = Request.Url.ToString();
+            Application["Message"] = ex.Message;
+
+            if(ex.InnerException != null)
+            {
+                Application["InnerException"] = ex.InnerException.ToString();
+            }
+
+
+            //clear the error so we can continue onwards
+            Server.ClearError();
+
+
+            //send user to error page
+            if (httpCode == 404)
+            {
+                Response.Redirect("ErrorPages/FileNotFound.htm");
+            }
 
         }
 
