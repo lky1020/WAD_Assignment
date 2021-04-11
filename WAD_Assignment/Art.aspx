@@ -33,9 +33,6 @@
               <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>" SelectCommand="SELECT * FROM [Category]"></asp:SqlDataSource>
          </div>
             
-         <div class="ViewArt">
-            <asp:Button class="btnViewArt" ID="btnViewArt" runat="server" Text="View Art" ForeColor="	#FFFFFF" OnClick="btnViewArt_Click" />
-         </div>   
          
         <div class="formAddArt" id="formAddArt">
 
@@ -49,6 +46,8 @@
                 <tr>
                     <td>
                     <asp:TextBox ID="txtBoxArtName" runat="server" CssClass="txtBoxArtName" OnTextChanged="txtBoxArtName_TextChanged"></asp:TextBox>
+                    <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtBoxArtName"
+                    runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
                     </td>
 
                     <td rowspan="12">
@@ -67,6 +66,8 @@
                 <tr>
                     <td>
                         <asp:DropDownList ID="ddlCatArt" runat="server" CssClass="ddlCatArt" OnSelectedIndexChanged="ddlCatArt_SelectedIndexChanged" DataSourceID="SqlDataSource1" DataTextField="CategoryName" DataValueField="CategoryID"></asp:DropDownList>
+                        <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="ddlCatArt"
+                        runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
                     </td>
                 </tr>
 
@@ -79,6 +80,8 @@
                 <tr>
                     <td>
                         <asp:TextBox ID="txtBoxArtDesc" runat="server"  textmode="Multiline"  CssClass="txtBoxArtDesc" OnTextChanged="txtBoxArtDesc_TextChanged"></asp:TextBox>
+                        <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtBoxArtDesc"
+                        runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
                     </td>
                 </tr>
 
@@ -91,6 +94,11 @@
                 <tr>
                     <td>
                         <asp:TextBox ID="txtBoxArtPrice" type="number" runat="server" CssClass="txtBoxArtName" OnTextChanged="txtBoxArtPrice_TextChanged"></asp:TextBox>
+                        <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtBoxArtPrice"
+                        runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
+                        <br />
+                        <asp:RangeValidator ID="RangeValidatorPrice" runat="server" ControlToValidate="txtBoxArtPrice" ErrorMessage="Please Enter Minumum Price RM 15.00"
+                        MaximumValue="99999" MinimumValue="15" Type="Integer" Display="Dynamic" ForeColor="Red"></asp:RangeValidator>
                     </td>
                 </tr>
 
@@ -103,7 +111,11 @@
                 <tr>
                     <td>
                         <asp:TextBox ID="txtBoxArtQuantity" type="number" runat="server" CssClass="txtBoxArtName" OnTextChanged="txtBoxArtPrice_TextChanged"></asp:TextBox>
-                         
+                        <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtBoxArtQuantity"
+                        runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
+                        <br />
+                        <asp:RangeValidator ID="RangeValidatorQuan" runat="server" ControlToValidate="txtBoxArtQuantity" ErrorMessage="Please Enter Quantity 1 - 10"
+                        MaximumValue="10" MinimumValue="1" Type="Integer" Display="Dynamic" ForeColor="Red"></asp:RangeValidator>
                     </td>
                 </tr>
 
@@ -117,7 +129,14 @@
                 <tr>
                     <td>
                     <asp:FileUpload ID="FileUpload1" runat="server" onchange="showimagepreview(this)"/>
-                       
+                    <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="FileUpload1"
+                        runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
+                    <br />
+                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ValidationExpression="([a-zA-Z0-9\s_\\.\-:])+(.jpeg|.JPEG|.gif|.GIF|.png|.PNG|.JPG|.jpg|.bitmap|.BITMAP)$"
+                        ControlToValidate="FileUpload1" runat="server" ForeColor="Red" ErrorMessage="Please select a valid image format "
+                        Display="Dynamic" />
+                    <br />
+                        
                     </td>
                 </tr>
 

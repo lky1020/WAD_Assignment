@@ -23,7 +23,7 @@ namespace WAD_Assignment
 
                 if (previousUrl != null)
                 {
-                    Response.Write("<script>alert('Unauthorized Access!!'); window.location = '" + previousUrl + "';</script>");
+                    Response.Write("<script>alert('Unauthorized Access !'); window.location = '" + previousUrl + "';</script>");
                 }
 
             }

@@ -129,6 +129,8 @@
 
                         <EditItemTemplate>
                             <asp:TextBox ID="txtArtName" Text='<%# Eval("ArtName") %>' runat="server" Width="150px" style="text-align: center"/>
+                            <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtArtName"
+                            runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
                         </EditItemTemplate>
                     </asp:TemplateField>
 
@@ -141,6 +143,8 @@
 
                         <EditItemTemplate>
                             <asp:TextBox ID="txtArtDescription" Text='<%# Eval("ArtDescription") %>' runat="server" Width="150px" style="text-align: center"/>
+                            <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtArtDescription"
+                            runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
                         </EditItemTemplate>
                     </asp:TemplateField>
  
@@ -164,6 +168,10 @@
 
                         <EditItemTemplate>
                             <asp:TextBox ID="txtPrice" Text='<%# Eval("Price") %>' runat="server" type="number" Width="150px" style="text-align: center"/>
+                            <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtPrice"
+                            runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
+                            <asp:RangeValidator ID="RangeValidatortxtPrice" runat="server" ControlToValidate="txtPrice" ErrorMessage="Please Enter Minumum Price RM 15.00"
+                            MaximumValue="99999" MinimumValue="15" Type="Double" Display="Dynamic" ForeColor="Red"></asp:RangeValidator>
                         </EditItemTemplate>
                     </asp:TemplateField>
 
@@ -176,6 +184,12 @@
 
                         <EditItemTemplate>
                             <asp:TextBox ID="txtQuantity" Text='<%# Eval("Quantity") %>' runat="server" type="number" Width="150px" style="text-align: center"/>
+                            <asp:RequiredFieldValidator ErrorMessage="Required" ControlToValidate="txtQuantity"
+                            runat="server" Display="Dynamic" ForeColor="Red">*</asp:RequiredFieldValidator>
+                            <br />
+                            <asp:RangeValidator ID="RangeValidatortxtQuan" runat="server" ControlToValidate="txtQuantity" ErrorMessage="Please Enter Quantity 1 - 10"
+                            MaximumValue="10" MinimumValue="1" Type="Integer" Display="Dynamic" ForeColor="Red"></asp:RangeValidator>
+                            
                         </EditItemTemplate>
                     </asp:TemplateField>
 

@@ -24,15 +24,6 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSource1;
 
         /// <summary>
-        /// btnViewArt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnViewArt;
-
-        /// <summary>
         /// txtBoxArtName control.
         /// </summary>
         /// <remarks>
@@ -69,6 +60,15 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtBoxArtPrice;
 
         /// <summary>
+        /// RangeValidatorPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator RangeValidatorPrice;
+
+        /// <summary>
         /// txtBoxArtQuantity control.
         /// </summary>
         /// <remarks>
@@ -78,6 +78,15 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.TextBox txtBoxArtQuantity;
 
         /// <summary>
+        /// RangeValidatorQuan control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator RangeValidatorQuan;
+
+        /// <summary>
         /// FileUpload1 control.
         /// </summary>
         /// <remarks>
@@ -85,6 +94,15 @@ namespace WAD_Assignment
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
+
+        /// <summary>
+        /// RegularExpressionValidator1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
 
         /// <summary>
         /// btnViewArtSubmit control.

@@ -26,85 +26,76 @@ namespace WAD_Assignment
 
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
+                if (Session["username"] != null)
                 {
-                    con.Open();
-
-                    string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Artist' AND LoginStatus='Active'";
-                    using (SqlCommand cmdUser = new SqlCommand(query, con))
+                    using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
                     {
-                        userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
-                    }
-                }
+                        con.Open();
 
-                if(txtBoxArtPrice.Text == "0" || txtBoxArtQuantity.Text == "0")
-                {
-                    throw new Exception();
+                        string query = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'";
+                        using (SqlCommand cmdUser = new SqlCommand(query, con))
+                        {
+                            userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                        }
+                    }
                 }
                 else
                 {
-                    string path;
-
-                if (FileUpload1.HasFile)
-                {
-                    try
-                    {
-                            System.Drawing.Image image = System.Drawing.Image.FromStream(FileUpload1.FileContent);
-                            
-                            if (image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Tiff.Guid ||
-                                image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Gif.Guid ||
-                                image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Jpeg.Guid ||
-                                image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Bmp.Guid ||
-                                image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Png.Guid ||
-                                image.RawFormat.Guid == System.Drawing.Imaging.ImageFormat.Icon.Guid)
-                            {
-                                FileUpload1.SaveAs(Server.MapPath("~/img/Artist/") + FileUpload1.FileName);
-
-                                path = "img/Artist/" + FileUpload1.FileName;
-
-                                string sql = "insert into Artist (ArtName, ArtDescription, ArtImage, UserId, Category, Price, Quantity) values('" + txtBoxArtName.Text + "', '"
-                                    + txtBoxArtDesc.Text + "', '" + path + "', '" + userID + "', '" + ddlCatArt.SelectedValue + "', '"
-                                    + txtBoxArtPrice.Text + "', '" + txtBoxArtQuantity.Text + "')";
-
-                                SqlCommand cmd = new SqlCommand();
-                                cmd.Connection = con;
-                                cmd.CommandType = CommandType.Text;
-                                cmd.CommandText = sql;
-
-
-
-                                con.Open();
-                                cmd.ExecuteNonQuery();
-                                con.Close();
-
-
-
-                                Response.Write("<script>alert('Congratulation, Art Added Successfully')</script>");
-                                txtBoxArtDesc.Text = "";
-                                txtBoxArtName.Text = "";
-                                txtBoxArtPrice.Text = "";
-                                txtBoxArtQuantity.Text = "";
-                            }
-                            else
-                                throw new Exception();
-                        }
-                        catch (Exception ex)
-                        {
-                            Response.Write("<script>alert('Sorry, Fail to Update the Art. We only support file type: TIFF,GIF,JPG,BMP,PNG,ICO')</script>");
-                        }
-                   
-
+                    throw new Exception();
                 }
-
-               
-                
-                }
-                
             }
             catch (Exception ex)
             {
-                Response.Write("<script>alert('Sorry, Fail to Update the Art. Price and Quantity cannot be 0')</script>");
+                Response.Write("<script>alert('Sorry, No User Login Found')</script>");
             }
+
+            try
+            {
+
+                string path;
+
+                if (FileUpload1.HasFile)
+                {
+                    System.Drawing.Image image = System.Drawing.Image.FromStream(FileUpload1.FileContent);
+
+                    FileUpload1.SaveAs(Server.MapPath("~/img/Artist/") + FileUpload1.FileName);
+
+                    path = "img/Artist/" + FileUpload1.FileName;
+
+                    string sql = "insert into Artist (ArtName, ArtDescription, ArtImage, UserId, Category, Price, Quantity) values('" + txtBoxArtName.Text + "', '"
+                        + txtBoxArtDesc.Text + "', '" + path + "', '" + userID + "', '" + ddlCatArt.SelectedValue + "', '"
+                        + txtBoxArtPrice.Text + "', '" + txtBoxArtQuantity.Text + "')";
+
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = con;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = sql;
+
+
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+
+
+
+                    Response.Write("<script>alert('Congratulation, Art Added Successfully')</script>");
+                    txtBoxArtDesc.Text = "";
+                    txtBoxArtName.Text = "";
+                    txtBoxArtPrice.Text = "";
+                    txtBoxArtQuantity.Text = "";
+
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Sorry, No File Uploaded')</script>");
+            }
+
         }
 
         protected void txtBoxArtName_TextChanged(object sender, EventArgs e)
