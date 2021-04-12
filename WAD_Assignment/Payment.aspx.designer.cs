@@ -51,13 +51,13 @@ namespace WAD_Assignment
         protected global::System.Web.UI.WebControls.Label total_payment;
 
         /// <summary>
-        /// RadioButtonList1 control.
+        /// CardRadioButtonList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonList1;
+        protected global::System.Web.UI.WebControls.RadioButtonList CardRadioButtonList;
 
         /// <summary>
         /// Address control.
@@ -157,6 +157,15 @@ namespace WAD_Assignment
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator ExpDate_RequiredField;
+
+        /// <summary>
+        /// ExpDate_RangeValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator ExpDate_RangeValidator;
 
         /// <summary>
         /// CVV control.

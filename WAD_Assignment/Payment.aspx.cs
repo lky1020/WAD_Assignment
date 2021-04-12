@@ -35,9 +35,9 @@ namespace WAD_Assignment
             else
             {
                 payment_refreshdata();
-                //Response.Write("<script>alert('Passing Data UnSucessfull')</script>");
 
             }
+
         }
 
         public void payment_refreshdata()
@@ -81,7 +81,6 @@ namespace WAD_Assignment
             }
             con.Close();
 
-
         }
 
        
@@ -97,30 +96,44 @@ namespace WAD_Assignment
 
         protected void pay_Btn_Click(object sender, EventArgs e)
         {
+
             Int32 cartID = 0;
 
             SqlConnection con = new SqlConnection(cs);
             con.Open();
 
-            //create new cart for status = 'pending'
-            String status = "pending";
-            string sql = "INSERT into Cart (UserId, status) values('" + currentUser + "', '" + status + "')";
 
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
+            //retrieve 'pending' cartid (check if pending cart exist for cusrrent user, pending cart use to )
+            string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
 
-            cmd.ExecuteNonQuery(); 
-
-
-            //retrieve 'pending' cartid 
-            string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
-
-            using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, con))
+            using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
             {
                 cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
             }
+
+            if(cartID == 0)
+            {
+                //create new cart for status = 'pending'
+                String status = "pending";
+                string sql = "INSERT into Cart (UserId, status) values('" + currentUser + "', '" + status + "')";
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = con;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = sql;
+
+                cmd.ExecuteNonQuery();
+
+
+                //retrieve 'pending' cartid 
+                string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
+
+                using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, con))
+                {
+                    cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                }
+            }
+            
 
 
             //update selected item with the cartid 
@@ -143,8 +156,17 @@ namespace WAD_Assignment
             }
 
             //insert data to payment table 
-           
-             string sqlPayment = "INSERT into Payment (CartId, datepaid, total) values('" + cartID + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "')";
+             string cardType = "Debit";
+            if (CardRadioButtonList.SelectedIndex == 1)
+            {
+                cardType = "Credit";
+            }
+
+            //calcullate total payment
+            totalPay += double.Parse(orderItem[orderItem.Length - 1]);
+            totalPay += checkDeliveryFees();
+
+            string sqlPayment = "INSERT into Payment (cartid, datepaid, total,cardType) values('" + cartID + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "','" + cardType+"')";
 
              SqlCommand cmdPayment = new SqlCommand();
                 

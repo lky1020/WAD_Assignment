@@ -100,7 +100,7 @@
             <div class="checkout_form">
                 <p>Payment Section</p>
 
-                <asp:RadioButtonList ID="RadioButtonList1" runat="server" Font-Size="15px" ForeColor="#999999" RepeatDirection="Horizontal" Width="80%">
+                <asp:RadioButtonList ID="CardRadioButtonList" runat="server" Font-Size="15px" ForeColor="#999999" RepeatDirection="Horizontal" Width="80%">
                     <asp:ListItem Selected="True">   Debit Card </asp:ListItem>
                     <asp:ListItem>   Credit Card</asp:ListItem>
                 </asp:RadioButtonList>
@@ -119,8 +119,8 @@
                     <!-- input type="text" placeholder="Card Number" /-->
                     <asp:TextBox ID="Card_Number" runat="server" Height="40px" class="text_box"/>
                     <asp:RequiredFieldValidator ID="CardNum_RequiredField" runat="server" ErrorMessage="Card Number is Required." ForeColor="Red" ControlToValidate="Card_Number">*</asp:RequiredFieldValidator>
-                    <asp:RegularExpressionValidator ID="CardNum_RegularExpression" runat="server" ErrorMessage="Invalid Card Number (E.g. 4567873847384596)" 
-                        ForeColor="Red" ControlToValidate="Card_Number" ValidationExpression="^[0-9]{16}$" Font-Size="11px"></asp:RegularExpressionValidator>
+                    <asp:RegularExpressionValidator ID="CardNum_RegularExpression" runat="server" ErrorMessage="Invalid Card Number (E.g. 4567 8738 4738 4596)" 
+                        ForeColor="Red" ControlToValidate="Card_Number" ValidationExpression="^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$" Font-Size="11px"></asp:RegularExpressionValidator>
                 </div>
 
                 <div class="payment_section">
@@ -138,7 +138,9 @@
                         <p style="font-size:10px;margin-bottom:0px">Expiry Date (E.g. 02/20/2025)</p>
                         <!-- input type="text" placeholder="Expiry Date" /-->
                         <asp:TextBox ID="Exp_Date" runat="server" Height="40px" class="payment_item_box" TextMode="Date"/>
-                        <asp:RequiredFieldValidator ID="ExpDate_RequiredField" runat="server" ErrorMessage="Expiry Date is Required." ForeColor="Red" ControlToValidate="Exp_Date">*</asp:RequiredFieldValidator>
+                        <asp:RequiredFieldValidator ID="ExpDate_RequiredField" runat="server" ErrorMessage="Expiry Date is Required." ForeColor="Red" ControlToValidate="Exp_Date" Font-Size="11px">*</asp:RequiredFieldValidator>
+                        <asp:RangeValidator ID="ExpDate_RangeValidator" runat="server" ErrorMessage="Invalid Expiry Date!" ControlToValidate="Exp_Date" Type="Date" MaximumValue="2030-12-31" MinimumValue ="2021-5-31" 
+                            ForeColor="Red" Font-Size="11px"></asp:RangeValidator>
                        
                     </div>
                     <div>
