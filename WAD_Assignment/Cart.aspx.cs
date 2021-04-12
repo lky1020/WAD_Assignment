@@ -10,6 +10,7 @@ namespace WAD_Assignment
 
     public partial class Cart : System.Web.UI.Page
     {
+        Int32 userID = 0;
         string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
         double totalSelectPrice = 0;
         protected void Page_Load(object sender, EventArgs e)
@@ -26,8 +27,7 @@ namespace WAD_Assignment
         //refresh the data in gridview
         public void refreshdata()
         {
-            Int32 userID = 0;
-
+            
             if (Session["username"] != null)
             {
                 //detect current user id
@@ -230,26 +230,97 @@ namespace WAD_Assignment
         //Order Btn
         protected void cart_orderBtn_Click(object sender, EventArgs e)
         {
-            String orderItem = null;
-            totalSelectPrice = 0;
+            //assign selected item: selected = True in order details page
+            bool haveItemChk = false;
 
-            //chkItems
+            //chkItems - if chk then update to orderdetails db
             for (int i = 0; i < gvCart.Rows.Count; i++)
             {
                 CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
                 if (chkb.Checked)
                 {
-                    orderItem += gvCart.DataKeys[i].Value.ToString() + " ";
-                    totalSelectPrice += double.Parse((gvCart.Rows[i].FindControl("cart_artSubPrice") as TextBox).Text.ToString());
-        }
+                    SqlConnection con = new SqlConnection(cs);
+                    con.Open();
+                    using (con)
+                    {
+                        String query = "Update OrderDetails SET Checked = 'True' WHERE OrderDetailId = @detailid";
+
+                        SqlCommand cmd = new SqlCommand(query, con);
+
+                        cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[i].Value.ToString()));
+                        cmd.ExecuteNonQuery();
+                        gvCart.EditIndex = -1;
+  }
+                    con.Close();
+                    haveItemChk = true;
+                }
+                else
+                {
+                    SqlConnection con = new SqlConnection(cs);
+                    con.Open();
+                    using (con)
+                    {
+                        String query = "Update OrderDetails SET Checked = 'False' WHERE OrderDetailId = @detailid";
+
+                        SqlCommand cmd = new SqlCommand(query, con);
+
+                        cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[i].Value.ToString()));
+                        cmd.ExecuteNonQuery();
+                        gvCart.EditIndex = -1;
+                    }
+            
+                    con.Close();
+                }
             }
 
 
             //redirect to payment page
-            if (orderItem != null)
+            if (haveItemChk)
             {
-                orderItem += totalSelectPrice.ToString("F");
-                Response.Redirect("Payment.aspx?checkedItem=" + orderItem);
+                Int32 cartID;
+
+                using (SqlConnection conn = new SqlConnection(cs))
+                {
+                    conn.Open();
+                    string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'"; //Role = 'Customer' AND LoginStatus = 'Active' ";
+                    using (SqlCommand cmd1 = new SqlCommand(query1, conn))
+                    {
+                        userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                    }
+                    conn.Close();
+
+                }
+
+                SqlConnection con = new SqlConnection(cs);
+                con.Open();
+
+                //retrieve 'pending' cartid (check if pending cart exist for cusrrent user, pending cart use to )
+                string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'pending'";
+
+                using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
+                {
+                    cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+
+                }
+
+                //create a pending cart if no pending cart of the user is detected
+                if (cartID == 0)
+                {
+                    //create new cart for status = 'pending'
+                    string status = "pending";
+                    string sql = "INSERT into Cart (UserId, status) values('" + userID + "', '" + status + "')";
+
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = con;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = sql;
+
+                    cmd.ExecuteNonQuery();
+                    
+
+                }
+                con.Close();
+                Response.Redirect("Payment.aspx");
             }
             else
             {

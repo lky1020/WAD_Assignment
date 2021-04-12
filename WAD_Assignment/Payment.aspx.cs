@@ -6,12 +6,17 @@ using System.Net.Mail;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Net;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.html.simpleparser;
+using System.IO;
 
 namespace WAD_Assignment
 {
     public partial class Payment : System.Web.UI.Page
     {
-        String[] orderItem;
+
         string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
         double totalPay = 0;
         Int32 currentUser = 0;
@@ -22,13 +27,14 @@ namespace WAD_Assignment
             if (!IsPostBack)
             {
                 payment_refreshdata();
+               
+                double paySubtotal = subtotalPayment();
+                pay_subtotal.Text = "RM " + paySubtotal.ToString("F");
 
-                //calculate prices
-                totalPay += double.Parse(orderItem[orderItem.Length - 1]);
-                pay_subtotal.Text = "RM " + orderItem[orderItem.Length - 1];
 
-                totalPay += checkDeliveryFees();
-                deliverly_fees.Text = "RM " + checkDeliveryFees().ToString("F");
+                //totalPay += checkDeliveryFees();
+                totalPay += subtotalPayment() + (gvPayment.Rows.Count * 3);
+                deliverly_fees.Text = "RM " + (gvPayment.Rows.Count * 3).ToString("F");//checkDeliveryFees().ToString("F");
                 total_payment.Text = "RM " + totalPay.ToString("F");
 
             }
@@ -40,13 +46,8 @@ namespace WAD_Assignment
 
         }
 
-        public void payment_refreshdata()
+        public void current_User_id()
         {
-            //retrieve pass id of order item from cart
-            String str = Request.QueryString["checkedItem"];
-            orderItem = str.Split(' ');
-
-
             //detect current user id
             using (SqlConnection conn = new SqlConnection(cs))
             {
@@ -59,83 +60,75 @@ namespace WAD_Assignment
                 conn.Close();
 
             }
+        }
 
-            //pass data into grid
+        public void payment_refreshdata()
+        {
+
+            //detect current user id
+            current_User_id();
+           /* using (SqlConnection conn = new SqlConnection(cs))
+            {
+                conn.Open();
+                string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'";
+                using (SqlCommand cmd1 = new SqlCommand(query1, conn))
+                {
+                    currentUser = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                }
+                conn.Close();
+
+            }*/
+
+            //assign selected item to gridview
             SqlConnection con = new SqlConnection(cs);
             con.Open();
-
+            String queryGetData = "Select a.ArtId, a.ArtName, a.Price, o.OrderDetailId, o.qtySelected, o.Subtotal from [OrderDetails] o " +
+                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId INNER JOIN [Cart] c on o.CartId = c.CartId Where c.UserId = @userid AND c.status = 'cart' AND o.Checked = 'True'";
+            SqlCommand cmd = new SqlCommand(queryGetData, con);
+            cmd.Parameters.AddWithValue("@userid", currentUser);
+            SqlDataAdapter sda = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
+            sda.Fill(dt);
 
-            for (int i = 0; i < (orderItem.Length - 1); i++)
-            {
-                String query = "Select a.ArtId, a.ArtName, a.Price, o.OrderDetailId, o.qtySelected, o.Subtotal from [OrderDetails] o " +
-                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId Where o.OrderDetailId = @id";
+            gvPayment.DataSource = dt;
+            gvPayment.DataBind();
 
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", orderItem[i]);
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
-
-                sda.Fill(dt);
-                gvPayment.DataSource = dt;
-                gvPayment.DataBind();
-            }
             con.Close();
 
         }
 
-       
-        public double checkDeliveryFees()
+       public double subtotalPayment()
         {
+            double total_Payment = 0;
 
-            double deliveryFees = 0;
+            for (int i = 0; i < gvPayment.Rows.Count; i++)
+            {
+               total_Payment += double.Parse((gvPayment.Rows[i].FindControl("order_subtotal") as TextBox).Text.ToString());
 
-            //cal delivery fees
-            deliveryFees = (orderItem.Length - 1) * 3;
-            return deliveryFees;
+            }
+
+            return total_Payment;
         }
-
+       
         protected void pay_Btn_Click(object sender, EventArgs e)
         {
-
+            //detect current user id
+            current_User_id();
+            
             Int32 cartID = 0;
 
             SqlConnection con = new SqlConnection(cs);
             con.Open();
 
 
-            //retrieve 'pending' cartid (check if pending cart exist for cusrrent user, pending cart use to )
+            //retrieve 'pending' cartid 
             string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
 
             using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
             {
                 cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
             }
-
-            if(cartID == 0)
-            {
-                //create new cart for status = 'pending'
-                String status = "pending";
-                string sql = "INSERT into Cart (UserId, status) values('" + currentUser + "', '" + status + "')";
-
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = con;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
-
-                cmd.ExecuteNonQuery();
-
-
-                //retrieve 'pending' cartid 
-                string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + currentUser + "'AND status = 'pending'";
-
-                using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, con))
-                {
-                    cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
-                }
-            }
             
-
-
             //update selected item with the cartid 
             for (int i = 0; i < gvPayment.Rows.Count; i++)
             {
@@ -162,23 +155,17 @@ namespace WAD_Assignment
                 cardType = "Credit";
             }
 
-            //calcullate total payment
-            totalPay += double.Parse(orderItem[orderItem.Length - 1]);
-            totalPay += checkDeliveryFees();
+            //calculate total payment
+           totalPay += subtotalPayment() + (gvPayment.Rows.Count * 3); 
 
             string sqlPayment = "INSERT into Payment (cartid, datepaid, total,cardType) values('" + cartID + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "','" + cardType+"')";
 
-             SqlCommand cmdPayment = new SqlCommand();
+            SqlCommand cmdPayment = new SqlCommand();
                 
-              /*  cmdPayment.Parameters.AddWithValue("@artId", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
-                cmdPayment.Parameters.AddWithValue("@artprice", tempP);
-                cmdPayment.Parameters.AddWithValue("@datePaid", DateTime.Now.ToString());
-                cmdPayment.Parameters.AddWithValue("@qty", (gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
-              */
-                cmdPayment.Connection = con;
-                cmdPayment.CommandType = CommandType.Text;
-                cmdPayment.CommandText = sqlPayment;
-                cmdPayment.ExecuteNonQuery();
+            cmdPayment.Connection = con;
+            cmdPayment.CommandType = CommandType.Text;
+            cmdPayment.CommandText = sqlPayment;
+            cmdPayment.ExecuteNonQuery();
                
             for (int i = 0; i < gvPayment.Rows.Count; i++)
             {
@@ -213,7 +200,6 @@ namespace WAD_Assignment
                 //update qty & availability of the art
                 if (quantity <= 0)
                 {
-                    //update art qty & availability
                     String queryUpdateQty = "Update Artist SET Quantity = 0, Availability = '0' WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
                     SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
 
@@ -248,6 +234,7 @@ namespace WAD_Assignment
         }
 
         //send receipt to customer through email
+        [Obsolete]
         private void sendEmail()
         {
             
@@ -261,10 +248,71 @@ namespace WAD_Assignment
                     artName = (gvPayment.Rows[i].FindControl("artItem_Name") as TextBox).Text.Trim();
                     unitPrice = (gvPayment.Rows[i].FindControl("item_order_summary_price") as TextBox).Text.Trim();
                     qty = (gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim(); 
-                    emailOrderInfo += "<br/><br/>" + artName + "<br/> RM "+ unitPrice+" x "+ qty ;
+                    emailOrderInfo += "<br/><br/>"+(i+1).ToString()+". Art Name : " + artName + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;Details  : RM " + unitPrice+" x "+ qty ;
 
-                } 
+                }
+                using (StringWriter sw = new StringWriter())
+                {
+                    using (HtmlTextWriter hw = new HtmlTextWriter(sw))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append("<h4 style='text-align: center;'><b>QUAD-CORE ART GALLERY</b>" +
+                            "<br/>========================</h4>" +
+                            "<br/><b><u>Purchase Information</u></b>" + emailOrderInfo +
+                            "<br/><br/><br/>-------------------------------------" +
+                            "<br/>Delivery Fees : " + deliverly_fees.Text +
+                            "<br/>Total         : " + total_payment.Text +
+                            "<br/><br/><br/>  Thank you!");
 
+                        StringReader sr = new StringReader(sb.ToString());
+
+                        Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+                        HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
+                        using (MemoryStream memoryStream = new MemoryStream())
+                        {
+                            PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
+                            pdfDoc.Open();
+                            htmlparser.Parse(sr);
+                            pdfDoc.Close();
+                            byte[] bytes = memoryStream.ToArray();
+                            memoryStream.Close();
+
+                            MailMessage mm = new MailMessage("quadCoreTest@gmail.com", "quadCoreTest@gmail.com");
+                            mm.Subject = "Quad-Core Art Gallery Receipt";
+                            mm.Body = "Thanks for your order!! <br/>Your total payment is: " + total_payment.Text +
+                                "<br/><br/>Details of the Payment Information is in the pdf below." + 
+                            "<br/><br/><br/>  Thank you!" +
+                            "<br/><br/> Receipt Generated By: QUAD-CORE AUTO SYSTEM"; ;
+                            mm.Attachments.Add(new Attachment(new MemoryStream(bytes), "Quad-Core_Art_Gallery_Receipt.pdf"));
+                            mm.IsBodyHtml = true;
+                            SmtpClient smtp = new SmtpClient();
+                            smtp.Host = "smtp.gmail.com";
+                            smtp.EnableSsl = true;
+                            NetworkCredential NetworkCred = new NetworkCredential();
+                            NetworkCred.UserName = "quadCoreTest@gmail.com";
+                            NetworkCred.Password = "quad_core";
+                            smtp.UseDefaultCredentials = true;
+                            smtp.Credentials = NetworkCred;
+                            smtp.Port = 587;
+                            try
+                            {
+                                smtp.Send(mm);
+
+                                //pop up massage then redirect to payment history
+                                ScriptManager.RegisterStartupScript(this, this.GetType(),
+                                                    "Email Status",
+                                                    "alert('Your receipt has been send to your email.');window.location ='PayHistory.aspx';",
+                                                    true);
+
+                            }
+                            catch (Exception)
+                            {
+                                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Email Status", "alert('Sorry, Quad-Core ASG Email Account Down. Please Contact Quad-Core AWS!')", true);
+                            }
+                        }
+                    }
+                }
+                /*
                 using (MailMessage mail = new MailMessage())
                 {
                     mail.From = new MailAddress("quadCoreTest@gmail.com");
@@ -273,8 +321,9 @@ namespace WAD_Assignment
                     mail.Subject = "Quad-Core Art Gallery Receipt";
 
                     mail.Body = "<b><u>Purchase Information</u></b>" + emailOrderInfo+
-                        "<br/><br/>Delevery Fees = RM "+ deliverly_fees.Text +
-                        "<br/><br/>Total         = RM " + total_payment.Text +
+                        "<br/><br/>-----------------------------------------"+
+                        "<br/>Delivery Fees : " + deliverly_fees.Text +
+                        "<br/><br/>Total         : " + total_payment.Text +
                         "<br/><br/><br/>  Thank you!" +
                         "<br/><br/> Receipt Generated By: QUAD-CORE AUTO SYSTEM";
 
@@ -304,6 +353,7 @@ namespace WAD_Assignment
                         }
                     }
                 }
+                */
             }
         }
 
