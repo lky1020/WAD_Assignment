@@ -7,27 +7,21 @@ using System.Web.UI;
 
 namespace WAD_Assignment
 {
-
     public partial class Cart : System.Web.UI.Page
     {
-        Int32 userID = 0;
         string cs = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
         double totalSelectPrice = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
-            
             if (!IsPostBack)
             {
                 refreshdata();
             }
-            
         }
-
 
         //refresh the data in gridview
         public void refreshdata()
         {
-            
             if (Session["username"] != null)
             {
                 //detect current user id
@@ -37,26 +31,23 @@ namespace WAD_Assignment
                     string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'"; //Role = 'Customer' AND LoginStatus = 'Active' ";
                     using (SqlCommand cmd1 = new SqlCommand(query1, conn))
                     {
-                        userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
+                        Session["userID"] = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
                     }
                     conn.Close();
-
                 }
-
 
                 //pass data into grid
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
                 String queryGetData = "Select a.ArtName, a.ArtImage, a.Price, a.ArtDescription,o.orderDetailId, o.qtySelected, o.Subtotal from [Cart] c " +
                     "INNER JOIN [OrderDetails] o on c.CartId = o.CartId " +
-                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId  " + //AND a.Availability = '1'
+                    "INNER JOIN [Artist] a on o.ArtId = a.ArtId  " + 
                     "Where c.UserId = @userid AND c.status = 'cart'";
                 SqlCommand cmd = new SqlCommand(queryGetData, con);
-                cmd.Parameters.AddWithValue("@userid", userID);
+                cmd.Parameters.AddWithValue("@userid", Session["userID"]);
                 SqlDataAdapter sda = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
-
 
                 if (dt.Rows.Count > 0)
                 {
@@ -78,16 +69,12 @@ namespace WAD_Assignment
                     totalPrice.Visible = false;
                     cart_orderBtn.Visible = false;
                 }
-
-
                 checkArtAvailability();
-
             }
             else
             {
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "CartDenied",
                         "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
-
             }
         }
 
@@ -114,15 +101,11 @@ namespace WAD_Assignment
                         gvCart.Rows[i].Cells[3].Text = "-";
                         gvCart.Rows[i].Cells[4].Text = "-";
                         gvCart.Rows[i].Cells[5].Text = "RM - ";
-                     
                     }
-
                 }
-               
             }
             con.Close();
         }
-
 
 
         //edit art qty fn (based on row)
@@ -172,7 +155,6 @@ namespace WAD_Assignment
                 }
                 else
                 {
-
                     //if valid input qty
                     using (con)
                     {
@@ -208,7 +190,6 @@ namespace WAD_Assignment
 
         protected void gvCart_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-
             using (SqlConnection con = new SqlConnection(cs))
             {
                 con.Open();
@@ -222,9 +203,7 @@ namespace WAD_Assignment
                 refreshdata();
 
                 Response.Write("<script>alert('Art Information Deleted Successfully')</script>");
-
             }
-
         }
 
         //Order Btn
@@ -273,29 +252,16 @@ namespace WAD_Assignment
                 }
             }
 
-
             //redirect to payment page
             if (haveItemChk)
             {
                 Int32 cartID;
 
-                using (SqlConnection conn = new SqlConnection(cs))
-                {
-                    conn.Open();
-                    string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'"; //Role = 'Customer' AND LoginStatus = 'Active' ";
-                    using (SqlCommand cmd1 = new SqlCommand(query1, conn))
-                    {
-                        userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
-                    }
-                    conn.Close();
-
-                }
-
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
 
                 //retrieve 'pending' cartid (check if pending cart exist for cusrrent user, pending cart use to )
-                string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'pending'";
+                string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userID"] + "'AND status = 'pending'";
 
                 using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
                 {
@@ -308,7 +274,7 @@ namespace WAD_Assignment
                 {
                     //create new cart for status = 'pending'
                     string status = "pending";
-                    string sql = "INSERT into Cart (UserId, status) values('" + userID + "', '" + status + "')";
+                    string sql = "INSERT into Cart (UserId, status) values('" + Session["userID"] + "', '" + status + "')";
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = con;
@@ -316,17 +282,24 @@ namespace WAD_Assignment
                     cmd.CommandText = sql;
 
                     cmd.ExecuteNonQuery();
-                    
 
+                    //retrieve 'pending' cartid 
+                    using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
+                    {
+                        Session["pendingCart"] = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                    }
+
+                }
+                else
+                {
+                    Session["pendingCart"] = cartID;
                 }
                 con.Close();
                 Response.Redirect("Payment.aspx");
             }
             else
-            {
                 Response.Write("<script>alert('Please select art before proceed payment.')</script>");
-            }
-
+            
         }
 
         //the header checkbox
@@ -335,19 +308,13 @@ namespace WAD_Assignment
             CheckBox chckheader = (CheckBox)gvCart.HeaderRow.FindControl("CheckBoxHead");
 
             foreach (GridViewRow row in gvCart.Rows)
-
             {
-
                 CheckBox chckrw = (CheckBox)row.FindControl("chkItems");
 
                 if (chckheader.Checked == true && row.Cells[0].Enabled == true)
-                {
                     chckrw.Checked = true;
-                }
                 else
-                {
                    chckrw.Checked = false;
-                }
 
             }
             totalSelectPrice = 0;
@@ -420,7 +387,6 @@ namespace WAD_Assignment
                 //chkItems
                 for (int i = 0; i < gvCart.Rows.Count; i++)
                 {
-
                     CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
 
                     if (gvCart.Rows[i].Cells[0].Enabled)

@@ -27,40 +27,22 @@ namespace WAD_Assignment
             }
         }
 
-
         public void paymentHistory_refreshdata()
         {
-
-            Int32 userID = 0;
-
+          
             if (Session["username"] != null)
-            {
-                //detect current user id
-                using (SqlConnection conn = new SqlConnection(cs))
-                {
-                    conn.Open();
-                    string query1 = "Select UserId FROM [dbo].[User] WHERE Name = '" + Session["username"].ToString() + "'";
-                    using (SqlCommand cmd1 = new SqlCommand(query1, conn))
-                    {
-                        userID = ((Int32?)cmd1.ExecuteScalar()) ?? 0;
-                    }
-                    conn.Close();
-
-                }
-
+            { 
 
                 //pass data into grid
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
-
-
                 String query = "Select p.paymentId, o.OrderDetailId, a.ArtName, a.Price, o.qtySelected, o.Subtotal, p.datePaid from [Payment] p " +
                     "INNER JOIN [Cart] c on p.CartId = c.CartId INNER JOIN [OrderDetails] o on o.CartId = c.CartId " +
                     "INNER JOIN [Artist] a on o.ArtId = a.ArtId " +
                     "Where c.UserId = @id " +
                     "ORDER BY p.paymentId DESC";
                 SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", userID);
+                cmd.Parameters.AddWithValue("@id", Session["userID"]);
                 SqlDataAdapter sda = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 sda.Fill(dt);
@@ -70,7 +52,6 @@ namespace WAD_Assignment
                     gvPayHistory.DataSource = dt;
                     gvPayHistory.DataBind();
                     historyEmpty.Visible = false;
-
                 }
                 else
                 {
