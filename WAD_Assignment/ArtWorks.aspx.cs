@@ -18,12 +18,58 @@ namespace WAD_Assignment.ArtWorks
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            
+
             if (!Page.IsPostBack)
             {
+              
                 bindList();
-                ViewState["PageCount"] = 0; 
+                ViewState["PageCount"] = 0;
+
             }
             CurrentPage = (int)this.ViewState["PageCount"];
+
+            //wishlist icon
+            setLoveIcon();
+
+
+        }
+
+        private void setLoveIcon()
+        {
+            Int32 wishlistID;
+
+            foreach (DataListItem item in ArtWorkDataList.Items)
+            {
+                var currentKey = ArtWorkDataList.DataKeys[item.ItemIndex];
+
+                Int32 artId = Convert.ToInt32(currentKey);
+
+                connection();
+                conn.Open();
+
+                //Check wishlist
+                string query = "SELECT WishlistId FROM [dbo].[Wishlist] WHERE UserId = '" + Session["userId"] + "' AND ArtId ='" + artId + "'";
+                // System.Diagnostics.Debug.WriteLine("[DEBUG][ArtName] --> " + artId);
+                using (SqlCommand cmdUser = new SqlCommand(query, conn))
+                {
+                    wishlistID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                }
+
+                conn.Close();
+
+                if (wishlistID == 0)
+                {
+                    //if no add in wishlist, inactive icon
+                    (item.FindControl("loveBtn") as ImageButton).ImageUrl = "/img/wishlist/heart-icon-inactive.png";
+                }
+
+                else
+                {
+                    //active icon
+                    (item.FindControl("loveBtn") as ImageButton).ImageUrl = "/img/wishlist/heart-icon-active.png";
+                }
+            }
         }
 
         private void connection()
@@ -34,7 +80,8 @@ namespace WAD_Assignment.ArtWorks
         }
 
         void bindList()
-		{
+        {
+
             connection();
 
             //sorting feature
@@ -46,14 +93,14 @@ namespace WAD_Assignment.ArtWorks
                     //Display all
                     case 0:
                         command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY ArtId DESC", conn);
-                        command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex+1);
+                        command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
 
                     //Sort by name asscending
                     case 1:
                         command = new SqlCommand("Select * from Artist " + "WHERE Category = @Category AND Availability = '1' ORDER BY ArtName ASC", conn);
-                        command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex+1);
+                        command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
 
@@ -77,10 +124,10 @@ namespace WAD_Assignment.ArtWorks
                         command.Parameters.AddWithValue("@Category", rblCategory.SelectedIndex + 1);
                         dataAdapter.SelectCommand = command;
                         break;
-                        
+
                 }
 
-                
+
             }
             else
             {
@@ -149,17 +196,21 @@ namespace WAD_Assignment.ArtWorks
             ViewState["PageCount"] = CurrentPage;
 
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
+            //wishlist icon
+            setLoveIcon();
         }
 
         protected void btnPreviousClick_Click(object sender, EventArgs e)
         {
             CurrentPage = (int)ViewState["PageCount"];
 
-            if(CurrentPage != 0)
+            if (CurrentPage != 0)
                 CurrentPage -= 1;
             ViewState["PageCount"] = CurrentPage;
 
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
+            //wishlist icon
+            setLoveIcon();
         }
 
         protected void btnNextClick_Click(object sender, EventArgs e)
@@ -168,14 +219,17 @@ namespace WAD_Assignment.ArtWorks
             CurrentPage += 1;
             ViewState["PageCount"] = CurrentPage;
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
+            //wishlist icon
+            setLoveIcon();
         }
 
-      
 
         protected void btnLastClick_Click(object sender, EventArgs e)
         {
             CurrentPage = (int)ViewState["TotalCount"] - 1;
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
+            //wishlist icon
+            setLoveIcon();
         }
 
         protected void ddlArtSort_SelectedIndexChanged(object sender, EventArgs e)
@@ -202,49 +256,79 @@ namespace WAD_Assignment.ArtWorks
         protected void loveBtn_Click(object sender, ImageClickEventArgs e)
         {
             ImageButton imgButton = sender as ImageButton;
-            
-
-            Int32 userID = 0;
+            Int32 wishlistID;
             Int32 artID = Convert.ToInt32(imgButton.CommandArgument.ToString());
-            // try
-            // {
-            //Get current user id
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
+
+            try
             {
-                con.Open();
-
-                //get user id
-                string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Customer' AND LoginStatus='Active'";
-                using (SqlCommand cmdUser = new SqlCommand(query, con))
+                if (Session["userId"] != null)
                 {
-                    userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                    try
+                    {
+                        //Get current user id
+                        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
+                        {
+                            con.Open();
+
+                            //check existing art in wishlist
+                            string query = "SELECT WishlistId FROM [dbo].[Wishlist] WHERE UserId = '" + Session["userId"] + "' AND ArtId ='" + artID + "'";
+                            using (SqlCommand cmdUser = new SqlCommand(query, con))
+                            {
+                                wishlistID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                            }
+
+                            if (wishlistID == 0)
+                            {
+                                string sql = "INSERT into Wishlist (ArtId, UserId, DateAdded) values('" + artID + "', '" + Session["userId"] + "', '" + DateTime.Now.ToString("MM/dd/yyyy") + "')";
+
+                                SqlCommand cmd = new SqlCommand();
+
+                                cmd.Connection = con;
+                                cmd.CommandType = CommandType.Text;
+                                cmd.CommandText = sql;
+
+
+                                cmd.ExecuteNonQuery();
+                                imgButton.ImageUrl = "/img/wishlist/heart-icon-active.png";
+                                //Response.Write("<script>alert('Congratulation, Art Added into Wishlist Successfully')</script>");
+                                System.Diagnostics.Debug.WriteLine("[MSG][WISHLIST] --> Congratulation, Art Added into Wishlist Successfully");
+                            }
+                            else
+                            {
+                                //Delete the art in wishlist
+
+                                query = "DELETE FROM [dbo].[Wishlist] WHERE WishlistId = @wishlistID";
+
+                                SqlCommand cmd = new SqlCommand(query, con);
+
+                                cmd.Parameters.AddWithValue("@wishlistID", wishlistID);
+                                cmd.ExecuteNonQuery();
+
+                                //unactive the icon
+                                imgButton.ImageUrl = "/img/wishlist/heart-icon-inactive.png";
+
+                                System.Diagnostics.Debug.WriteLine("[MSG][WISHLIST] --> Congratulation, Art in Wishlist Deleted Successfully");
+                            }
+                            con.Close();
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write("<script>alert('Sorry, please try again later')</script>");
+                        System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+                    }
                 }
-
-                con.Close();
-                con.Open();
-   
-                string sql = "INSERT into Wishlist (ArtId, UserId, DateAdded) values('" + artID + "', '" + userID + "', '" + DateTime.Now.ToString("MM/dd/yyyy") + "')";
-
-              
-                SqlCommand cmd = new SqlCommand();
-       
-                cmd.Connection = con;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
-
-
-                cmd.ExecuteNonQuery();
-                con.Close();
-                imgButton.ImageUrl = "/img/wishlist/heart-icon-active.png";
-                Response.Write("<script>alert('Congratulation, Art Added into Wishlist Successfully')</script>");
-            //    }
-                // }
+                else
+                {
+                    throw new Exception();
+                }
             }
-            //  }
-            //   catch
-            //   {
-            //       Response.Write("<script>alert('Sorry, Fail to Add the Art into Cart')</script>");
-            //   }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Sorry, No User Login Found')</script>");
+                System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+            }
 
 
         }
@@ -253,70 +337,43 @@ namespace WAD_Assignment.ArtWorks
         {
             Button btn = sender as Button;
 
-            Int32 userID = 0;
             Int32 artID = Convert.ToInt32(btn.CommandArgument.ToString());
             Int32 cartID = 0;
             Int32 orderDetailID = 0;
-            int qty;
-            decimal unitPrice = 0;
+
             int qtyOrderDetail = 0;
             decimal subtotalOrderDetail = 0;
 
-            // try
-            // {
 
-            //Get current user id
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
+            Button BuyNowButton = (Button)sender;
+            DataListItem item = (DataListItem)btn.NamingContainer;
+            Label unitPrice = (Label)item.FindControl("PriceLabel");
+
+            try
             {
-
-                con.Open();
-
-                string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Customer' AND LoginStatus='Active'";
-                using (SqlCommand cmdUser = new SqlCommand(query, con))
-                {
-                    userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
-                }
-
-                if(userID == 0)
+                if (Session["userId"] == null)
                 {
                     Response.Write("<script>alert('Please Login first!')</script>");
                 }
                 else
                 {
+                    connection();
+                    conn.Open();
 
-                SqlCommand cmd1 = new SqlCommand("SELECT Price, Quantity from [Artist] Where ArtId = @ArtId", con);
-                cmd1.Parameters.AddWithValue("@ArtId", artID);
 
-                SqlDataReader dtrArt = cmd1.ExecuteReader();
-                if (dtrArt.HasRows)
-                {
-                    while (dtrArt.Read())
-                    {
-                        qty = (int)dtrArt["Quantity"];
-                        unitPrice = (decimal)dtrArt["Price"];
-                    }
+                    string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userId"] + "'AND status = 'cart'";
 
-                }
-                con.Close();
-
-                    //   if (qty != 0)
-                    //   {
-
-                    //check if cart exist
-                    con.Open();
-                    string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '"+ userID+ "'AND status = 'cart'";
-
-                    using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
+                    using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, conn))
                     {
                         cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
                     }
-                    con.Close();
+                    conn.Close();
 
-                    if(cartID == 0)
+                    if (cartID == 0)
                     {
                         //insert to create a new cart
                         String status = "cart";
-                        string sql = "INSERT into Cart (UserId, status) values('" + userID + "', '" + status+"')";
+                        string sql = "INSERT into Cart (UserId, status) values('" + Session["username"] + "', '" + status + "')";
 
                         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
                         SqlCommand cmd = new SqlCommand();
@@ -330,7 +387,7 @@ namespace WAD_Assignment.ArtWorks
 
                         //search the new cartid
                         conn.Open();
-                        string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'cart'";
+                        string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["username"] + "'AND status = 'cart'";
 
                         using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
                         {
@@ -339,14 +396,14 @@ namespace WAD_Assignment.ArtWorks
                         conn.Close();
 
 
-                        
+
                     }
 
                     //get exist order detail
 
-                    con.Open();
+                    conn.Open();
 
-                    SqlCommand cmdOrderDetailID = new SqlCommand("SELECT OrderDetailId, qtySelected, Subtotal from [OrderDetails] Where CartId = @CartId AND ArtId = @ArtId", con);
+                    SqlCommand cmdOrderDetailID = new SqlCommand("SELECT OrderDetailId, qtySelected, Subtotal from [OrderDetails] Where CartId = @CartId AND ArtId = @ArtId", conn);
                     cmdOrderDetailID.Parameters.AddWithValue("@CartId", cartID);
                     cmdOrderDetailID.Parameters.AddWithValue("@ArtId", artID);
 
@@ -361,59 +418,68 @@ namespace WAD_Assignment.ArtWorks
                         }
 
                     }
-                    con.Close();
+                    conn.Close();
+
+                    conn.Open();
 
                     //check whether exist same art (order detail)
                     if (orderDetailID != 0)
                     {
                         //update order details
                         qtyOrderDetail++;
-                        subtotalOrderDetail += unitPrice;
+                        subtotalOrderDetail += Decimal.Parse(unitPrice.Text);
 
-                        string sqlUpdateOrder = "UPDATE OrderDetails SET qtySelected = '"+ qtyOrderDetail + "', Subtotal = '" + subtotalOrderDetail + "' WHERE orderDetailID = '" + orderDetailID + "'";
+                        string sqlUpdatetOrder = "UPDATE  OrderDetails SET qtySelected = " + qtyOrderDetail + ", Subtotal = " + subtotalOrderDetail + " WHERE OrderDetailId = " + orderDetailID ;
 
-                        SqlCommand cmdUpdateOrder = new SqlCommand();
-                        con.Open();
-                        cmdUpdateOrder.Connection = con;
-                        cmdUpdateOrder.CommandType = CommandType.Text;
-                        cmdUpdateOrder.CommandText = sqlUpdateOrder;
+                        SqlCommand cmdInsertOrder = new SqlCommand();
+
+                        cmdInsertOrder.Connection = conn;
+                        cmdInsertOrder.CommandType = CommandType.Text;
+                        cmdInsertOrder.CommandText = sqlUpdatetOrder;
 
 
-                        cmdUpdateOrder.ExecuteNonQuery();
-                        con.Close();
+                        cmdInsertOrder.ExecuteNonQuery();
                     }
                     else
                     {
                         //insert order details based on cartid
 
-                        string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + artID + "', '" + 1 + "', '" + unitPrice + "')";
+                        string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + artID + "', '" + 1 + "', '" + Decimal.Parse(unitPrice.Text) + "')";
 
                         SqlCommand cmdInsertOrder = new SqlCommand();
-                        con.Open();
-                        cmdInsertOrder.Connection = con;
+
+                        cmdInsertOrder.Connection = conn;
                         cmdInsertOrder.CommandType = CommandType.Text;
                         cmdInsertOrder.CommandText = sqlInsertOrder;
 
 
                         cmdInsertOrder.ExecuteNonQuery();
-                        con.Close();
+
                     }
 
-                    
+                    conn.Close();
 
-                   Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
-                   }
-                    
 
-                    // }
+                    Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
                 }
-            //  }
-            //   catch
-            //   {
-            //       Response.Write("<script>alert('Sorry, Fail to Add the Art into Cart')</script>");
-            //   }
+
+            }
 
 
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Sorry, Fail to Add Cart. Please try again')</script>");
+                System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+            }
+        }
+
+        protected void ArtWorkDataList_ItemCommand(object source, DataListCommandEventArgs e)
+        {
+
+            if (e.CommandName == "addtocart")
+            {
+
+            }
 
         }
     }

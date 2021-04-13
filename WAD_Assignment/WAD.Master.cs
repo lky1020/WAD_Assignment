@@ -146,13 +146,15 @@ namespace WAD_Assignment
             {
                 using (SqlConnection con = new SqlConnection(cs))
                 {
-                    SqlDataAdapter da = new SqlDataAdapter("SELECT Name, Email, ProfileImg, Role FROM [dbo].[User] WHERE LoginStatus = 'Active'", con);
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT UserId, Name, Email, ProfileImg, Role FROM [dbo].[User] WHERE LoginStatus = 'Active'", con);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
                     //Update the sidebar with user account
                     if (dt.Rows.Count >= 1)
                     {
+                        Session["userId"] = dt.Rows[0]["userId"].ToString();
+
                         Session["username"] = dt.Rows[0]["Name"].ToString();
                         lblLoginName.Text = Session["username"].ToString();
 

@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using Xamarin.Forms.PlatformConfiguration;
 
 namespace WAD_Assignment.ArtWorks
 {
@@ -11,243 +12,332 @@ namespace WAD_Assignment.ArtWorks
     {
 
         string constr = ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString;
-       
+        Int32 wishlistID;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!this.IsPostBack)
             {
+                ImageButton loveBtn = FindControl("detailsLoveBtn") as ImageButton;
                 this.GetArtDetails();
             }
         }
 
         private void GetArtDetails()
         {
-            // create connection
-            SqlConnection con = new SqlConnection(constr);
-            con.Open();
-
-            // retrieve data
-            SqlCommand cmd = new SqlCommand("SELECT a.ArtName, a.ArtImage, a.Price, a.ArtDescription, a.Quantity, u.Name, u.Bio, u.ProfileImg from[Artist] a INNER JOIN[User] u on a.UserId = u.UserId Where a.ArtId = @ArtId", con);
-            cmd.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
-
-            SqlDataReader dtrArt = cmd.ExecuteReader();
-
-            if (dtrArt.HasRows)
+            try
             {
-                while (dtrArt.Read())
+                // create connection
+                SqlConnection con = new SqlConnection(constr);
+                con.Open();
+
+                // retrieve data
+                SqlCommand cmd = new SqlCommand("SELECT a.ArtName, a.ArtImage, a.Price, a.ArtDescription, a.Quantity, u.Name, u.Bio, u.ProfileImg from[Artist] a INNER JOIN[User] u on a.UserId = u.UserId Where a.ArtId = @ArtId", con);
+                cmd.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
+
+                SqlDataReader dtrArt = cmd.ExecuteReader();
+
+                if (dtrArt.HasRows)
                 {
-                    //msg = "Product Name = " + dtrProd["name"].ToString() + "<br/> Price" + dtrProd["price"].ToString();
-                    dArtDetailsImage.ImageUrl = dtrArt["ArtImage"].ToString();
-                    dArtName.Text = dtrArt["ArtName"].ToString().ToUpper();
-                    dArtPrice.Text = "RM " + String.Format("{0:0.00}", dtrArt["Price"]);
-                    dAboutArt.Text = dtrArt["ArtDescription"].ToString();
-                    dArtStock.Text = dtrArt["Quantity"].ToString();
+                    while (dtrArt.Read())
+                    {
 
-                    string profileImage = dtrArt["ProfileImg"].ToString();
-                    if (!String.IsNullOrEmpty(profileImage))
-                        dArtistImage.ImageUrl = profileImage;
+                        dArtDetailsImage.ImageUrl = dtrArt["ArtImage"].ToString();
+
+                        dArtName.Text = dtrArt["ArtName"].ToString().ToUpper();
+
+                        dArtPrice.Text = "RM " + String.Format("{0:0.00}", dtrArt["Price"]);
+
+                        dAboutArt.Text = dtrArt["ArtDescription"].ToString();
+
+                        dArtStock.Text = dtrArt["Quantity"].ToString();
+
+                        string profileImage = dtrArt["ProfileImg"].ToString();
+                        if (!String.IsNullOrEmpty(profileImage))
+                            dArtistImage.ImageUrl = profileImage;
+                        else
+                            dArtistImage.ImageUrl = "/img/userPic/user_default.png";
+
+                        dArtistName.Text = dtrArt["Name"].ToString();
+
+                        string bio = dtrArt["Bio"].ToString();
+                        if (!String.IsNullOrEmpty(bio))
+                            dBio.Text = bio;
+                        else
+                            dBio.Text = "The artist didn't leave any bio...";
+
+
+                    }
+
+                    con.Close();
+                    con.Open();
+
+                    //Check wishlist
+                    string query = "SELECT WishlistId FROM [dbo].[Wishlist] WHERE UserId = '" + Session["userId"] + "' AND ArtId ='" + Request.QueryString["ArtId"] + "'";
+                    using (SqlCommand cmdUser = new SqlCommand(query, con))
+                    {
+                        wishlistID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                    }
+
+                    if (wishlistID == 0)
+                    {
+                        //if no add in wishlist, inactive icon
+                        detailsLoveBtn.ImageUrl = "/img/wishlist/heart-icon-inactive.png";
+                    }
                     else
-                        dArtistImage.ImageUrl = "/img/userPic/user_default.png";
+                    {
+                        //active icon
+                        detailsLoveBtn.ImageUrl = "/img/wishlist/heart-icon-active.png";
+                    }
 
-                    dArtistName.Text = dtrArt["Name"].ToString();
-
-                    string bio = dtrArt["Bio"].ToString();
-                    if (!String.IsNullOrEmpty(bio))
-                        dBio.Text = bio;
-                    else
-                        dBio.Text = "The artist didn't leave any bio...";
-
-
+                    con.Close();
+                }
+                else
+                {
+                    throw new Exception();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                //msg = "No Record(s) Found!";
+                Response.Write("<script>alert('Sorry, Not Able to Load the Details')</script>");
+                System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
             }
-
-            con.Close();
         }
 
         protected void loveBtn_Click(object sender, ImageClickEventArgs e)
         {
             ImageButton imgButton = sender as ImageButton;
+            Int32 wishlistID;
 
-
-            //Response.Redirect("/WishList.aspx");
-
-            Int32 userID = 0;
-
-            // try
-            // {
-            //Get current user id
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString))
+            try
             {
-                con.Open();
-
-                //get user id
-                string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Customer' AND LoginStatus='Active'";
-                using (SqlCommand cmdUser = new SqlCommand(query, con))
+                if (Session["userId"] != null)
                 {
-                    userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
-                }
-
-                con.Close();
-                con.Open();
-
-                string sql = "INSERT into Wishlist (ArtId, UserId, DateAdded) values('" + Request.QueryString["ArtId"] + "', '" + userID + "', '" + DateTime.Now.ToString("MM/dd/yyyy") + "')";
-
-
-                SqlCommand cmd = new SqlCommand();
-
-                cmd.Connection = con;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
-
-
-                cmd.ExecuteNonQuery();
-                con.Close();
-
-                imgButton.ImageUrl = "/img/wishlist/heart-icon-active.png";
-                Response.Write("<script>alert('Congratulation, Art Added into Wishlist Successfully')</script>");
-                //    }
-                // }
-            }
-            //  }
-            //   catch
-            //   {
-            //       Response.Write("<script>alert('Sorry, Fail to Add the Art into Cart')</script>");
-            //   }
-
-
-        }
-
-        protected void addToCartBtn_Click(object sender, EventArgs e)
-        {
-            Int32 userID = 0;
-            Int32 cartID = 0;
-            int qty = 0;
-            int qtySelected = Convert.ToInt32(detailsQtyControl.Text);
-            decimal unitPrice = 0;
-            decimal subtotal = qtySelected * unitPrice;
-
-            // try
-            // {
-            //Get current user id
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                con.Open();
-
-                string query = "SELECT UserId FROM [dbo].[User] WHERE Role='Customer' AND LoginStatus='Active'";
-                using (SqlCommand cmdUser = new SqlCommand(query, con))
-                {
-                    userID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
-                }
-
-                SqlCommand cmd1 = new SqlCommand("SELECT Price, Quantity from [Artist] Where ArtId = @ArtId", con);
-                cmd1.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
-
-                SqlDataReader dtrArt = cmd1.ExecuteReader();
-                if (dtrArt.HasRows)
-                {
-                    while (dtrArt.Read())
+                    try
                     {
-                        qty = (int)dtrArt["Quantity"];
-                        unitPrice = ((decimal)dtrArt["Price"]);
+                        // create connection
+                        SqlConnection con = new SqlConnection(constr);
+                        con.Open();
+
+                        //check existing art in wishlist
+                        string query = "SELECT WishlistId FROM [dbo].[Wishlist] WHERE UserId = '" + Session["userId"] + "' AND ArtId ='" + Request.QueryString["ArtId"] + "'";
+                        using (SqlCommand cmdUser = new SqlCommand(query, con))
+                        {
+                            wishlistID = ((Int32?)cmdUser.ExecuteScalar()) ?? 0;
+                        }
+
+                        if (wishlistID == 0)
+                        {
+                            //Insert Art into Wishlist
+                            string sql = "INSERT into Wishlist (ArtId, UserId, DateAdded) values('" + Request.QueryString["ArtId"] + "', '" + Session["userId"] + "', '" + DateTime.Now.ToString("MM/dd/yyyy") + "')";
+
+                            SqlCommand cmd = new SqlCommand();
+
+                            cmd.Connection = con;
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandText = sql;
+
+
+                            cmd.ExecuteNonQuery();
+
+                            //active the icon
+                            imgButton.ImageUrl = "/img/wishlist/heart-icon-active.png";
+
+                            //Response.Write("<script>alert('Congratulation, Art Added into Wishlist Successfully')</script>");
+                            System.Diagnostics.Debug.WriteLine("[MSG][WISHLIST] --> Congratulation, Art Added into Wishlist Successfully");
+                        }
+                        else
+                        {
+                            //Delete the art in wishlist
+
+                            query = "DELETE FROM [dbo].[Wishlist] WHERE WishlistId = @wishlistID";
+
+                            SqlCommand cmd = new SqlCommand(query, con);
+
+                            cmd.Parameters.AddWithValue("@wishlistID", wishlistID);
+                            cmd.ExecuteNonQuery();
+
+                            //unactive the icon
+                            imgButton.ImageUrl = "/img/wishlist/heart-icon-inactive.png";
+
+                            System.Diagnostics.Debug.WriteLine("[MSG][WISHLIST] --> Congratulation, Art in Wishlist Deleted Successfully");
+
+                        }
+
                     }
-
-                }
-                con.Close();
-
-                //Check whether valid input and enough quantity
-                if (qtySelected == 0)
-                {
-                    Response.Write("<script>alert('The quantity cannot be 0, please enter your quantity.')</script>");
-                }
-                else if (qtySelected > qty)
-                {
-                    Response.Write("<script>alert('Sorry, not enough stock, please enter your quantity.')</script>");
+                    catch (Exception ex)
+                    {
+                        Response.Write("<script>alert('Sorry, please try again later')</script>");
+                        System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+                    }
                 }
                 else
                 {
-                    con.Open();
-                    string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'cart'";
-
-                    using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
-                    {
-                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
-                    }
-                    con.Close();
-
-                    if (cartID == 0)
-                    {
-                        //insert to create a new cart
-                        String status = "cart";
-                        string sql = "INSERT into Cart (UserId, status) values('" + userID + "', '" + status + "')";
-
-                        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
-                        SqlCommand cmd = new SqlCommand();
-                        conn.Open();
-                        cmd.Connection = conn;
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = sql;
-
-                        cmd.ExecuteNonQuery();
-                        conn.Close();
-
-                        //search the new cartid
-                        conn.Open();
-                        string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + userID + "'AND status = 'cart'";
-
-                        using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
-                        {
-                            cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
-                        }
-                        conn.Close();
-
-
-
-                    }
-
-                    //insert order details based on cartid
-
-                    string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + Request.QueryString["ArtId"] + "', '" + 1 + "', '" + unitPrice + "')";
-
-                    SqlCommand cmdInsertOrder = new SqlCommand();
-                    con.Open();
-                    cmdInsertOrder.Connection = con;
-                    cmdInsertOrder.CommandType = CommandType.Text;
-                    cmdInsertOrder.CommandText = sqlInsertOrder;
-
-
-                    cmdInsertOrder.ExecuteNonQuery();
-                    con.Close();
-
-                    Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+                    throw new Exception();
                 }
-                /*
-                subtotal = qtySelected * unitPrice;
-
-                string sql = "INSERT into Cart (UserId, ArtId, qtySelected, Subtotal) values('" + userID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
-
-                SqlConnection conn = new SqlConnection(constr);
-                SqlCommand cmd = new SqlCommand();
-                conn.Open();
-                cmd.Connection = conn;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = sql;
-
-
-                cmd.ExecuteNonQuery();
-                conn.Close();
-
-                Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
-            }*/
             }
-            //  }
-            //   catch
-            //   {
-            //       Response.Write("<script>alert('Sorry, Fail to Add the Art into Cart')</script>");
-            //   }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Sorry, No User Login Found')</script>");
+                System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+            }
+
+        }
+
+        //Add to Cart button
+        protected void addToCartBtn_Click(object sender, EventArgs e)
+        {
+            int qtySelected = Convert.ToInt32(detailsQtyControl.Text);
+            decimal subtotal = qtySelected * Convert.ToDecimal(dArtPrice.Text.Substring(3));
+            Int32 cartID;
+            Int32 orderDetailID = 0;
+            int qtyOrderDetail = 0;
+            decimal subtotalOrderDetail = 0;
+
+            try
+            {
+                if (Session["userId"] != null)
+                {
+
+                    //Insert database
+                    try
+                    {
+                        using (SqlConnection con = new SqlConnection(constr))
+                        {
+
+                            //Check whether valid input and enough quantity
+                            if (qtySelected == 0)
+                            {
+                                Response.Write("<script>alert('The quantity cannot be 0, please enter your quantity.')</script>");
+                            }
+                            else if (qtySelected > Convert.ToInt32(dArtStock.Text))
+                            {
+                                Response.Write("<script>alert('Sorry, not enough stock, please enter your quantity.')</script>");
+                            }
+                            else
+                            {
+                                con.Open();
+                                string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userId"] + "'AND status = 'cart'";
+
+                                using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
+                                {
+                                    cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                                }
+                                con.Close();
+
+                                if (cartID == 0)
+                                {
+                                    //insert to create a new cart
+                                    String status = "cart";
+                                    string sql = "INSERT into Cart (UserId, status) values('" + Session["username"] + "', '" + status + "')";
+
+                                    SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
+                                    SqlCommand cmd = new SqlCommand();
+                                    conn.Open();
+                                    cmd.Connection = conn;
+                                    cmd.CommandType = CommandType.Text;
+                                    cmd.CommandText = sql;
+
+                                    cmd.ExecuteNonQuery();
+                                    conn.Close();
+
+                                    //search the new cartid
+                                    conn.Open();
+                                    string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["username"] + "'AND status = 'cart'";
+
+                                    using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
+                                    {
+                                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                                    }
+                                    conn.Close();
+
+
+
+                                }
+
+                                //get exist order detail
+
+                                con.Open();
+
+                                SqlCommand cmdOrderDetailID = new SqlCommand("SELECT OrderDetailId, qtySelected, Subtotal from [OrderDetails] Where CartId = @CartId AND ArtId = @ArtId", con);
+                                cmdOrderDetailID.Parameters.AddWithValue("@CartId", cartID);
+                                cmdOrderDetailID.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
+
+                                SqlDataReader dtrOrderDetail = cmdOrderDetailID.ExecuteReader();
+                                if (dtrOrderDetail.HasRows)
+                                {
+                                    while (dtrOrderDetail.Read())
+                                    {
+                                        orderDetailID = (Int32)dtrOrderDetail["OrderDetailId"];
+                                        qtyOrderDetail = (int)dtrOrderDetail["qtySelected"];
+                                        subtotalOrderDetail = (decimal)dtrOrderDetail["Subtotal"];
+                                    }
+
+                                }
+                                con.Close();
+
+                                con.Open();
+
+                                //check whether exist same art (order detail)
+                                if (orderDetailID != 0)
+                                {
+                                    //update order details
+                                    qtyOrderDetail += qtySelected;
+                                    subtotalOrderDetail += subtotal;
+
+                                    string sqlUpdatetOrder = "UPDATE  OrderDetails SET qtySelected = " + qtyOrderDetail + ", Subtotal = " +  subtotalOrderDetail + " WHERE OrderDetailId = " + orderDetailID;
+
+                                    SqlCommand cmdInsertOrder = new SqlCommand();
+
+                                    cmdInsertOrder.Connection = con;
+                                    cmdInsertOrder.CommandType = CommandType.Text;
+                                    cmdInsertOrder.CommandText = sqlUpdatetOrder;
+
+
+                                    cmdInsertOrder.ExecuteNonQuery();
+                                }
+                                else
+                                {
+                                    //insert order details based on cartid
+
+                                    string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+
+                                    SqlCommand cmdInsertOrder = new SqlCommand();
+
+                                    cmdInsertOrder.Connection = con;
+                                    cmdInsertOrder.CommandType = CommandType.Text;
+                                    cmdInsertOrder.CommandText = sqlInsertOrder;
+
+
+                                    cmdInsertOrder.ExecuteNonQuery();
+
+                                }
+
+                                con.Close();
+
+
+                                Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
+                            }
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write("<script>alert('Sorry, Fail to Add Cart. Please try again')</script>");
+                        System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('Please Login first!')</script>");
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Sorry, No User Login Found')</script>");
+                System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+            }
 
 
         }
