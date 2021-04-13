@@ -29,10 +29,7 @@ namespace WAD_Assignment
 
         public void paymentHistory_refreshdata()
         {
-          
-            if (Session["username"] != null)
-            { 
-
+            try{ 
                 //pass data into grid
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
@@ -59,8 +56,7 @@ namespace WAD_Assignment
                 }
                 con.Close();
 
-            }
-            else
+            }catch (Exception)
             {
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "HistoryDenied",
                         "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);

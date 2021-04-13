@@ -139,7 +139,7 @@
                         <!-- input type="text" placeholder="Expiry Date" /-->
                         <asp:TextBox ID="Exp_Date" runat="server" Height="40px" class="payment_item_box" TextMode="Date"/>
                         <asp:RequiredFieldValidator ID="ExpDate_RequiredField" runat="server" ErrorMessage="Expiry Date is Required." ForeColor="Red" ControlToValidate="Exp_Date" Font-Size="11px">*</asp:RequiredFieldValidator>
-                        <asp:RangeValidator ID="ExpDate_RangeValidator" runat="server" ErrorMessage="Invalid Expiry Date!" ControlToValidate="Exp_Date" Type="Date" MaximumValue="2030-12-31" MinimumValue ="2021-5-31" 
+                        <asp:RangeValidator ID="ExpDate_RangeValidator" runat="server" ErrorMessage="Invalid Expiry Date!" ControlToValidate="Exp_Date" Type="Date"
                             ForeColor="Red" Font-Size="11px"></asp:RangeValidator>
                        
                     </div>

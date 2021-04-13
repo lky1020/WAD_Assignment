@@ -22,8 +22,7 @@ namespace WAD_Assignment
         //refresh the data in gridview
         public void refreshdata()
         {
-            if (Session["username"] != null)
-            {
+            try{
                 //detect current user id
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
@@ -70,8 +69,7 @@ namespace WAD_Assignment
                     cart_orderBtn.Visible = false;
                 }
                 checkArtAvailability();
-            }
-            else
+            }catch(Exception)
             {
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "CartDenied",
                         "alert('Access Denied. Please Login!'); window.location = 'Login.aspx';", true);
@@ -216,90 +214,104 @@ namespace WAD_Assignment
             for (int i = 0; i < gvCart.Rows.Count; i++)
             {
                 CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
-                if (chkb.Checked)
+
+                try
                 {
-                    SqlConnection con = new SqlConnection(cs);
-                    con.Open();
-                    using (con)
+                    if (chkb.Checked)
                     {
-                        String query = "Update OrderDetails SET Checked = 'True' WHERE OrderDetailId = @detailid";
+                        SqlConnection con = new SqlConnection(cs);
+                        con.Open();
+                        using (con)
+                        {
+                            String query = "Update OrderDetails SET Checked = 'True' WHERE OrderDetailId = @detailid";
 
-                        SqlCommand cmd = new SqlCommand(query, con);
+                            SqlCommand cmd = new SqlCommand(query, con);
 
-                        cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[i].Value.ToString()));
-                        cmd.ExecuteNonQuery();
-                        gvCart.EditIndex = -1;
-  }
-                    con.Close();
-                    haveItemChk = true;
-                }
-                else
-                {
-                    SqlConnection con = new SqlConnection(cs);
-                    con.Open();
-                    using (con)
-                    {
-                        String query = "Update OrderDetails SET Checked = 'False' WHERE OrderDetailId = @detailid";
-
-                        SqlCommand cmd = new SqlCommand(query, con);
-
-                        cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[i].Value.ToString()));
-                        cmd.ExecuteNonQuery();
-                        gvCart.EditIndex = -1;
+                            cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[i].Value.ToString()));
+                            cmd.ExecuteNonQuery();
+                            gvCart.EditIndex = -1;
+                        }
+                        con.Close();
+                        haveItemChk = true;
                     }
-            
-                    con.Close();
+                    else
+                    {
+                        SqlConnection con = new SqlConnection(cs);
+                        con.Open();
+                        using (con)
+                        {
+                            String query = "Update OrderDetails SET Checked = 'False' WHERE OrderDetailId = @detailid";
+
+                            SqlCommand cmd = new SqlCommand(query, con);
+
+                            cmd.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvCart.DataKeys[i].Value.ToString()));
+                            cmd.ExecuteNonQuery();
+                            gvCart.EditIndex = -1;
+                        }
+
+                        con.Close();
+                    }
+                }
+                catch (Exception)
+                {
+                    Response.Write("<script>alert('Server down, please contact QUAD-CORE ASG. Customer Services.')</script>");
                 }
             }
 
             //redirect to payment page
-            if (haveItemChk)
+            try
             {
-                Int32 cartID;
-
-                SqlConnection con = new SqlConnection(cs);
-                con.Open();
-
-                //retrieve 'pending' cartid (check if pending cart exist for cusrrent user, pending cart use to )
-                string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userID"] + "'AND status = 'pending'";
-
-                using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
+                if (haveItemChk)
                 {
-                    cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                    Int32 cartID;
 
-                }
+                    SqlConnection con = new SqlConnection(cs);
+                    con.Open();
 
-                //create a pending cart if no pending cart of the user is detected
-                if (cartID == 0)
-                {
-                    //create new cart for status = 'pending'
-                    string status = "pending";
-                    string sql = "INSERT into Cart (UserId, status) values('" + Session["userID"] + "', '" + status + "')";
+                    //retrieve 'pending' cartid (check if pending cart exist for cusrrent user, pending cart use to )
+                    string queryFindPendingCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userID"] + "'AND status = 'pending'";
 
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = con;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = sql;
-
-                    cmd.ExecuteNonQuery();
-
-                    //retrieve 'pending' cartid 
                     using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
                     {
-                        Session["pendingCart"] = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
                     }
 
+                    //create a pending cart if no pending cart of the user is detected
+                    if (cartID == 0)
+                    {
+                        //create new cart for status = 'pending'
+                        string status = "pending";
+                        string sql = "INSERT into Cart (UserId, status) values('" + Session["userID"] + "', '" + status + "')";
+
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.Connection = con;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = sql;
+
+                        cmd.ExecuteNonQuery();
+
+                        //retrieve 'pending' cartid 
+                        using (SqlCommand cmdCheckCart = new SqlCommand(queryFindPendingCart, con))
+                        {
+                            Session["pendingCart"] = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                        }
+
+                    }
+                    else
+                    {
+                        Session["pendingCart"] = cartID;
+                    }
+                    con.Close();
+                    Response.Redirect("Payment.aspx");
                 }
                 else
-                {
-                    Session["pendingCart"] = cartID;
-                }
-                con.Close();
-                Response.Redirect("Payment.aspx");
+                    Response.Write("<script>alert('Please select art before proceed payment.')</script>");
             }
-            else
-                Response.Write("<script>alert('Please select art before proceed payment.')</script>");
-            
+            catch (Exception)
+            {
+                Response.Write("<script>alert('Server down, please contact QUAD-CORE ASG. Customer Services.')</script>");
+            }
+
         }
 
         //the header checkbox
@@ -321,7 +333,6 @@ namespace WAD_Assignment
             //chkItems
             for (int i = 0; i < gvCart.Rows.Count; i++)
             {
-
                 CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
                 if (gvCart.Rows[i].Cells[0].Enabled)
                 {
@@ -348,9 +359,7 @@ namespace WAD_Assignment
             //chkItems
             for (int i = 0; i < gvCart.Rows.Count; i++)
             {
-
                 CheckBox chkb = (CheckBox)gvCart.Rows[i].Cells[0].FindControl("chkItems");
-
 
                 if (chkb.Checked && gvCart.Rows[i].Cells[0].Enabled == true)
                 {
