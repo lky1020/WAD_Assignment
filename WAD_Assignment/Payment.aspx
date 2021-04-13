@@ -120,7 +120,8 @@
                     <asp:TextBox ID="Card_Number" runat="server" Height="40px" class="text_box"/>
                     <asp:RequiredFieldValidator ID="CardNum_RequiredField" runat="server" ErrorMessage="Card Number is Required." ForeColor="Red" ControlToValidate="Card_Number">*</asp:RequiredFieldValidator>
                     <asp:RegularExpressionValidator ID="CardNum_RegularExpression" runat="server" ErrorMessage="Invalid Card Number (E.g. 4567 8738 4738 4596)" 
-                        ForeColor="Red" ControlToValidate="Card_Number" ValidationExpression="^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$" Font-Size="11px"></asp:RegularExpressionValidator>
+                        ForeColor="Red" ControlToValidate="Card_Number" ValidationExpression="^[4-5][0-9]{3} [0-9]{4} [0-9]{4} [0-9]{4}$" Font-Size="11px"></asp:RegularExpressionValidator>
+                    
                 </div>
 
                 <div class="payment_section">
@@ -161,11 +162,4 @@
         </div>
     </div>
 
-     <script type="text/javascript">
-         function changeSubmitText() {
-             document.getElementById('<%=pay_Btn.ClientID%>').value = "Sending";
-            document.getElementById('<%=pay_Btn.ClientID%>').style.cursor = "default";
-         }
-
-     </script>
 </asp:Content>

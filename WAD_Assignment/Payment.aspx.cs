@@ -79,122 +79,146 @@ namespace WAD_Assignment
             }
             return total_Payment;
         }
-       
+
         protected void pay_Btn_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection(cs);
-            con.Open();
-
-            try
+            //validate cart num with card type
+            if (!validatedCardNumWithType())
             {
-                //update selected item with the cartid 
-                for (int i = 0; i < gvPayment.Rows.Count; i++)
-                {
-                    String queryUpdate = "Update OrderDetails SET CartId=@cartid, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
+                Response.Write("<script>alert('Please check your card type. Cart type and cart number not match...')</script>");
 
-                    SqlCommand cmdUpdate = new SqlCommand(queryUpdate, con);
-
-                    double deliverFees = double.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim()) * 3;
-                    double subtotal = deliverFees + double.Parse((gvPayment.Rows[i].FindControl("order_subtotal") as TextBox).Text.Trim());
-
-                    cmdUpdate.Parameters.AddWithValue("@cartid", Session["pendingCart"]);
-                    cmdUpdate.Parameters.AddWithValue("@subtotal", subtotal);
-                    cmdUpdate.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
-                    cmdUpdate.ExecuteNonQuery();
-
-                    gvPayment.EditIndex = -1;
-                }
-            }catch (Exception)
-            {
-                Response.Write("<script>alert('Server down, please contact QUAD-CORE ASG. Customer Services.')</script>");
             }
-
-            //insert data to payment table 
-            string cardType = "Debit";
-            if (CardRadioButtonList.SelectedIndex == 1)
+            else
             {
-                cardType = "Credit";
-            }
+                SqlConnection con = new SqlConnection(cs);
+                con.Open();
 
-            //calculate total payment
-           totalPay += subtotalPayment() + (gvPayment.Rows.Count * 3); 
-
-            string sqlPayment = "INSERT into Payment (cartid, datepaid, total,cardType) values('" + Session["pendingCart"] + "','"+ DateTime.Now.ToString()+"','"+ totalPay + "','" + cardType+"')";
-
-            SqlCommand cmdPayment = new SqlCommand();
-                
-            cmdPayment.Connection = con;
-            cmdPayment.CommandType = CommandType.Text;
-            cmdPayment.CommandText = sqlPayment;
-            cmdPayment.ExecuteNonQuery();
-            try
-            {
-                for (int i = 0; i < gvPayment.Rows.Count; i++)
+                try
                 {
-                    String queryUpdateCart = "Update Cart SET status = 'ordered' WHERE CartId=@cartid";
-
-                    SqlCommand cmdUpdate = new SqlCommand(queryUpdateCart, con);
-
-                    cmdUpdate.Parameters.AddWithValue("@cartid", Session["pendingCart"]);
-
-                    cmdUpdate.ExecuteNonQuery();
-
-                    gvPayment.EditIndex = -1;
-                }
-
-
-                //retrieve art qty left 
-                int quantity = 0;
-                for (int i = 0; i < gvPayment.Rows.Count; i++)
-                {
-                    quantity = 0;
-                    string queryArtQty = "SELECT Quantity FROM Artist WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id); ";
-
-                    using (SqlCommand cmdArtQty = new SqlCommand(queryArtQty, con))
+                    //update selected item with the cartid 
+                    for (int i = 0; i < gvPayment.Rows.Count; i++)
                     {
-                        cmdArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
-                        quantity = ((Int32?)cmdArtQty.ExecuteScalar()) ?? 0;
-                        quantity -= int.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
+                        String queryUpdate = "Update OrderDetails SET CartId=@cartid, Subtotal=@subtotal WHERE OrderDetailId =@detailid";
 
-                    }
+                        SqlCommand cmdUpdate = new SqlCommand(queryUpdate, con);
 
-                    //update qty & availability of the art
-                    if (quantity <= 0)
-                    {
-                        String queryUpdateQty = "Update Artist SET Quantity = 0, Availability = '0' WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
-                        SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+                        double deliverFees = double.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim()) * 3;
+                        double subtotal = deliverFees + double.Parse((gvPayment.Rows[i].FindControl("order_subtotal") as TextBox).Text.Trim());
 
-                        cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
-
-                        cmdUpdateArtQty.ExecuteNonQuery();
+                        cmdUpdate.Parameters.AddWithValue("@cartid", Session["pendingCart"]);
+                        cmdUpdate.Parameters.AddWithValue("@subtotal", subtotal);
+                        cmdUpdate.Parameters.AddWithValue("@detailid", Convert.ToInt32(gvPayment.DataKeys[i].Value.ToString()));
+                        cmdUpdate.ExecuteNonQuery();
 
                         gvPayment.EditIndex = -1;
                     }
-                    else
+                }
+                catch (Exception)
+                {
+                    Response.Write("<script>alert('Server down, please contact QUAD-CORE ASG. Customer Services.')</script>");
+                }
+
+                //insert data to payment table 
+                string cardType = "Debit";
+                if (CardRadioButtonList.SelectedIndex == 1)
+                {
+                    cardType = "Credit";
+                }
+
+                //calculate total payment
+                totalPay += subtotalPayment() + (gvPayment.Rows.Count * 3);
+
+                try
+                {
+                    string sqlPayment = "INSERT into Payment (cartid, datepaid, total,cardType) values('" + Session["pendingCart"] + "','" + DateTime.Now.ToString() + "','" + totalPay + "','" + cardType + "')";
+
+                    SqlCommand cmdPayment = new SqlCommand();
+
+                    cmdPayment.Connection = con;
+                    cmdPayment.CommandType = CommandType.Text;
+                    cmdPayment.CommandText = sqlPayment;
+                    cmdPayment.ExecuteNonQuery();
+
+                    for (int i = 0; i < gvPayment.Rows.Count; i++)
                     {
-                        //update art qty left 
-                        String queryUpdateQty = "Update Artist SET Quantity = @qty WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
-                        SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+                        String queryUpdateCart = "Update Cart SET status = 'ordered' WHERE CartId=@cartid";
 
-                        cmdUpdateArtQty.Parameters.AddWithValue("@qty", quantity);
-                        cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+                        SqlCommand cmdUpdate = new SqlCommand(queryUpdateCart, con);
 
-                        cmdUpdateArtQty.ExecuteNonQuery();
+                        cmdUpdate.Parameters.AddWithValue("@cartid", Session["pendingCart"]);
+
+                        cmdUpdate.ExecuteNonQuery();
 
                         gvPayment.EditIndex = -1;
                     }
 
+
+                    //retrieve art qty left 
+                    int quantity = 0;
+                    for (int i = 0; i < gvPayment.Rows.Count; i++)
+                    {
+                        quantity = 0;
+                        string queryArtQty = "SELECT Quantity FROM Artist WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id); ";
+
+                        using (SqlCommand cmdArtQty = new SqlCommand(queryArtQty, con))
+                        {
+                            cmdArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+                            quantity = ((Int32?)cmdArtQty.ExecuteScalar()) ?? 0;
+                            quantity -= int.Parse((gvPayment.Rows[i].FindControl("item_order_summary_qty") as TextBox).Text.Trim());
+
+                        }
+
+                        //update qty & availability of the art
+                        if (quantity <= 0)
+                        {
+                            String queryUpdateQty = "Update Artist SET Quantity = 0, Availability = '0' WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
+                            SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+
+                            cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+
+                            cmdUpdateArtQty.ExecuteNonQuery();
+
+                            gvPayment.EditIndex = -1;
+                        }
+                        else
+                        {
+                            //update art qty left 
+                            String queryUpdateQty = "Update Artist SET Quantity = @qty WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
+                            SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+
+                            cmdUpdateArtQty.Parameters.AddWithValue("@qty", quantity);
+                            cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+
+                            cmdUpdateArtQty.ExecuteNonQuery();
+
+                            gvPayment.EditIndex = -1;
+                        }
+
+                    }
                 }
+                catch (Exception)
+                {
+                    Response.Write("<script>alert('Something go wrong, please login and try again, thank you.')</script>");
+                }
+                con.Close();
+
+                //send email then redirect to payment history
+                sendEmail();
+
             }
-            catch (Exception)
+        }
+
+
+        //validate card num with card type
+        private bool validatedCardNumWithType()
+        {
+            string str = Card_Number.Text.ToString();
+
+            if ((CardRadioButtonList.SelectedIndex == 0 && str[0] == '5') || (CardRadioButtonList.SelectedIndex == 1 && str[0] == '4'))
             {
-                Response.Write("<script>alert('Server down, please contact QUAD-CORE ASG. Customer Services.')</script>");
+                return true;
             }
-            con.Close();
-
-            //send email then redirect to payment history
-            sendEmail();
-
+            return false;
         }
 
         //send receipt to customer through email

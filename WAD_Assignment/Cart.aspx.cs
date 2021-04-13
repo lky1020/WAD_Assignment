@@ -109,7 +109,9 @@ namespace WAD_Assignment
         //edit art qty fn (based on row)
         protected void gvCart_RowEditing(object sender, GridViewEditEventArgs e)
         {
+
             gvCart.EditIndex = e.NewEditIndex;
+
             refreshdata();
         }
 
@@ -139,8 +141,9 @@ namespace WAD_Assignment
                 }
                 con.Close();
 
+                
                 int select_qty = int.Parse((gvCart.Rows[e.RowIndex].FindControl("cart_qtySelect") as TextBox).Text.Trim());
-
+                
                 //if invalid input
                 if (select_qty <= 0)
                 {
@@ -180,7 +183,7 @@ namespace WAD_Assignment
                 }
             }catch (Exception)
             {
-                Response.Write("<script>alert('Update is fail. This product is no longer available. Please remove it from your cart, thank you.')</script>");
+                Response.Write("<script>alert('Update is fail. ')</script>");
                 refreshdata();
             }
 
@@ -305,7 +308,10 @@ namespace WAD_Assignment
                     Response.Redirect("Payment.aspx");
                 }
                 else
+                {
                     Response.Write("<script>alert('Please select art before proceed payment.')</script>");
+                    refreshdata();
+                }
             }
             catch (Exception)
             {
@@ -410,5 +416,7 @@ namespace WAD_Assignment
             }
 
         }
+
+      
     }
 }
