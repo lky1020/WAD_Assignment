@@ -67,7 +67,7 @@
 
         <div class="dlImg">
             <!-- Data list -->
-            <asp:DataList ID="ArtWorkDataList" runat="server" DataKeyField="ArtId" RepeatColumns="3" RepeatDirection="Horizontal" CellSpacing="35" HorizontalAlign="Center" CellPadding="3">
+            <asp:DataList ID="ArtWorkDataList" runat="server" DataKeyField="ArtId" RepeatColumns="3" RepeatDirection="Horizontal" CellSpacing="35" HorizontalAlign="Center" CellPadding="3" OnItemCommand="ArtWorkDataList_ItemCommand">
                 <ItemTemplate>
                     <table id="artwork-table" style="padding-bottom: 15px;">
                         <tr>
