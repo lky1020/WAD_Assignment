@@ -210,8 +210,8 @@ namespace WAD_Assignment.ArtWorks
         //Add to Cart button
         protected void addToCartBtn_Click(object sender, EventArgs e)
         {
-            int qtySelected = Convert.ToInt32(detailsQtyControl.Text);
-            decimal subtotal = qtySelected * Convert.ToDecimal(dArtPrice.Text.Substring(3));
+            int qtySelected = 0;
+            decimal subtotal = 0;
             Int32 cartID;
             Int32 orderDetailID = 0;
             int qtyOrderDetail = 0;
@@ -219,150 +219,158 @@ namespace WAD_Assignment.ArtWorks
 
             try
             {
-                if (Session["userId"] != null)
+                qtySelected = Convert.ToInt32(detailsQtyControl.Text);
+                subtotal = qtySelected * Convert.ToDecimal(dArtPrice.Text.Substring(3));
+
+                try
                 {
-
-                    //Insert database
-                    try
+                    if (Session["userId"] != null)
                     {
-                        using (SqlConnection con = new SqlConnection(constr))
+
+                        //Insert database
+                        try
                         {
-
-                            //Check whether valid input and enough quantity
-                            if (qtySelected == 0)
+                            using (SqlConnection con = new SqlConnection(constr))
                             {
-                                Response.Write("<script>alert('The quantity cannot be 0, please enter your quantity.')</script>");
-                            }
-                            else if (qtySelected > Convert.ToInt32(dArtStock.Text))
-                            {
-                                Response.Write("<script>alert('Sorry, not enough stock, please enter your quantity.')</script>");
-                            }
-                            else
-                            {
-                                con.Open();
-                                string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userId"] + "'AND status = 'cart'";
 
-                                using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
+                                //Check whether valid input and enough quantity
+                                if (qtySelected == 0)
                                 {
-                                    cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                                    Response.Write("<script>alert('The quantity cannot be 0, please enter your quantity.')</script>");
                                 }
-                                con.Close();
-
-                                if (cartID == 0)
+                                else if (qtySelected > Convert.ToInt32(dArtStock.Text))
                                 {
-                                    //insert to create a new cart
-                                    String status = "cart";
-                                    string sql = "INSERT into Cart (UserId, status) values('" + Session["username"] + "', '" + status + "')";
-
-                                    SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
-                                    SqlCommand cmd = new SqlCommand();
-                                    conn.Open();
-                                    cmd.Connection = conn;
-                                    cmd.CommandType = CommandType.Text;
-                                    cmd.CommandText = sql;
-
-                                    cmd.ExecuteNonQuery();
-                                    conn.Close();
-
-                                    //search the new cartid
-                                    conn.Open();
-                                    string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["username"] + "'AND status = 'cart'";
-
-                                    using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
-                                    {
-                                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
-                                    }
-                                    conn.Close();
-
-
-
-                                }
-
-                                //get exist order detail
-
-                                con.Open();
-
-                                SqlCommand cmdOrderDetailID = new SqlCommand("SELECT OrderDetailId, qtySelected, Subtotal from [OrderDetails] Where CartId = @CartId AND ArtId = @ArtId", con);
-                                cmdOrderDetailID.Parameters.AddWithValue("@CartId", cartID);
-                                cmdOrderDetailID.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
-
-                                SqlDataReader dtrOrderDetail = cmdOrderDetailID.ExecuteReader();
-                                if (dtrOrderDetail.HasRows)
-                                {
-                                    while (dtrOrderDetail.Read())
-                                    {
-                                        orderDetailID = (Int32)dtrOrderDetail["OrderDetailId"];
-                                        qtyOrderDetail = (int)dtrOrderDetail["qtySelected"];
-                                        subtotalOrderDetail = (decimal)dtrOrderDetail["Subtotal"];
-                                    }
-
-                                }
-                                con.Close();
-
-                                con.Open();
-
-                                //check whether exist same art (order detail)
-                                if (orderDetailID != 0)
-                                {
-                                    //update order details
-                                    qtyOrderDetail += qtySelected;
-                                    subtotalOrderDetail += subtotal;
-
-                                    string sqlUpdatetOrder = "UPDATE  OrderDetails SET qtySelected = " + qtyOrderDetail + ", Subtotal = " +  subtotalOrderDetail + " WHERE OrderDetailId = " + orderDetailID;
-
-                                    SqlCommand cmdInsertOrder = new SqlCommand();
-
-                                    cmdInsertOrder.Connection = con;
-                                    cmdInsertOrder.CommandType = CommandType.Text;
-                                    cmdInsertOrder.CommandText = sqlUpdatetOrder;
-
-
-                                    cmdInsertOrder.ExecuteNonQuery();
+                                    Response.Write("<script>alert('Sorry, not enough stock, please enter your quantity.')</script>");
                                 }
                                 else
                                 {
-                                    //insert order details based on cartid
+                                    con.Open();
+                                    string queryCheckCart = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["userId"] + "'AND status = 'cart'";
 
-                                    string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+                                    using (SqlCommand cmdCheckCart = new SqlCommand(queryCheckCart, con))
+                                    {
+                                        cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                                    }
+                                    con.Close();
 
-                                    SqlCommand cmdInsertOrder = new SqlCommand();
+                                    if (cartID == 0)
+                                    {
+                                        //insert to create a new cart
+                                        String status = "cart";
+                                        string sql = "INSERT into Cart (UserId, status) values('" + Session["username"] + "', '" + status + "')";
 
-                                    cmdInsertOrder.Connection = con;
-                                    cmdInsertOrder.CommandType = CommandType.Text;
-                                    cmdInsertOrder.CommandText = sqlInsertOrder;
+                                        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ArtWorkDb"].ConnectionString);
+                                        SqlCommand cmd = new SqlCommand();
+                                        conn.Open();
+                                        cmd.Connection = conn;
+                                        cmd.CommandType = CommandType.Text;
+                                        cmd.CommandText = sql;
+
+                                        cmd.ExecuteNonQuery();
+                                        conn.Close();
+
+                                        //search the new cartid
+                                        conn.Open();
+                                        string queryFindCartID = "Select CartId FROM [dbo].[Cart] WHERE UserId = '" + Session["username"] + "'AND status = 'cart'";
+
+                                        using (SqlCommand cmdCheckCart = new SqlCommand(queryFindCartID, conn))
+                                        {
+                                            cartID = ((Int32?)cmdCheckCart.ExecuteScalar()) ?? 0;
+                                        }
+                                        conn.Close();
 
 
-                                    cmdInsertOrder.ExecuteNonQuery();
 
+                                    }
+
+                                    //get exist order detail
+
+                                    con.Open();
+
+                                    SqlCommand cmdOrderDetailID = new SqlCommand("SELECT OrderDetailId, qtySelected, Subtotal from [OrderDetails] Where CartId = @CartId AND ArtId = @ArtId", con);
+                                    cmdOrderDetailID.Parameters.AddWithValue("@CartId", cartID);
+                                    cmdOrderDetailID.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
+
+                                    SqlDataReader dtrOrderDetail = cmdOrderDetailID.ExecuteReader();
+                                    if (dtrOrderDetail.HasRows)
+                                    {
+                                        while (dtrOrderDetail.Read())
+                                        {
+                                            orderDetailID = (Int32)dtrOrderDetail["OrderDetailId"];
+                                            qtyOrderDetail = (int)dtrOrderDetail["qtySelected"];
+                                            subtotalOrderDetail = (decimal)dtrOrderDetail["Subtotal"];
+                                        }
+
+                                    }
+                                    con.Close();
+
+                                    con.Open();
+
+                                    //check whether exist same art (order detail)
+                                    if (orderDetailID != 0)
+                                    {
+                                        //update order details
+                                        qtyOrderDetail += qtySelected;
+                                        subtotalOrderDetail += subtotal;
+
+                                        string sqlUpdatetOrder = "UPDATE  OrderDetails SET qtySelected = " + qtyOrderDetail + ", Subtotal = " + subtotalOrderDetail + " WHERE OrderDetailId = " + orderDetailID;
+
+                                        SqlCommand cmdInsertOrder = new SqlCommand();
+
+                                        cmdInsertOrder.Connection = con;
+                                        cmdInsertOrder.CommandType = CommandType.Text;
+                                        cmdInsertOrder.CommandText = sqlUpdatetOrder;
+
+
+                                        cmdInsertOrder.ExecuteNonQuery();
+                                    }
+                                    else
+                                    {
+                                        //insert order details based on cartid
+
+                                        string sqlInsertOrder = "INSERT into OrderDetails (CartId, ArtId, qtySelected, Subtotal) values('" + cartID + "', '" + Request.QueryString["ArtId"] + "', '" + qtySelected + "', '" + subtotal + "')";
+
+                                        SqlCommand cmdInsertOrder = new SqlCommand();
+
+                                        cmdInsertOrder.Connection = con;
+                                        cmdInsertOrder.CommandType = CommandType.Text;
+                                        cmdInsertOrder.CommandText = sqlInsertOrder;
+
+
+                                        cmdInsertOrder.ExecuteNonQuery();
+
+                                    }
+
+                                    con.Close();
+
+
+                                    Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
                                 }
 
-                                con.Close();
-
-
-                                Response.Write("<script>alert('Congratulation, Art Added into Cart Successfully')</script>");
                             }
 
                         }
-
+                        catch (Exception ex)
+                        {
+                            Response.Write("<script>alert('Sorry, Fail to Add Cart. Please try again')</script>");
+                            System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Response.Write("<script>alert('Sorry, Fail to Add Cart. Please try again')</script>");
-                        System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+                        Response.Write("<script>alert('Please Login first!')</script>");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Response.Write("<script>alert('Please Login first!')</script>");
+                    Response.Write("<script>alert('Sorry, No User Login Found')</script>");
+                    System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Response.Write("<script>alert('Sorry, No User Login Found')</script>");
-                System.Diagnostics.Debug.WriteLine("[DEBUG][EXCEPTION] --> " + ex.Message);
+                Response.Write("<script>alert('Sorry, quantity cannot be blank.')</script>");
             }
-
-
         }
 
         protected void detailsCancelBtn_Click(object sender, ImageClickEventArgs e)
@@ -372,18 +380,43 @@ namespace WAD_Assignment.ArtWorks
 
         protected void dPlusControl_Click(object sender, ImageClickEventArgs e)
         {
-            int qty = Convert.ToInt32(detailsQtyControl.Text);
-            qty += 1;
-            detailsQtyControl.Text = qty.ToString();
+            try
+            {
+                int qty;
+                if (detailsQtyControl.Text.Equals(null))
+                    qty = 0;
+                else
+                    qty = Convert.ToInt32(detailsQtyControl.Text);
+                qty += 1;
+                detailsQtyControl.Text = qty.ToString();
+            }
+            catch
+            {
+                Response.Write("<script>alert('Sorry, please enter your quantity.')</script>");
+            }
+            
 
         }
 
         protected void dMinusControl_Click(object sender, ImageClickEventArgs e)
         {
-            int qty = Convert.ToInt32(detailsQtyControl.Text);
-            if (qty != 0)
-                qty -= 1;
-            detailsQtyControl.Text = qty.ToString();
+            try
+            {
+                int qty;
+                if (detailsQtyControl.Text.Equals(null))
+                    qty = 0;
+                else
+                    qty = Convert.ToInt32(detailsQtyControl.Text);
+
+                if (qty != 0)
+                    qty -= 1;
+                detailsQtyControl.Text = qty.ToString();
+            }
+            catch
+            {
+                Response.Write("<script>alert('Sorry, please enter your quantity.')</script>");
+            }
+           
         }
     }
 }
