@@ -38,7 +38,7 @@ namespace WAD_Assignment
                 //pass data into grid
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
-                String queryGetData = "Select a.ArtName, a.ArtImage, a.Price, a.ArtDescription,o.orderDetailId, o.qtySelected, o.Subtotal from [Cart] c " +
+                String queryGetData = "Select a.ArtId, a.ArtName, a.ArtImage, a.Price, a.ArtDescription,o.orderDetailId, o.qtySelected, o.Subtotal from [Cart] c " +
                     "INNER JOIN [OrderDetails] o on c.CartId = o.CartId " +
                     "INNER JOIN [Artist] a on o.ArtId = a.ArtId  " + 
                     "Where c.UserId = @userid AND c.status = 'cart'";
@@ -417,6 +417,15 @@ namespace WAD_Assignment
 
         }
 
-      
+        protected void cart_artImg_click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton imgButton = sender as ImageButton;
+            Int32 artID = Convert.ToInt32(imgButton.CommandArgument.ToString());
+
+            Response.Redirect("ArtWorkDetails.aspx?ArtId=" + artID);
+        }
+
+
+
     }
 }

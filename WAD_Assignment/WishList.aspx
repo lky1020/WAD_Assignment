@@ -13,19 +13,41 @@
             <!-- Continue Add Art -->
             <asp:Button ID="btnContinueWL" runat="server" Text="View Art" CssClass="btn-wlArt" OnClick="btnContinueWL_Click" />
         </div>
-        <div class="wl-container">
 
 
+        <div class="wl-container">  
             <div class="wishlist-content">
+                
+
                 <!-- WishList Table -->
                 <div class="wl-table-box">
+
+                    <!-- Add to Cart Button -->
+                    <asp:Button ID="addToCartBtn" runat="server" Text="Add To Cart" CssClass="float-right art-to-cart-btn add-btn-medium" CommandArgument='<%# Eval("ArtId")%>' CommandName="addtocart" OnClick="addToCartBtn_Click" AutoPostback = false/>
+                    
+                    <br />
+                    <br />
+                    <br />
+
+                    <!-- table -->
                     <asp:GridView ID="gvWishList" runat="server" AutoGenerateColumns="False" DataKeyNames="WishlistId" ShowHeaderWhenEmpty="True" CssClass="gv-wishList" AllowPaging="true" PageSize="5" OnRowDeleting="gvWishList_RowDeleting">
                         <PagerSettings Mode="NextPreviousFirstLast" Visible="false" />
                         <Columns>
                             <%-- WishList ID Col--%>
-                            <asp:TemplateField HeaderText="ID" HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center">
+                            <asp:TemplateField HeaderText="ID" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center" Visible="false">
                                 <ItemTemplate>
-                                    <asp:Label Text='<%# Eval("WishListId") %>' runat="server" />
+                                    <asp:Label ID="lblWishlistID" Text='<%# Eval("WishListId") %>' runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
+                            <%-- Checkbox --%>
+                            <asp:TemplateField HeaderStyle-Width="10%" ItemStyle-Width="10%" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center">
+                                <HeaderTemplate>
+                                    <asp:CheckBox ID="checkBoxHead" AutoPostBack="true" OnCheckedChanged="CheckBoxHead_CheckedChanged" runat="server" />
+                                </HeaderTemplate>
+
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="chkItems" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
 
@@ -52,9 +74,7 @@
                             <%-- GridView Art Price --%>
                             <asp:TemplateField HeaderText="Price" HeaderStyle-Width="15%" ItemStyle-Width="15%" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center">
                                 <ItemTemplate>
-                                    <asp:Label ID="wl_price" runat="server"> 
-                                 RM <%# String.Format("{0:0.00}", Eval("Price")) %>
-                                    </asp:Label>
+                                    RM <asp:Label ID="wl_price" Text='<%# Eval("Price", "{0:0.00}") %>' runat="server"></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
 
@@ -67,7 +87,7 @@
 
 
                             <%-- Action --%>
-                            <asp:TemplateField HeaderText=" " ItemStyle-Width="14%" HeaderStyle-Width="14%" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center">
+                            <asp:TemplateField HeaderText=" " ItemStyle-Width="20%" HeaderStyle-Width="20%" HeaderStyle-Height="50px" HeaderStyle-Font-Size="Large" HeaderStyle-BackColor="#484848" ItemStyle-HorizontalAlign="Center">
                                 <ItemTemplate>
                                     <asp:ImageButton class="wl_page_deleteBtn" ImageUrl="img/wishlist/icons8-delete.png" runat="server" CommandName="Delete" ToolTip="Delete" Width="40px" Height="40px" />
                                 </ItemTemplate>

@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using Xamarin.Forms.PlatformConfiguration;
+using System.Drawing;
 
 namespace WAD_Assignment.ArtWorks
 {
@@ -23,6 +23,7 @@ namespace WAD_Assignment.ArtWorks
             }
         }
 
+
         private void GetArtDetails()
         {
             try
@@ -32,7 +33,7 @@ namespace WAD_Assignment.ArtWorks
                 con.Open();
 
                 // retrieve data
-                SqlCommand cmd = new SqlCommand("SELECT a.ArtName, a.ArtImage, a.Price, a.ArtDescription, a.Quantity, u.Name, u.Bio, u.ProfileImg from[Artist] a INNER JOIN[User] u on a.UserId = u.UserId Where a.ArtId = @ArtId", con);
+                SqlCommand cmd = new SqlCommand("SELECT a.ArtName, a.Availability, a.ArtImage, a.Price, a.ArtDescription, a.Quantity, u.Name, u.Bio, u.ProfileImg from[Artist] a INNER JOIN[User] u on a.UserId = u.UserId Where a.ArtId = @ArtId", con);
                 cmd.Parameters.AddWithValue("@ArtId", Request.QueryString["ArtId"]);
 
                 SqlDataReader dtrArt = cmd.ExecuteReader();
@@ -50,7 +51,14 @@ namespace WAD_Assignment.ArtWorks
 
                         dAboutArt.Text = dtrArt["ArtDescription"].ToString();
 
-                        dArtStock.Text = dtrArt["Quantity"].ToString();
+                        if(Convert.ToInt32(dtrArt["Availability"]) == 0){
+                            dArtStock.Text = "-";
+                        }
+                        else
+                        {
+                            dArtStock.Text = dtrArt["Quantity"].ToString();
+                        }
+                        
 
                         string profileImage = dtrArt["ProfileImg"].ToString();
                         if (!String.IsNullOrEmpty(profileImage))
@@ -91,6 +99,21 @@ namespace WAD_Assignment.ArtWorks
                     }
 
                     con.Close();
+
+                    //Check stock
+                    if (dArtStock.Text.Equals("-"))
+                    {
+                        //disable button
+                        addToCartBtn.Enabled = false;
+                        addToCartBtn.Text = "Not Available";
+                        addToCartBtn.BackColor = Color.DarkGray;
+                    }else if (dArtStock.Text.Equals("0"))
+                    {
+                        addToCartBtn.Enabled = false;
+                        addToCartBtn.Text = "SOLD OUT";
+                        addToCartBtn.BackColor = Color.DarkGray;
+                    }
+
                 }
                 else
                 {

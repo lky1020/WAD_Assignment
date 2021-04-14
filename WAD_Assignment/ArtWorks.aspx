@@ -92,7 +92,7 @@
                         </tr>
                         <tr class="text-a3">
                             <td class="white-text">RM
-                                <asp:Label ID="PriceLabel" CssClass="white-text" runat="server" Text='<%# String.Format("{0:0.00}", Eval("Price"))  %>' />
+                                <asp:Label ID="PriceLabel" CssClass="white-text" runat="server" Text='<%# String.Format("{0:0.00}", Eval("Price"))  %>'/>
                             </td>
                         </tr>
                     </table>

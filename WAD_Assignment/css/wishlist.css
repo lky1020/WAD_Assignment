@@ -51,6 +51,7 @@
     width: 1000px;
     margin-top: 2%;
     margin-bottom: 4%;
+    display: inline-block;
 }
 .wishlist-content {
     display: flex;
@@ -95,4 +96,9 @@
 
 .art-image {
     object-fit: cover;
+}
+
+.float-right {
+    position: absolute;
+    right: 0;
 }

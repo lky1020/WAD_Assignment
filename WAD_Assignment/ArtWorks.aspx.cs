@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Drawing;
 
 namespace WAD_Assignment.ArtWorks
 {
@@ -29,10 +30,44 @@ namespace WAD_Assignment.ArtWorks
             }
             CurrentPage = (int)this.ViewState["PageCount"];
 
-            //wishlist icon
+            checkAvailability();
             setLoveIcon();
 
 
+        }
+
+        private void checkAvailability()
+        {
+            foreach (DataListItem item in ArtWorkDataList.Items)
+            {
+                var currentKey = ArtWorkDataList.DataKeys[item.ItemIndex];
+
+                Int32 artId = Convert.ToInt32(currentKey);
+                int stock = 0;
+
+                connection();
+                conn.Open();
+
+                //Check stock
+                string query = "SELECT Quantity FROM [dbo].[Artist] WHERE ArtId =" + artId;
+
+                using (SqlCommand cmdUser = new SqlCommand(query, conn))
+                {
+                    stock = ((int)cmdUser.ExecuteScalar());
+                }
+
+                conn.Close();
+
+                if (stock == 0)
+                {
+                    //if no add in wishlist, inactive icon
+                    Button btn = item.FindControl("addToCartBtn") as Button;
+                    btn.Enabled = false;
+                    btn.Text = "SOLD OUT";
+                    btn.BackColor = Color.DarkGray;
+                }
+                
+            }
         }
 
         private void setLoveIcon()
@@ -85,7 +120,7 @@ namespace WAD_Assignment.ArtWorks
             connection();
 
             //sorting feature
-            dataAdapter = new SqlDataAdapter("Select * from Artist ORDER BY ArtId DESC", conn);
+            dataAdapter = new SqlDataAdapter("Select * from Artist WHERE Availability = '1' ORDER BY ArtId DESC", conn);
             if (rblCategory.SelectedIndex != -1)
             {
                 switch (ddlArtSort.SelectedIndex)
@@ -161,9 +196,10 @@ namespace WAD_Assignment.ArtWorks
             }
 
             dt = new DataTable();
+            
             conn.Open();
             dataAdapter.Fill(dt);
-
+    
             conn.Close();
 
             //paging feature
@@ -196,7 +232,8 @@ namespace WAD_Assignment.ArtWorks
             ViewState["PageCount"] = CurrentPage;
 
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
-            //wishlist icon
+
+            checkAvailability();
             setLoveIcon();
         }
 
@@ -209,7 +246,8 @@ namespace WAD_Assignment.ArtWorks
             ViewState["PageCount"] = CurrentPage;
 
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
-            //wishlist icon
+
+            checkAvailability();
             setLoveIcon();
         }
 
@@ -219,7 +257,8 @@ namespace WAD_Assignment.ArtWorks
             CurrentPage += 1;
             ViewState["PageCount"] = CurrentPage;
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
-            //wishlist icon
+
+            checkAvailability();
             setLoveIcon();
         }
 
@@ -228,29 +267,38 @@ namespace WAD_Assignment.ArtWorks
         {
             CurrentPage = (int)ViewState["TotalCount"] - 1;
             DataListPaging((DataTable)ViewState["PagedDataSurce"]);
-            //wishlist icon
+
+            checkAvailability();
             setLoveIcon();
         }
 
         protected void ddlArtSort_SelectedIndexChanged(object sender, EventArgs e)
         {
             bindList();
+            checkAvailability();
+            setLoveIcon();
         }
 
         protected void rblCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             bindList();
+            checkAvailability();
+            setLoveIcon();
         }
 
         protected void btnFilter_Click(object sender, EventArgs e)
         {
             bindList();
+            checkAvailability();
+            setLoveIcon();
         }
 
         protected void btnReset_Click(object sender, EventArgs e)
         {
             rblCategory.SelectedIndex = -1;
             bindList();
+            checkAvailability();
+            setLoveIcon();
         }
 
         protected void loveBtn_Click(object sender, ImageClickEventArgs e)

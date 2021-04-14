@@ -122,6 +122,16 @@
     font-size: 20px;
 }
 
+.sold-out-btn {
+    background-color: dimgrey;
+    color: white;
+    border: none;
+    letter-spacing: 1px;
+    margin-bottom: 3%;
+    padding: 10px;
+    font-size: 15px;
+}
+
 .art-to-cart-btn {
     background-color: crimson;
     color: white;
