@@ -46,49 +46,49 @@
                         </Columns>
                     </asp:GridView>
                       
-                    <div>
+                    <div >
                         <table>
                             <tr>
                                 <td>
-                                    <asp:Label runat="server" >Total Art Price</asp:Label>
+                                    <asp:Label runat="server" style="color:antiquewhite">Total Art Price</asp:Label>
                                 </td>
 
                                 <td>
-                                    <asp:Label runat="server" Width="40px"> : </asp:Label>
+                                    <asp:Label runat="server" Width="40px" style="color:antiquewhite"> : </asp:Label>
                                 </td>
 
                                 <td>
-                                    <asp:Label runat="server" ID="pay_subtotal" > </asp:Label>
+                                    <asp:Label runat="server" ID="pay_subtotal" style="color:antiquewhite"> </asp:Label>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td>
-                                    <asp:Label runat="server"> Delivery Fees</asp:Label>
+                                    <asp:Label runat="server" style="color:antiquewhite"> Delivery Fees</asp:Label>
                                 </td>
 
                                 <td>
-                                    <asp:Label runat="server" Width="40px"> : </asp:Label>
+                                    <asp:Label runat="server" Width="40px" style="color:antiquewhite"> : </asp:Label>
                                 </td>
 
                                 <td>
-                                    <asp:Label runat="server" ID="deliverly_fees" > </asp:Label>
+                                    <asp:Label runat="server" ID="deliverly_fees" style="color:antiquewhite"> </asp:Label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <strong>
-                                        <asp:Label runat="server" >Total Payment</asp:Label>
+                                        <asp:Label runat="server" style="color:antiquewhite">Total Payment</asp:Label>
                                     </strong>
                                 </td>
                                 <td>
                                     <strong>
-                                        <asp:Label runat="server" Width="40px"> : </asp:Label>
+                                        <asp:Label runat="server" Width="40px" style="color:antiquewhite"> : </asp:Label>
                                     </strong>
                                 </td>
                                 <td>
                                     <strong>
-                                        <asp:Label runat="server" ID="total_payment" > </asp:Label>
+                                        <asp:Label runat="server" ID="total_payment" style="color:antiquewhite"> </asp:Label>
                                     </strong>
                                 </td>
                             </tr>

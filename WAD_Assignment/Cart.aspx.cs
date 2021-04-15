@@ -102,6 +102,29 @@ namespace WAD_Assignment
                     }
                 }
             }
+
+            //detect product qty
+            int qtyAvailable = 0;
+
+            for (int i = 0; i < gvCart.Rows.Count; i++)
+            {
+                string queryArtAvailable = "SELECT Quantity FROM Artist WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id); ";
+
+                using (SqlCommand cmdArtAvailable = new SqlCommand(queryArtAvailable, con))
+                {
+                    cmdArtAvailable.Parameters.AddWithValue("@od_Id", gvCart.DataKeys[i].Value.ToString());
+                    qtyAvailable = (int)((cmdArtAvailable.ExecuteScalar()) ?? 0);
+
+                    if (qtyAvailable == 0)
+                    {
+                        gvCart.Rows[i].Cells[0].Enabled = false;
+                        gvCart.Rows[i].Cells[2].Text = "Item is sold out";
+                        gvCart.Rows[i].Cells[3].Text = "-";
+                        gvCart.Rows[i].Cells[4].Text = "-";
+                        gvCart.Rows[i].Cells[5].Text = "RM - ";
+                    }
+                }
+            }
             con.Close();
         }
 

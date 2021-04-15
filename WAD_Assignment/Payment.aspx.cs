@@ -168,31 +168,17 @@ namespace WAD_Assignment
 
                         }
 
-                        //update qty & availability of the art
-                        if (quantity <= 0)
-                        {
-                            String queryUpdateQty = "Update Artist SET Quantity = 0, Availability = '0' WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
-                            SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
+                        //update art qty left 
+                        String queryUpdateQty = "Update Artist SET Quantity = @qty WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
+                        SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
 
-                            cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
+                        cmdUpdateArtQty.Parameters.AddWithValue("@qty", quantity);
+                        cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
 
-                            cmdUpdateArtQty.ExecuteNonQuery();
+                        cmdUpdateArtQty.ExecuteNonQuery();
 
-                            gvPayment.EditIndex = -1;
-                        }
-                        else
-                        {
-                            //update art qty left 
-                            String queryUpdateQty = "Update Artist SET Quantity = @qty WHERE ArtId = (SELECT ArtId FROM OrderDetails WHERE OrderDetailId = @od_Id);";
-                            SqlCommand cmdUpdateArtQty = new SqlCommand(queryUpdateQty, con);
-
-                            cmdUpdateArtQty.Parameters.AddWithValue("@qty", quantity);
-                            cmdUpdateArtQty.Parameters.AddWithValue("@od_Id", gvPayment.DataKeys[i].Value.ToString());
-
-                            cmdUpdateArtQty.ExecuteNonQuery();
-
-                            gvPayment.EditIndex = -1;
-                        }
+                        gvPayment.EditIndex = -1;
+                        
 
                     }
                 }
