@@ -100,7 +100,7 @@
         </div>
 
         <div class="title">
-            <asp:Button ID="btnViewAll" runat="server" CssClass="btnViewAll" Text="View All" OnClick="btnViewAll_Click" />
+            <asp:Button ID="btnViewAll" runat="server" CssClass="btnViewAll" Text="View All" OnClick="btnViewAll_Click" causesvalidation="false" />
         </div>
     </section>
 
