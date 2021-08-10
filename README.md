@@ -1,2 +1,2 @@
 # WAD_Assignment
- Web Application Development - Assignment
+Artwork Sales Gallery Website developed for Web Application Development Assignment.
